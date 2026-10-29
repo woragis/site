@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { articles, selectedArticles } from "@/content/site";
 import { absoluteUrl, jsonLd, pageMetadata } from "@/lib/seo";
@@ -29,7 +30,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
   return <article className="page-shell detail-page article-detail">
     {article.published && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData)} />}
-    <a className="back-link" href="/artigos">← Todos os artigos</a>
+    <Link className="back-link" href="/artigos">← Todos os artigos</Link>
     <header className="detail-header"><p className="eyebrow">{article.category} · {article.readingTime} · {article.publishedAt?.slice(0, 4) ?? "Rascunho"}</p><h1>{article.title}</h1><p className="detail-lede">{article.summary}</p></header>
     <div className="article-prose">{article.content.map((paragraph, index) => <p key={index}>{paragraph}</p>)}<p className="article-source">{article.sourceLabel}. Texto de trabalho, aguardando revisão antes da publicação.</p></div>
   </article>;

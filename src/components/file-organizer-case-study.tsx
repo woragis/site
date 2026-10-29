@@ -118,6 +118,8 @@ function StoryBeat({ beat }: { beat: Beat }) {
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !started.current) {
         started.current = true;
+        setTyped("");
+        setPhase("typing");
         setRun((value) => value + 1);
       }
     }, { threshold: 0.3 });
@@ -128,13 +130,7 @@ function StoryBeat({ beat }: { beat: Beat }) {
   useEffect(() => {
     if (!run) return;
     if (timer.current) clearTimeout(timer.current);
-    if (reducedMotion) {
-      setTyped(beat.command);
-      setPhase("done");
-      return;
-    }
-    setTyped("");
-    setPhase("typing");
+    if (reducedMotion) return;
     let index = 0;
     const typeNext = () => {
       index += 1;
@@ -151,11 +147,14 @@ function StoryBeat({ beat }: { beat: Beat }) {
 
   const replay = () => {
     started.current = true;
-    setPhase("idle");
+    setTyped("");
+    setPhase("typing");
     setRun((value) => value + 1);
   };
+  const visiblePhase = reducedMotion ? "done" : phase;
+  const visibleCommand = reducedMotion || phase === "idle" ? beat.command : typed;
 
-  return <section className={`file-case-beat file-case-beat--${beat.id}`} ref={root} data-phase={phase} data-motion={beat.motion}>
+  return <section className={`file-case-beat file-case-beat--${beat.id}`} ref={root} data-phase={visiblePhase} data-motion={beat.motion}>
     <div className="file-case-beat__copy">
       <p className="eyebrow"><span>{beat.number}</span> / {beat.id === "collision" ? "Integridade" : beat.id === "undo" ? "Recuperação" : "Fluxo de uso"}</p>
       <h2>{beat.title}</h2>
@@ -165,19 +164,21 @@ function StoryBeat({ beat }: { beat: Beat }) {
     <div className="file-case-beat__demo">
       <div className="file-case-terminal" role="group" aria-label={`Terminal de demonstração. Comando: ${beat.command}. Saída: ${beat.output.join(". ")}`}>
         <div className="file-case-terminal__bar"><span /><span /><span /><b>DEMO · SAÍDA ILUSTRATIVA</b></div>
-        <pre aria-hidden="true"><code><span className="file-case-terminal__prompt">$ </span>{phase === "idle" ? beat.command : typed}<span className={`file-case-terminal__cursor${phase === "typing" ? " is-visible" : ""}`} />{(phase === "result" || phase === "done") && <span className="file-case-terminal__output">{"\n"}{beat.output.join("\n")}</span>}</code></pre>
+        <pre aria-hidden="true"><code><span className="file-case-terminal__prompt">$ </span>{visibleCommand}<span className={`file-case-terminal__cursor${visiblePhase === "typing" ? " is-visible" : ""}`} />{(visiblePhase === "result" || visiblePhase === "done") && <span className="file-case-terminal__output">{"\n"}{beat.output.join("\n")}</span>}</code></pre>
       </div>
       <div className="file-case-files" aria-hidden="true">
         <div className="file-case-files__source"><span>~/Downloads</span>{(beat.motion === "collision" ? ["relatorio.pdf"] : sourceFiles).map((name) => <i key={name} data-file={name}>{name}</i>)}</div>
         <span className="file-case-files__route">{beat.motion === "undo" ? "← undo" : beat.motion === "none" ? "prévia · sem mover" : "plano →"}</span>
         <div className="file-case-files__target"><span>~/Organized</span>
-          {beat.motion === "collision" ? <i className="file-case-files__existing">relatorio.pdf <small>já existe</small></i> : <>
+          {beat.motion === "collision" ? <>
+            <i className="file-case-files__existing">relatorio.pdf <small>já existe</small></i>
+            <i className="file-case-files__renamed">relatorio (1).pdf <small>nome livre · sem sobrescrita</small></i>
+          </> : <>
             <i className="file-case-files__landing file-case-files__landing--one">{beat.motion === "undo" ? "relatorio.pdf" : "Documents/PDF"}</i>
             <i className="file-case-files__landing file-case-files__landing--two">{beat.motion === "undo" ? "foto.jpg" : "Pictures"}</i>
             <i className="file-case-files__landing file-case-files__landing--three">{beat.motion === "undo" ? "backup.zip" : "Archives"}</i>
           </>}
         </div>
-        {beat.motion === "collision" && <div className="file-case-files__renamed">relatorio (1).pdf <small>nome livre · sem sobrescrita</small></div>}
       </div>
       <p className="file-case-beat__caption">{beat.label}</p>
       <button type="button" className="file-case-beat__replay" onClick={replay}>Reproduzir demonstração <span aria-hidden="true">↻</span></button>
