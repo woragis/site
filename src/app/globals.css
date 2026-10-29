@@ -634,7 +634,8 @@ html[data-theme="index"] .file-organizer-spotlight__visual .file-organizer-visua
 .enem-study-visual__stage--cards.is-active .enem-study-visual__card-build-target > i { animation: enem-card-line 1s ease-out 1 both; animation-delay: 1.7s; }
 .enem-study-visual__stage--cards.is-active .enem-study-visual__card-build-target > i:nth-of-type(2) { animation-delay: 2.3s; }
 .enem-study-visual__stage--cards.is-active .enem-study-visual__card-build-target > i:nth-of-type(3) { animation-delay: 2.9s; }
-.enem-study-visual__flip-card { position: relative; transform-style: preserve-3d; transform: rotateY(0); }
+.enem-study-visual__card-reveal { position: absolute; inset: 0; opacity: 0; transform: scale(.84) translateY(.5rem); }
+.enem-study-visual__flip-card { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transform: rotateY(0); }
 .enem-study-visual__card { position: absolute; inset: 0; min-height: 0; align-content: space-between; padding: .75rem; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(1px); }
 .enem-study-visual__card > b { font-size: clamp(.58rem, .8vw, .78rem); }
 .enem-study-visual__card > small { color: var(--color-muted); font: .4rem var(--font-mono); }
@@ -685,9 +686,11 @@ html[data-theme="index"] .file-organizer-spotlight__visual .file-organizer-visua
 .enem-study-visual__stage--extract.is-complete .enem-study-visual__extract-line > i { background: color-mix(in srgb, var(--color-accent) 40%, var(--color-line)); }
 .enem-study-visual__stage--extract.is-complete .enem-study-visual__extract-line > b { opacity: 1; transform: none; }
 .enem-study-visual__stage--extract.is-complete .enem-study-visual__extract-page > strong { background: color-mix(in srgb, var(--color-accent) 24%, var(--color-paper)); }
-.enem-study-visual__stage--cards.is-active .enem-study-visual__flip-card { animation: enem-card-create-and-flip 7.6s cubic-bezier(.2,.75,.25,1) 1 both; }
+.enem-study-visual__stage--cards.is-active .enem-study-visual__card-reveal { animation: enem-card-reveal 7.6s cubic-bezier(.2,.75,.25,1) 1 both; }
+.enem-study-visual__stage--cards.is-active .enem-study-visual__flip-card { animation: enem-card-flip 7.6s cubic-bezier(.2,.75,.25,1) 1 both; }
 .enem-study-visual__stage--cards.is-complete .enem-study-visual__card-build { display: none; }
-.enem-study-visual__stage--cards.is-complete .enem-study-visual__flip-card { opacity: 1; transform: rotateY(180deg) scale(1); }
+.enem-study-visual__stage--cards.is-complete .enem-study-visual__card-reveal { opacity: 1; transform: none; }
+.enem-study-visual__stage--cards.is-complete .enem-study-visual__flip-card { transform: rotateY(180deg); }
 .enem-study-visual__stage--review.is-active .enem-study-visual__review-card--one { animation: enem-review-card 3.7s cubic-bezier(.2,.75,.25,1) 1 both; }
 .enem-study-visual__stage--review.is-active .enem-study-visual__review-card--two { animation: enem-review-card 3.7s cubic-bezier(.2,.75,.25,1) 1 both; animation-delay: 4s; }
 .enem-study-visual__stage--review.is-active .enem-study-visual__review-card--three { animation: enem-review-card 3.7s cubic-bezier(.2,.75,.25,1) 1 both; animation-delay: 8s; }
@@ -710,6 +713,7 @@ html[data-theme="index"] .file-organizer-spotlight__visual .file-organizer-visua
 .enem-study-visual--compact .enem-study-visual__connector:nth-of-type(4), .enem-study-visual--compact .enem-study-visual__connector:nth-of-type(6) { display: none; }
 .enem-study-visual--compact .enem-study-visual__flip-space { min-height: 2.2rem; }
 .enem-study-visual--compact .enem-study-visual__card-build { display: none; }
+.enem-study-visual--compact .enem-study-visual__card-reveal { position: relative; inset: auto; opacity: 1; transform: none; }
 .enem-study-visual--compact .enem-study-visual__card { min-height: 2.2rem; }
 .enem-study-visual--compact .enem-study-visual__card > small { display: none; }
 .enem-study-visual--compact .enem-study-visual__flip-card { animation: none; }
@@ -726,7 +730,8 @@ html[data-theme="index"] .file-organizer-spotlight__visual .file-organizer-visua
 @keyframes enem-card-chip { 0% { opacity: 1; transform: translateX(0); } 80%, 100% { opacity: 0; transform: translateX(4rem) scale(.8); } }
 @keyframes enem-card-line { 0% { transform: scaleX(.08); } 100% { transform: scaleX(1); } }
 @keyframes enem-card-build-window { 0%, 8% { opacity: 1; } 54% { opacity: 1; } 63%, 100% { opacity: 0; } }
-@keyframes enem-card-create-and-flip { 0%, 48% { opacity: 0; transform: rotateY(0) scale(.84) translateY(.5rem); } 58%, 68% { opacity: 1; transform: rotateY(0) scale(1) translateY(0); } 84%, 100% { opacity: 1; transform: rotateY(180deg) scale(1) translateY(0); } }
+@keyframes enem-card-reveal { 0%, 48% { opacity: 0; transform: scale(.84) translateY(.5rem); } 58%, 68% { opacity: 1; transform: scale(1) translateY(0); } 84%, 100% { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes enem-card-flip { 0%, 68% { transform: rotateY(0); } 84%, 100% { transform: rotateY(180deg); } }
 @keyframes enem-review-card { 0%, 8% { opacity: 0; transform: translateY(2rem) scale(.88); } 18%, 36% { opacity: 1; transform: translateY(0) scale(1); } 48%, 67% { opacity: 1; transform: translateY(0) scale(1); } 82%, 100% { opacity: 0; transform: translate(115%, -.15rem) scale(.88) rotate(4deg); } }
 @keyframes enem-review-flip { 0%, 36% { transform: rotateY(0); } 50%, 100% { transform: rotateY(180deg); } }
 @keyframes enem-review-choice { 0% { transform: scale(.9); } 70%, 100% { transform: scale(1); } }
@@ -1087,6 +1092,7 @@ html[data-theme="index"] .project-card__visual--enem-study::before, html[data-th
   .enem-study-visual__extract-line > i { background: color-mix(in srgb, var(--color-accent) 40%, var(--color-line)); }
   .enem-study-visual__extract-line > b { opacity: 1; transform: none; }
   .enem-study-visual__extract-page > strong { background: color-mix(in srgb, var(--color-accent) 20%, var(--color-paper)); }
+  .enem-study-visual__card-reveal { opacity: 1 !important; transform: none !important; }
   .enem-study-visual__flip-card { animation: none !important; transform: rotateY(180deg) !important; }
   .enem-study-visual__card-build { display: none !important; }
   .enem-study-visual__review-card--one { opacity: 1 !important; transform: none !important; }

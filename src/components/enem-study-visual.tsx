@@ -104,9 +104,11 @@ export function EnemStudyVisual({ compact = false }: { compact?: boolean }) {
               <i>→</i>
               <div className="enem-study-visual__card-build-target"><small>NOVO CARTÃO</small><i /><i /><i /></div>
             </div>
-            <div className="enem-study-visual__flip-card">
-              <div className="enem-study-visual__card enem-study-visual__card--front"><span>FRENTE</span><b>O que caracteriza um bioma?</b><small>pergunta antes da resposta</small></div>
-              <div className="enem-study-visual__card enem-study-visual__card--answer"><span>RESPOSTA</span><b>Clima, vegetação e fauna em interação.</b><small>conceito-chave</small></div>
+            <div className="enem-study-visual__card-reveal">
+              <div className="enem-study-visual__flip-card">
+                <div className="enem-study-visual__card enem-study-visual__card--front"><span>FRENTE</span><b>O que caracteriza um bioma?</b><small>pergunta antes da resposta</small></div>
+                <div className="enem-study-visual__card enem-study-visual__card--answer"><span>RESPOSTA</span><b>Clima, vegetação e fauna em interação.</b><small>conceito-chave</small></div>
+              </div>
             </div>
           </div>
           <span>pergunta → recuperação ativa</span>
