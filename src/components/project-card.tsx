@@ -1,15 +1,17 @@
 import Link from "next/link";
 import type { Project } from "@/content/site";
 import { FileOrganizerVisual } from "@/components/file-organizer-visual";
+import { EnemStudyVisual } from "@/components/enem-study-visual";
 
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
   const isFileOrganizer = project.slug === "file-organizer";
+  const isEnemStudy = project.slug === "enem-study";
 
   return (
     <article className="project-card">
       <Link className="project-card__link" href={`/projetos/${project.slug}`}>
-        <div className={`project-card__visual${isFileOrganizer ? " project-card__visual--file-organizer" : ""}`} aria-hidden="true">
-          {isFileOrganizer ? <FileOrganizerVisual compact /> : <>
+        <div className={`project-card__visual${isFileOrganizer ? " project-card__visual--file-organizer" : isEnemStudy ? " project-card__visual--enem-study" : ""}`} aria-hidden="true">
+          {isFileOrganizer ? <FileOrganizerVisual compact /> : isEnemStudy ? <EnemStudyVisual compact /> : <>
             <span className="project-card__visual-index">{String(index + 1).padStart(2, "0")}</span>
             <span className="project-card__visual-title">{project.title.split(" ").slice(0, 2).join(" ")}</span>
             <span className="project-card__arrow">↗</span>

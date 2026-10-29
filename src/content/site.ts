@@ -97,22 +97,22 @@ export const projects: Project[] = [
   {
     slug: "enem-study",
     title: "ENEM Study",
-    eyebrow: "Edtech · aprendizagem",
+    eyebrow: "Edtech · ENEM",
     summary:
-      "Plataforma de estudos para o ENEM com materiais, flashcards, revisão espaçada e prática em diferentes formatos.",
-    scope: "SaaS · web + mobile",
+      "Plataforma em desenvolvimento para organizar materiais, flashcards, revisão espaçada e prática para o ENEM.",
+    scope: "SaaS · web + Flutter · em revisão",
     role: "Produto e engenharia",
-    stack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Flutter", "LLMs"],
+    stack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Flutter", "SM-2", "platform-core"],
     context:
-      "A preparação para uma prova extensa envolve mais do que converter um PDF em cartões. O produto organiza vários fluxos de estudo em torno do ENEM.",
+      "Preparar-se para uma prova extensa exige organizar materiais, lembrar o que já foi estudado e praticar questões. O produto conecta esses fluxos em torno do ENEM.",
     approach:
-      "O escopo documentado inclui upload de PDF, geração de flashcards, repetição espaçada SM-2, banco de questões, simulados, redação, tutor RAG e mapa de fraquezas. Serviços de billing, arquivos e LLM são integrados pelo platform-core.",
+      "O código reúne upload de PDF, flashcards, repetição espaçada SM-2, questões, simulados, redação e um tutor em revisão. Billing, arquivos e jobs de LLM são integrados pelo platform-core.",
     outcome:
-      "O projeto diferencia recursos de estudo de modos simulados e roadmap. A configuração local documenta `MOCK_AI=true`; qualquer demonstração deve identificar claramente quando respostas forem simuladas.",
+      "O case descreve o estado atual do código, não um lançamento concluído. O ambiente local usa IA demonstrativa por padrão; a correção de redação, o tutor e a cobertura do banco de questões precisam de validação antes de serem apresentados como recursos prontos.",
     featured: true,
     selected: true,
     published: false,
-    links: [{ label: "Repositório", href: "https://github.com/woragis/enem" }],
+    links: [{ label: "Repositório", href: "https://github.com/woragis/saas-enem" }],
   },
   {
     slug: "festas",
