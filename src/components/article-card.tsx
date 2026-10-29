@@ -10,7 +10,7 @@ export function ArticleCard({ article, index }: { article: Article; index: numbe
         <h3><Link href={`/artigos/${article.slug}`}>{article.title}</Link></h3>
         <p>{article.summary}</p>
       </div>
-      <time dateTime={article.publishedAt}>{article.publishedAt.slice(0, 4)}</time>
+      <span className="article-card__status">{article.publishedAt ? <time dateTime={article.publishedAt}>{article.publishedAt.slice(0, 4)}</time> : "Rascunho"}</span>
     </article>
   );
 }

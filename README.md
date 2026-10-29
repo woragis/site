@@ -24,6 +24,6 @@ Os temas e suas composições ficam em `src/themes/registry.ts`. O seletor na na
 - `src/app/robots.ts` e `src/app/sitemap.ts` geram `robots.txt` e `sitemap.xml` dinamicamente a partir do conteúdo publicado.
 - `src/app/manifest.ts`, `src/app/opengraph-image.tsx` e `src/app/twitter-image.tsx` geram recursos de descoberta e compartilhamento.
 - As páginas de projeto e artigo geram metadados e JSON-LD próprios.
-- Defina `NEXT_PUBLIC_SITE_URL` com a origem canônica antes da publicação. O fallback é `https://example.com` para evitar indexar uma URL local.
+- `NEXT_PUBLIC_SITE_URL` está configurado para `https://woragis.com` e pode ser sobrescrito no ambiente de deploy.
 
-Os dados de projetos e artigos, incluindo o texto de cada artigo, ficam em `src/content/site.ts` nesta primeira versão.
+Os dados de projetos e artigos ficam em `src/content/site.ts`. Cases e artigos selecionados aparecem como rascunhos de revisão; rotas em rascunho recebem `noindex` e só entram no sitemap quando `published` for alterado para `true` após revisão. Os artigos foram adaptados das séries técnicas do LinkedIn; ainda precisam de revisão editorial. Nutritionist permanece fora das páginas até haver autorização para divulgar o trabalho do cliente.

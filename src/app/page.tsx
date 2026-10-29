@@ -3,11 +3,11 @@ import { ArticleCard } from "@/components/article-card";
 import { EmptyState } from "@/components/empty-state";
 import { ProjectCard } from "@/components/project-card";
 import { SectionHeading } from "@/components/section-heading";
-import { articles, experience, publishedArticles, publishedProjects, site, skills } from "@/content/site";
+import { experience, selectedArticles, selectedProjects, site, skills } from "@/content/site";
 
 export default function HomePage() {
-  const projectItems = publishedProjects.slice(0, 2);
-  const articleItems = publishedArticles.slice(0, 3);
+  const projectItems = selectedProjects.slice(0, 3);
+  const articleItems = selectedArticles.slice(0, 3);
 
   return (
     <>
@@ -18,7 +18,7 @@ export default function HomePage() {
           <p className="hero__intro">{site.introduction}</p>
           <div className="hero__actions">
             <Link className="button button--dark" href="/projetos">Explorar projetos <span aria-hidden="true">↗</span></Link>
-            <a className="text-link" href={`mailto:${site.email}`}>Vamos conversar <span aria-hidden="true">↗</span></a>
+            <a className="text-link" href={site.links[0].href} target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
           </div>
         </div>
         <div className="hero-art" aria-label="Composição gráfica abstrata">
@@ -42,7 +42,7 @@ export default function HomePage() {
 
       <section className="section experience-section" id="experiencia">
         <div className="page-shell"><SectionHeading index="03" label="Experiência" title="Trabalho, prática e evolução." />
-          <div className="experience-layout">{experience.map((item) => <article className="experience-item" key={item.period}><p className="experience-item__period">{item.period}</p><div><h3>{item.role}</h3><p className="experience-item__company">{item.company}</p><p className="experience-item__description">{item.description}</p></div><span className="experience-item__arrow" aria-hidden="true">↗</span></article>)}</div>
+          <div className="experience-layout">{experience.length ? experience.map((item) => <article className="experience-item" key={item.period}><p className="experience-item__period">{item.period}</p><div><h3>{item.role}</h3><p className="experience-item__company">{item.company}</p><p className="experience-item__description">{item.description}</p></div><span className="experience-item__arrow" aria-hidden="true">↗</span></article>) : <p className="experience-pending">Trajetória profissional em preparação.</p>}</div>
         </div>
       </section>
 
@@ -56,7 +56,7 @@ export default function HomePage() {
         {articleItems.length ? <div className="article-list">{articleItems.map((article, index) => <ArticleCard key={article.slug} article={article} index={index} />)}</div> : <EmptyState title="Uma ideia de cada vez.">Artigos técnicos, estudos de caso e notas pessoais aparecem aqui quando publicados.</EmptyState>}
       </section>
 
-      <section className="contact-section" id="contato"><div className="page-shell contact-inner"><p className="eyebrow">06 / Contato</p><h2>Vamos construir<br /><em>algo relevante.</em></h2><a className="contact-email" href={`mailto:${site.email}`}>{site.email}<span aria-hidden="true">↗</span></a><div className="contact-links">{site.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div></div></section>
+      <section className="contact-section" id="contato"><div className="page-shell contact-inner"><p className="eyebrow">06 / Contato</p><h2>Vamos construir<br /><em>algo relevante.</em></h2><a className="contact-email" href={site.links[0].href} target="_blank" rel="noreferrer">github.com/woragis<span aria-hidden="true">↗</span></a><div className="contact-links">{site.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div></div></section>
     </>
   );
 }

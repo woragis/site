@@ -10,7 +10,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           <span className="project-card__visual-title">{project.title.split(" ").slice(0, 2).join(" ")}</span>
           <span className="project-card__arrow">↗</span>
         </div>
-        <div className="project-card__meta"><span>{project.eyebrow}</span><span>{project.year}</span></div>
+        <div className="project-card__meta"><span>{project.eyebrow}</span><span>{project.published ? project.scope : "Rascunho para revisão"}</span></div>
         <h3>{project.title}</h3>
         <p>{project.summary}</p>
         <ul className="tag-list" aria-label="Tecnologias">

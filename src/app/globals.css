@@ -186,6 +186,7 @@ img, svg { display: block; }
 .experience-item__company { margin: .15rem 0 .65rem; color: var(--color-accent); font-size: .83rem; }
 .experience-item__description { max-width: 660px; margin: 0; color: var(--color-muted); font-size: .86rem; }
 .experience-item__arrow { color: var(--color-accent); }
+.experience-pending { grid-column: 1 / -1; margin: 0; border-top: var(--border-width) solid var(--color-line); border-bottom: var(--border-width) solid var(--color-line); padding: 1.7rem 0; color: var(--color-muted); font-family: var(--font-display); font-size: 1.45rem; }
 .skills-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: var(--border-width) solid var(--color-line); border-bottom: var(--border-width) solid var(--color-line); }
 .skill-group { position: relative; padding: 2rem 2rem 2.3rem 0; }
 .skill-group + .skill-group { border-left: var(--border-width) solid var(--color-line); padding-left: 2rem; }
@@ -202,6 +203,7 @@ img, svg { display: block; }
 .article-card h3 a:hover { color: var(--color-accent); }
 .article-card__body > p:last-child { max-width: 680px; margin: .65rem 0 0; color: var(--color-muted); font-size: .85rem; }
 .article-card time { color: var(--color-muted); font-family: var(--font-mono); font-size: .68rem; }
+.article-card__status { color: var(--color-accent); font-family: var(--font-mono); font-size: .64rem; text-transform: uppercase; }
 .empty-state { display: grid; grid-template-columns: 4rem 1fr; column-gap: 1rem; align-items: start; border-top: var(--border-width) solid var(--color-line); border-bottom: var(--border-width) solid var(--color-line); padding: 2.5rem 0; }
 .empty-state__symbol { grid-row: span 2; display: grid; width: 3rem; aspect-ratio: 1; place-items: center; border: 1px solid var(--color-line); border-radius: 50%; color: var(--color-accent); font-size: 1.3rem; }
 .empty-state h3 { margin: 0; font-family: var(--font-display); font-size: 1.45rem; font-weight: 500; }
@@ -237,12 +239,16 @@ img, svg { display: block; }
 .detail-facts { display: flex; flex-wrap: wrap; gap: 4rem; margin-top: 3rem; border-top: 1px solid var(--color-line); padding-top: 1.2rem; }
 .detail-facts span { color: var(--color-muted); font-family: var(--font-mono); font-size: .62rem; text-transform: uppercase; }
 .detail-facts strong { display: block; margin-top: .35rem; color: var(--color-ink); font-family: var(--font-body); font-size: .85rem; font-weight: 500; text-transform: none; }
+.detail-links { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 1.6rem; }
+.detail-links a { color: var(--color-accent); font-size: .8rem; }
+.detail-links a:hover { text-decoration: underline; text-underline-offset: .25rem; }
 .detail-body { display: grid; gap: 0; max-width: 900px; margin: clamp(4rem, 8vw, 7rem) auto 0; }
 .detail-body section { display: grid; grid-template-columns: minmax(9rem, .5fr) 1.4fr; gap: 2rem; border-top: 1px solid var(--color-line); padding-block: 1.8rem; }
 .detail-body section .eyebrow { margin: .3rem 0; }
 .detail-body section > p:last-child { margin: 0; color: var(--color-muted); font-size: 1rem; }
 .article-prose { max-width: 690px; margin: 4rem auto 0; }
 .article-prose p { margin: 0 0 1.7rem; color: var(--color-muted); font-size: clamp(1.05rem, 1.5vw, 1.2rem); line-height: 1.85; }
+.article-prose .article-source { border-top: 1px solid var(--color-line); padding-top: 1rem; font-family: var(--font-mono); font-size: .7rem; }
 
 /* O registro de temas escolhe também a organização das secções. */
 html[data-theme="atelier"] .projects-section .project-grid, html[data-theme="atelier"] .projects-collection .project-grid { grid-template-columns: 1fr; }
