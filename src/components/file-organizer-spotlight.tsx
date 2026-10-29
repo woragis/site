@@ -22,7 +22,7 @@ export function FileOrganizerSpotlight() {
             </div>
           </div>
           <div className="file-organizer-spotlight__visual">
-            <FileOrganizerVisual />
+            <FileOrganizerVisual interactive />
           </div>
         </div>
       </div>
