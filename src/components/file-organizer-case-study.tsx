@@ -2,107 +2,78 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type Beat = {
-  id: string;
-  number: string;
-  title: string;
-  paragraphs: string[];
-  command: string;
-  output: string[];
-  motion: "none" | "move" | "undo" | "collision";
-  label: string;
+type Mode = "preview" | "apply" | "collision" | "undo";
+type Phase = "ready" | "typing" | "output" | "moving" | "done";
+type DemoFile = { name: string; type: string; size: string; folder: string };
+
+const files: DemoFile[] = [
+  { name: "contrato.pdf", type: "PDF", size: "1,8 MB", folder: "documents-pdf" },
+  { name: "orcamento.pdf", type: "PDF", size: "824 KB", folder: "documents-pdf" },
+  { name: "avatar.png", type: "PNG", size: "246 KB", folder: "pictures" },
+  { name: "viagem.jpg", type: "JPG", size: "3,2 MB", folder: "pictures" },
+  { name: "backup.zip", type: "ZIP", size: "84 MB", folder: "archives" },
+  { name: "fotos.tar.gz", type: "TGZ", size: "126 MB", folder: "archives" },
+  { name: "despesas.csv", type: "CSV", size: "42 KB", folder: "spreadsheets" },
+  { name: "inventario.xlsx", type: "XLSX", size: "1,1 MB", folder: "spreadsheets" },
+  { name: "demo.mp4", type: "MP4", size: "38 MB", folder: "videos" },
+  { name: "editor.AppImage", type: "APP", size: "92 MB", folder: "software" },
+] as const;
+
+const folders = [
+  { id: "documents-pdf", path: "Documents / PDF" },
+  { id: "pictures", path: "Pictures" },
+  { id: "archives", path: "Archives" },
+  { id: "spreadsheets", path: "Documents / Excel" },
+  { id: "videos", path: "Videos" },
+  { id: "software", path: "Software" },
+] as const;
+
+const collisionFile: DemoFile = { name: "relatorio.pdf", type: "PDF", size: "640 KB", folder: "documents-pdf" };
+const commands: Record<Mode, string> = {
+  preview: "file-organizer organize ~/Downloads",
+  apply: "file-organizer organize ~/Downloads --apply",
+  collision: "file-organizer organize ~/Downloads",
+  undo: "file-organizer undo",
 };
 
-const beats: Beat[] = [
-  {
-    id: "preview",
-    number: "01",
-    title: "Primeiro, entender o plano",
-    paragraphs: [
-      "Organizar uma pasta automaticamente parece simples até que um arquivo vá parar no lugar errado. Por isso, a primeira execução não muda nada: ela mostra quais arquivos foram encontrados e para onde cada um iria.",
-      "O comando `organize` funciona como uma prévia por padrão. Essa separação entre planejar e aplicar deixa a decisão visível antes de qualquer movimentação.",
-    ],
-    command: "file-organizer organize ~/Downloads",
-    output: [
-      "Organizing ~/Downloads",
-      "  relatorio.pdf",
-      "    → ~/Organized/Documents/PDF/relatorio.pdf",
-      "  foto.jpg",
-      "    → ~/Organized/Pictures/foto.jpg",
-      "  backup.zip",
-      "    → ~/Organized/Archives/backup.zip",
-      "3 files would be moved.",
-      "Nothing was changed.",
-    ],
-    motion: "none",
-    label: "Prévia ilustrativa: os arquivos permanecem na pasta de origem.",
-  },
-  {
-    id: "apply",
-    number: "02",
-    title: "Aplicar é uma escolha explícita",
-    paragraphs: [
-      "Depois de revisar os destinos, `--apply` confirma a movimentação. A interface do terminal imprime os caminhos envolvidos e um resumo do que foi feito.",
-      "No estudo de caso, cada arquivo se move só depois que o comando termina de ser digitado e o resultado aparece. É uma representação visual do fluxo — a página não executa a CLI.",
-    ],
-    command: "file-organizer organize ~/Downloads --apply",
-    output: [
-      "Organizing ~/Downloads",
-      "  relatorio.pdf",
-      "    → ~/Organized/Documents/PDF/relatorio.pdf",
-      "  foto.jpg",
-      "    → ~/Organized/Pictures/foto.jpg",
-      "  backup.zip",
-      "    → ~/Organized/Archives/backup.zip",
-      "3 files moved.",
-    ],
-    motion: "move",
-    label: "Simulação: os arquivos de exemplo seguem para os destinos planejados.",
-  },
-  {
-    id: "collision",
-    number: "03",
-    title: "Um destino ocupado não é sobrescrito",
-    paragraphs: [
-      "Se já existe um arquivo com o mesmo nome e conteúdo diferente no destino, a regra padrão numera o novo nome — por exemplo, `relatorio (1).pdf`. Assim, o arquivo existente continua intacto.",
-      "O projeto também calcula SHA-256 para identificar duplicatas exatas. Pela configuração padrão, uma duplicata é ignorada. São dois casos diferentes: colisão de nome preserva ambos; conteúdo duplicado pode ser pulado.",
-    ],
-    command: "file-organizer organize ~/Downloads",
-    output: [
-      "Organizing ~/Downloads",
-      "  relatorio.pdf",
-      "    → ~/Organized/Documents/PDF/relatorio (1).pdf",
-      "1 file would be moved.",
-      "Nothing was changed.",
-    ],
-    motion: "collision",
-    label: "Simulação de colisão: o arquivo existente fica no lugar e o novo recebe outro nome.",
-  },
-  {
-    id: "undo",
-    number: "04",
-    title: "E se eu precisar voltar atrás?",
-    paragraphs: [
-      "A ferramenta mantém o histórico do último lote para permitir `undo`. Ao desfazer, os arquivos voltam aos caminhos de origem.",
-      "O comando verifica se os arquivos no destino continuam iguais aos registrados. Se algum mudou, a operação é recusada em vez de sobrescrever silenciosamente uma versão nova.",
-    ],
-    command: "file-organizer undo",
-    output: ["Undid the last organize."],
-    motion: "undo",
-    label: "Simulação: o último lote retorna aos caminhos de origem.",
-  },
-];
+function transcript(mode: Mode) {
+  if (mode === "undo") return ["Undid the last organize."];
+  const batch = mode === "collision" ? [collisionFile] : files;
+  const output = ["Organizing ~/Downloads"];
+  for (const file of batch) {
+    const folder = folders.find((item) => item.id === file.folder)!;
+    const name = mode === "collision" ? "relatorio (1).pdf" : file.name;
+    output.push(`  ${file.name}`, `    → ~/Organized/${folder.path.replaceAll(" / ", "/")}/${name}`);
+  }
+  output.push(mode === "apply" ? `${batch.length} files moved.` : `${batch.length} ${batch.length === 1 ? "file" : "files"} would be moved.`);
+  if (mode !== "apply") output.push("Nothing was changed.");
+  return output;
+}
 
-const sourceFiles = ["relatorio.pdf", "foto.jpg", "backup.zip"];
+function filePosition(index: number, list: readonly DemoFile[]) {
+  const file = list[index];
+  const folderIndex = folders.findIndex((folder) => folder.id === file.folder);
+  let end = 3.55;
+  for (let position = 0; position < folderIndex; position += 1) {
+    const count = list.filter((item) => item.folder === folders[position].id).length;
+    end += 2 + count * 1.05;
+  }
+  const withinFolder = list.slice(0, index).filter((item) => item.folder === file.folder).length;
+  end += 1.35 + withinFolder * 1.05;
+  const start = 3.35 + index * 1.62;
+  return { start, travelY: end - start, reverseDelay: (list.length - index - 1) * 0.11 };
+}
 
-function StoryBeat({ beat }: { beat: Beat }) {
-  const root = useRef<HTMLElement>(null);
-  const started = useRef(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+export function FileOrganizerCaseStudy() {
+  const terminalRef = useRef<HTMLPreElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [mode, setMode] = useState<Mode>("preview");
+  const [phase, setPhase] = useState<Phase>("ready");
+  const [typed, setTyped] = useState("");
+  const [outputCount, setOutputCount] = useState(0);
   const [run, setRun] = useState(0);
-  const [phase, setPhase] = useState<"idle" | "typing" | "result" | "done">("idle");
-  const [typed, setTyped] = useState(beat.command);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [openFolders, setOpenFolders] = useState<Set<string>>(() => new Set(folders.map((folder) => folder.id)));
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -113,97 +84,189 @@ function StoryBeat({ beat }: { beat: Beat }) {
   }, []);
 
   useEffect(() => {
-    const node = root.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started.current) {
-        started.current = true;
-        setTyped("");
-        setPhase("typing");
-        setRun((value) => value + 1);
-      }
-    }, { threshold: 0.3 });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!run) return;
-    if (timer.current) clearTimeout(timer.current);
-    if (reducedMotion) return;
-    let index = 0;
+    if (!run || reducedMotion) return;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    const lines = transcript(mode);
+    let character = 0;
+    let line = 0;
     const typeNext = () => {
-      index += 1;
-      setTyped(beat.command.slice(0, index));
-      if (index < beat.command.length) timer.current = setTimeout(typeNext, 24);
-      else timer.current = setTimeout(() => {
-        setPhase("result");
-        timer.current = setTimeout(() => setPhase("done"), beat.motion === "none" ? 300 : 1300);
-      }, 250);
+      character += 1;
+      setTyped(commands[mode].slice(0, character));
+      if (character < commands[mode].length) {
+        timerRef.current = setTimeout(typeNext, 48);
+      } else {
+        setPhase("output");
+        timerRef.current = setTimeout(revealNext, 280);
+      }
     };
-    timer.current = setTimeout(typeNext, 180);
-    return () => { if (timer.current) clearTimeout(timer.current); };
-  }, [run, reducedMotion, beat]);
+    const revealNext = () => {
+      line += 1;
+      setOutputCount(line);
+      if (line < lines.length) {
+        timerRef.current = setTimeout(revealNext, 125);
+      } else if (mode === "apply" || mode === "undo") {
+        setPhase("moving");
+        timerRef.current = setTimeout(() => setPhase("done"), 2050);
+      } else {
+        setPhase("done");
+      }
+    };
+    timerRef.current = setTimeout(typeNext, 220);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [run, mode, reducedMotion]);
 
-  const replay = () => {
-    started.current = true;
+  const runMode = (nextMode: Mode) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setMode(nextMode);
     setTyped("");
-    setPhase("typing");
+    setOutputCount(0);
+    setPhase(reducedMotion ? "done" : "typing");
     setRun((value) => value + 1);
   };
-  const visiblePhase = reducedMotion ? "done" : phase;
-  const visibleCommand = reducedMotion || phase === "idle" ? beat.command : typed;
 
-  return <section className={`file-case-beat file-case-beat--${beat.id}`} ref={root} data-phase={visiblePhase} data-motion={beat.motion}>
-    <div className="file-case-beat__copy">
-      <p className="eyebrow"><span>{beat.number}</span> / {beat.id === "collision" ? "Integridade" : beat.id === "undo" ? "Recuperação" : "Fluxo de uso"}</p>
-      <h2>{beat.title}</h2>
-      {beat.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph.split(/(`[^`]+`)/g).map((part) => part.startsWith("`") && part.endsWith("`") ? <code key={part}>{part.slice(1, -1)}</code> : part)}</p>)}
-      {beat.id === "collision" && <p className="file-case-beat__note"><strong>Dois mecanismos:</strong> colisões de nome usam sufixo numérico; duplicatas idênticas são reconhecidas pelo hash SHA-256 e, por padrão, ignoradas.</p>}
-    </div>
-    <div className="file-case-beat__demo">
-      <div className="file-case-terminal" role="group" aria-label={`Terminal de demonstração. Comando: ${beat.command}. Saída: ${beat.output.join(". ")}`}>
-        <div className="file-case-terminal__bar"><span /><span /><span /><b>DEMO · SAÍDA ILUSTRATIVA</b></div>
-        <pre aria-hidden="true"><code><span className="file-case-terminal__prompt">$ </span>{visibleCommand}<span className={`file-case-terminal__cursor${visiblePhase === "typing" ? " is-visible" : ""}`} />{(visiblePhase === "result" || visiblePhase === "done") && <span className="file-case-terminal__output">{"\n"}{beat.output.join("\n")}</span>}</code></pre>
-      </div>
-      <div className="file-case-files" aria-hidden="true">
-        <div className="file-case-files__source"><span>~/Downloads</span>{(beat.motion === "collision" ? ["relatorio.pdf"] : sourceFiles).map((name) => <i key={name} data-file={name}>{name}</i>)}</div>
-        <span className="file-case-files__route">{beat.motion === "undo" ? "← undo" : beat.motion === "none" ? "prévia · sem mover" : "plano →"}</span>
-        <div className="file-case-files__target"><span>~/Organized</span>
-          {beat.motion === "collision" ? <>
-            <i className="file-case-files__existing">relatorio.pdf <small>já existe</small></i>
-            <i className="file-case-files__renamed">relatorio (1).pdf <small>nome livre · sem sobrescrita</small></i>
-          </> : <>
-            <i className="file-case-files__landing file-case-files__landing--one">{beat.motion === "undo" ? "relatorio.pdf" : "Documents/PDF"}</i>
-            <i className="file-case-files__landing file-case-files__landing--two">{beat.motion === "undo" ? "foto.jpg" : "Pictures"}</i>
-            <i className="file-case-files__landing file-case-files__landing--three">{beat.motion === "undo" ? "backup.zip" : "Archives"}</i>
-          </>}
-        </div>
-      </div>
-      <p className="file-case-beat__caption">{beat.label}</p>
-      <button type="button" className="file-case-beat__replay" onClick={replay}>Reproduzir demonstração <span aria-hidden="true">↻</span></button>
-    </div>
-  </section>;
-}
+  const visiblePhase = reducedMotion && run > 0 ? "done" : phase;
+  const lines = transcript(mode);
+  const visibleOutputCount = reducedMotion && run > 0 ? lines.length : outputCount;
+  const batch = mode === "collision" ? [collisionFile] : files;
+  const sourceHasFiles = mode === "collision" || mode === "preview" || mode === "apply" && visiblePhase !== "done" || mode === "undo" && (visiblePhase === "moving" || visiblePhase === "done");
+  const targetHasFiles = mode === "collision" || mode === "apply" && (visiblePhase === "moving" || visiblePhase === "done") || mode === "undo" && visiblePhase !== "done";
+  const commandText = reducedMotion && run > 0 || visiblePhase === "done" || visiblePhase === "ready" ? commands[mode] : typed;
+  const statusText = visiblePhase === "ready"
+    ? "Escolha uma etapa para ver o terminal e os arquivos de exemplo em ação."
+    : visiblePhase === "done"
+      ? mode === "preview" ? "Prévia concluída. Os 10 arquivos continuam em Downloads; nada foi alterado."
+        : mode === "apply" ? "Simulação concluída. 10 arquivos aparecem nas pastas de destino; nenhum arquivo real foi tocado."
+          : mode === "collision" ? "Prévia da colisão concluída. O arquivo existente permanece e o novo nome foi planejado."
+            : "Simulação de undo concluída. Os arquivos de exemplo voltaram para Downloads."
+      : visiblePhase === "moving" ? "Movendo arquivos de exemplo na demonstração."
+        : visiblePhase === "typing" ? "Digitando o comando da demonstração."
+          : "Comando concluído; exibindo a saída da CLI em etapas.";
 
-export function FileOrganizerCaseStudy() {
+  useEffect(() => {
+    if (!terminalRef.current || visibleOutputCount === 0) return;
+    terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+  }, [visibleOutputCount]);
+
+  const toggleFolder = (id: string) => setOpenFolders((current) => {
+    const next = new Set(current);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    return next;
+  });
+
   return <div className="file-case-study">
     <section className="file-case-intro">
       <p className="eyebrow"><span>CASE / 01</span> CLI · Go · Linux</p>
       <h2>Automação boa deixa claro o que vai acontecer.</h2>
-      <p>O File Organizer nasceu de uma tarefa cotidiana: separar downloads por tipo. O desafio de engenharia era fazer isso com uma ferramenta que explicasse suas decisões, evitasse sobrescritas e mantivesse um caminho de retorno.</p>
-      <p>A seguir, o fluxo é apresentado com comandos e nomes de arquivos fictícios. As saídas reproduzem o formato da CLI, mas são apenas uma demonstração da página: nenhum comando é executado e nenhum arquivo é acessado.</p>
+      <p>O File Organizer separa downloads por tipo. O desafio de engenharia é automatizar a tarefa sem esconder as decisões: primeiro você confere o plano, depois escolhe aplicar e ainda pode desfazer o último lote.</p>
+      <p>Explore a simulação abaixo. Ela usa dez nomes fictícios e reproduz o formato de saída da CLI; nenhum comando é executado e nenhum arquivo do computador é acessado.</p>
     </section>
-    {beats.map((beat) => <StoryBeat key={beat.id} beat={beat} />)}
-    <section className="file-case-close">
-      <p className="eyebrow"><span>05</span> / Decisões de engenharia</p>
-      <h2>O fluxo inteiro é parte do produto.</h2>
-      <div className="file-case-close__grid">
-        <p><strong>Planejamento antes da ação.</strong><br />A mesma operação de organização pode apresentar um plano ou aplicá-lo com a confirmação explícita.</p>
-        <p><strong>Regras previsíveis.</strong><br />Extensões direcionam categorias; colisões de nome recebem sufixos e duplicatas exatas seguem uma política configurável.</p>
-        <p><strong>Recuperação verificável.</strong><br />O histórico permite desfazer o último lote, desde que os arquivos movidos não tenham sido alterados depois.</p>
+
+    <section className="file-case-demo" aria-labelledby="file-case-demo-title">
+      <div className="file-case-demo__heading">
+        <div><p className="eyebrow"><span>DEMO / 01</span> AMBIENTE ILUSTRATIVO</p><h2 id="file-case-demo-title">Do Downloads às pastas certas.</h2></div>
+        <p>Escolha uma etapa. O terminal digita o comando, revela o resultado e só então a janela mostra o efeito.</p>
       </div>
-      <p className="file-case-tech">Go <span>·</span> CLI com Cobra <span>·</span> configuração TOML <span>·</span> SHA-256 <span>·</span> histórico de operações</p>
+      <div className="file-case-demo__steps" role="group" aria-label="Etapas da demonstração">
+        {([
+          ["preview", "Prévia"], ["apply", "Simular --apply"], ["collision", "Colisão"], ["undo", "Undo"],
+        ] as const).map(([id, label]) => <button key={id} type="button" aria-pressed={mode === id} onClick={() => runMode(id)}>{label}</button>)}
+        <button className="file-case-demo__replay" type="button" onClick={() => runMode(mode)}>Repetir etapa <span aria-hidden="true">↻</span></button>
+      </div>
+
+      <div className={`file-case-manager${visiblePhase === "moving" ? " is-moving" : ""}`} data-mode={mode} data-phase={visiblePhase}>
+        <div className="file-case-manager__titlebar"><span /><span /><span /><b>Arquivos</b><small>DEMONSTRAÇÃO · SEM ACESSO AO DISCO</small></div>
+        <div className="file-case-manager__toolbar"><span className="file-case-manager__path"><span>⌂</span> Downloads <i>›</i> <strong>{mode === "undo" && visiblePhase !== "done" || mode === "apply" && visiblePhase === "done" ? "Organized" : mode === "collision" ? "Documents / PDF" : "Prévia"}</strong></span><span className="file-case-manager__view" aria-hidden="true">☷　▦　⌕</span></div>
+
+        <div className="file-case-manager__layout">
+          <aside className="file-case-manager__sidebar" aria-label="Locais">
+            <p>FAVORITOS</p><ul><li><span aria-hidden="true">◷</span> Recentes</li><li className="is-selected"><span aria-hidden="true">↓</span> Downloads</li><li><span aria-hidden="true">▱</span> Organizados</li></ul>
+            <p>LOCAL</p><ul><li><span aria-hidden="true">▣</span> Jezreel</li><li><span aria-hidden="true">☁</span> Nuvem</li></ul>
+            <span className="file-case-manager__sidebar-note">10 itens fictícios</span>
+          </aside>
+
+          <div className="file-case-manager__main">
+            <div className="file-case-manager__panes">
+              <section className="file-case-manager__pane file-case-manager__pane--source" aria-label="Arquivos na pasta Downloads">
+                <div className="file-case-manager__pane-heading"><span>Downloads</span><small>{sourceHasFiles ? `${batch.length} itens` : "Pasta vazia"}</small></div>
+                {sourceHasFiles ? <ul className="file-case-manager__file-list">
+                  {batch.map((file, index) => <li key={file.name} className="file-case-manager__file" data-index={index} style={{ "--file-index": index } as React.CSSProperties}>
+                    <span className={`file-case-manager__file-icon file-case-manager__file-icon--${file.type.toLowerCase()}`}>{file.type}</span><span className="file-case-manager__file-name">{file.name}</span><small>{file.size}</small>
+                  </li>)}
+                </ul> : <p className="file-case-manager__empty">Os arquivos foram organizados.</p>}
+              </section>
+
+              <section className="file-case-manager__pane file-case-manager__pane--target" aria-label="Pastas de destino com arquivos previstos ou organizados">
+                <div className="file-case-manager__pane-heading"><span>{mode === "collision" ? "Documents / PDF" : "Organized"}</span><small>{mode === "collision" ? "Destino" : targetHasFiles ? "10 arquivos" : "Plano de destino"}</small></div>
+                {mode === "collision" ? <div className="file-case-manager__collision-folder">
+                  <div className="file-case-manager__folder-heading"><span aria-hidden="true">▰</span><strong>Documents / PDF</strong><small>1 existente · 1 planejado</small></div>
+                  <ul className="file-case-manager__target-files"><li className="is-existing"><span>PDF</span> relatorio.pdf <small>já existe</small></li><li className="is-proposed"><span>PDF</span> relatorio (1).pdf <small>nome livre</small></li></ul>
+                </div> : <div className="file-case-manager__folders">
+                  {folders.map((folder) => {
+                    const contents = files.filter((file) => file.folder === folder.id);
+                    const expanded = openFolders.has(folder.id);
+                    return <div className={`file-case-manager__folder${expanded ? " is-open" : ""}`} key={folder.id}>
+                      <button className="file-case-manager__folder-heading" type="button" aria-expanded={expanded} onClick={() => toggleFolder(folder.id)}>
+                        <span aria-hidden="true">{expanded ? "▾" : "▸"}</span><strong>{folder.path}</strong><small>{contents.length}</small>
+                      </button>
+                      {expanded && <ul className={`file-case-manager__target-files${targetHasFiles ? " is-organized" : " is-planned"}`}>
+                        {contents.map((file) => {
+                          const index = files.findIndex((item) => item.name === file.name);
+                          return <li key={file.name} style={{ "--file-index": index, "--file-travel-delay": `${index * 0.11}s`, "--file-reverse-delay": `${(files.length - index - 1) * 0.11}s` } as React.CSSProperties}><span>{file.type}</span> {file.name}</li>;
+                        })}
+                      </ul>}
+                    </div>;
+                  })}
+                </div>}
+              </section>
+
+              {(mode === "apply" || mode === "undo") && batch.map((file, index) => {
+                const position = filePosition(index, batch);
+                return <span key={file.name} className="file-case-manager__traveler" aria-hidden="true" style={{ "--file-index": index, "--file-start-y": `${position.start}rem`, "--file-travel-y": `${position.travelY}rem`, "--file-travel-delay": `${index * 0.11}s`, "--file-reverse-delay": `${position.reverseDelay}s` } as React.CSSProperties}><i>{file.type}</i>{file.name}</span>;
+              })}
+            </div>
+            <div className="file-case-manager__footer"><span>⌘</span> {sourceHasFiles ? `${batch.length} ${batch.length === 1 ? "item" : "itens"}` : "Organização simulada"}<small>visualização em lista</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div className="file-case-terminal" aria-label="Terminal demonstrativo">
+        <div className="file-case-terminal__bar"><span /><span /><span /><b>FILE ORGANIZER · CLI</b><small>{visiblePhase === "ready" ? "AGUARDANDO ETAPA" : "SAÍDA ILUSTRATIVA"}</small></div>
+        <pre ref={terminalRef} aria-live="off"><code><span className="file-case-terminal__prompt">$ </span>{commandText || <span className="file-case-terminal__placeholder">selecione uma etapa acima</span>}<span className={`file-case-terminal__cursor${visiblePhase === "typing" ? " is-visible" : ""}`} />{visibleOutputCount > 0 && <span className="file-case-terminal__output">{"\n"}{lines.slice(0, visibleOutputCount).join("\n")}</span>}</code></pre>
+      </div>
+
+      <p className="file-case-demo__status" role="status" aria-live="polite">{statusText}</p>
+      <p className="file-case-demo__note">Dados e operações são cenográficos. A página não lê, move, renomeia ou apaga arquivos reais.</p>
+      <div className="visually-hidden">Arquivos de demonstração: {files.map((file) => `${file.name}, ${file.size}, destino ${folders.find((folder) => folder.id === file.folder)?.path}. `)}Na prévia os arquivos não mudam de lugar. Aplicar mostra a organização simulada. Undo mostra o retorno à origem.</div>
     </section>
+
+    <div className="file-case-story">
+      <section className="file-case-story__section">
+        <p className="eyebrow"><span>01</span> / Planejar antes de mover</p>
+        <div><h2>A primeira resposta é um plano.</h2><p>Executar `file-organizer organize ~/Downloads` não muda a pasta. A CLI mostra cada caminho de destino e termina com “Nothing was changed.”. Esse comportamento padrão permite revisar as classificações antes de autorizar qualquer alteração.</p><p>Na simulação, os dez itens ficam em Downloads enquanto a janela mostra a estrutura prevista em `~/Organized`: documentos, imagens, arquivos compactados, planilhas, vídeos e software.</p></div>
+      </section>
+      <section className="file-case-story__section">
+        <p className="eyebrow"><span>02</span> / Aplicar explicitamente</p>
+        <div><h2>O comando e a interface contam a mesma história.</h2><p>Acrescentar `--apply` é a confirmação explícita. Na cena, a linha termina de ser digitada, a CLI apresenta os destinos e então cada item atravessa a janela. As pastas abrem e deixam visível o conteúdo que receberam.</p><p>As regras vêm da configuração do projeto. PDFs vão para `Documents/PDF`, imagens para `Pictures`, arquivos compactados para `Archives`, planilhas para `Documents/Excel`, vídeos para `Videos` e o AppImage para `Software`.</p></div>
+      </section>
+      <section className="file-case-story__section">
+        <p className="eyebrow"><span>03</span> / Proteger o destino</p>
+        <div><h2>Colisão de nome não significa sobrescrita.</h2><p>Quando `relatorio.pdf` já existe com outro conteúdo em `Documents/PDF`, a política padrão escolhe `relatorio (1).pdf`. A cena de colisão mantém o arquivo existente visível e mostra o novo nome como uma proposta da prévia.</p><p>O projeto também compara SHA-256 para detectar conteúdo duplicado. Pela configuração padrão, duplicatas exatas são ignoradas; elas não são confundidas com arquivos diferentes que apenas compartilham o mesmo nome.</p></div>
+      </section>
+      <section className="file-case-story__section">
+        <p className="eyebrow"><span>04</span> / Desfazer com verificação</p>
+        <div><h2>O caminho de volta também faz parte do fluxo.</h2><p>`file-organizer undo` reverte o lote mais recente. Antes de mover os arquivos de volta, a ferramenta verifica se o conteúdo no destino ainda corresponde ao que foi registrado; se mudou, recusa a operação.</p><p>A animação retorna os dez arquivos para Downloads e esvazia a visualização de destino. É uma representação do fluxo: o site não executa o comando nem altera arquivos.</p></div>
+      </section>
+      <section className="file-case-close">
+        <p className="eyebrow"><span>05</span> / Decisões de engenharia</p>
+        <h2>Previsibilidade em cada etapa.</h2>
+        <div className="file-case-close__grid">
+          <p><strong>Planejamento antes da ação.</strong><br />A mesma operação pode apresentar o plano ou aplicá-lo após confirmação explícita.</p>
+          <p><strong>Regras configuráveis.</strong><br />Extensões direcionam categorias; nomes em conflito recebem sufixos e duplicatas seguem uma política configurável.</p>
+          <p><strong>Recuperação verificável.</strong><br />O histórico permite desfazer o último lote se os arquivos ainda corresponderem ao estado registrado.</p>
+        </div>
+        <p className="file-case-tech">Go <span>·</span> CLI com Cobra <span>·</span> TOML <span>·</span> SHA-256 <span>·</span> histórico de operações</p>
+      </section>
+    </div>
   </div>;
 }
