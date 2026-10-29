@@ -119,26 +119,30 @@ export function EnemStudyVisual({ compact = false }: { compact?: boolean }) {
           <span className="enem-study-visual__stage-check">✓</span>
           <div className="enem-study-visual__review-deck">
             <div className="enem-study-visual__review-stack"><span /><span /></div>
-            <div className="enem-study-visual__review-card enem-study-visual__review-card--one">
+            <div className="enem-study-visual__review-card enem-study-visual__review-card--one enem-study-visual__review-card--correct">
               <div className="enem-study-visual__review-card-flip">
                 <div className="enem-study-visual__review-face enem-study-visual__review-face--front"><small>CARTÃO 01 · FRENTE</small><b>O que caracteriza um bioma?</b><span>responda antes de virar</span></div>
-                <div className="enem-study-visual__review-face enem-study-visual__review-face--back"><small>CARTÃO 01 · RESPOSTA</small><b>Clima, vegetação e fauna em interação.</b><div className="enem-study-visual__review-actions"><span>↺ Esqueci</span><span className="is-chosen">✓ Lembrei</span></div><span className="enem-study-visual__review-rating">Autoavaliação ilustrativa</span></div>
+                <div className="enem-study-visual__review-face enem-study-visual__review-face--back"><small>CARTÃO 01 · RESPOSTA</small><b>Clima, vegetação e fauna em interação.</b><div className="enem-study-visual__review-actions"><span className="is-incorrect">× Errei</span><span className="is-chosen is-correct">✓ Acertei</span></div><strong className="enem-study-visual__review-result enem-study-visual__review-result--correct">✓ Acertei</strong></div>
               </div>
             </div>
-            <div className="enem-study-visual__review-card enem-study-visual__review-card--two">
+            <div className="enem-study-visual__review-card enem-study-visual__review-card--two enem-study-visual__review-card--incorrect">
               <div className="enem-study-visual__review-card-flip">
                 <div className="enem-study-visual__review-face enem-study-visual__review-face--front"><small>CARTÃO 02 · FRENTE</small><b>O clima influencia qual aspecto do bioma?</b><span>responda antes de virar</span></div>
-                <div className="enem-study-visual__review-face enem-study-visual__review-face--back"><small>CARTÃO 02 · RESPOSTA</small><b>A distribuição da vegetação e das espécies.</b><div className="enem-study-visual__review-actions"><span className="is-chosen">↺ Esqueci</span><span>✓ Lembrei</span></div><span className="enem-study-visual__review-rating">Autoavaliação ilustrativa</span></div>
+                <div className="enem-study-visual__review-face enem-study-visual__review-face--back"><small>CARTÃO 02 · RESPOSTA</small><b>A distribuição da vegetação e das espécies.</b><div className="enem-study-visual__review-actions"><span className="is-chosen is-incorrect">× Errei</span><span className="is-correct">✓ Acertei</span></div><strong className="enem-study-visual__review-result enem-study-visual__review-result--incorrect">× Errei</strong></div>
               </div>
             </div>
-            <div className="enem-study-visual__review-card enem-study-visual__review-card--three">
+            <div className="enem-study-visual__review-card enem-study-visual__review-card--three enem-study-visual__review-card--correct">
               <div className="enem-study-visual__review-card-flip">
                 <div className="enem-study-visual__review-face enem-study-visual__review-face--front"><small>CARTÃO 03 · FRENTE</small><b>Quais elementos ajudam a definir um bioma?</b><span>responda antes de virar</span></div>
-                <div className="enem-study-visual__review-face enem-study-visual__review-face--back"><small>CARTÃO 03 · RESPOSTA</small><b>Clima, flora, fauna e condições do ambiente.</b><div className="enem-study-visual__review-actions"><span>↺ Esqueci</span><span className="is-chosen">✓ Lembrei</span></div><span className="enem-study-visual__review-rating">Autoavaliação ilustrativa</span></div>
+                <div className="enem-study-visual__review-face enem-study-visual__review-face--back"><small>CARTÃO 03 · RESPOSTA</small><b>Clima, flora, fauna e condições do ambiente.</b><div className="enem-study-visual__review-actions"><span className="is-incorrect">× Errei</span><span className="is-chosen is-correct">✓ Acertei</span></div><strong className="enem-study-visual__review-result enem-study-visual__review-result--correct">✓ Acertei</strong></div>
               </div>
             </div>
           </div>
-          <div className="enem-study-visual__review-complete"><b>✓</b><span>3 cartões revisados · respostas pessoais</span></div>
+          <div className="enem-study-visual__review-score" aria-hidden="true">
+            <div className="enem-study-visual__review-score-item enem-study-visual__review-score-item--correct"><span>✓ Acertos</span><b><i className="is-zero">0</i><i className="is-one">1</i><i className="is-two">2</i></b></div>
+            <div className="enem-study-visual__review-score-item enem-study-visual__review-score-item--incorrect"><span>× Erros</span><b><i className="is-zero">0</i><i className="is-one">1</i></b></div>
+          </div>
+          <div className="enem-study-visual__review-complete"><b>✓</b><span>2 acertos · 1 erro · autoavaliação ilustrativa</span></div>
           <div className="enem-study-visual__due"><b>Resposta pessoal</b><span>cada cartão recebe uma avaliação</span></div>
           <div className="enem-study-visual__due enem-study-visual__due--next"><b>SM-2</b><span>intervalo por cartão</span></div>
           <span>exemplo ilustrativo de intervalo</span>
