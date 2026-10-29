@@ -17,7 +17,7 @@ Edite `src/content/site.ts` para ajustar identidade, links, experiência, habili
 
 ## Temas
 
-Os temas e suas composições ficam em `src/themes/registry.ts`. O seletor na navegação troca entre `editorial`, `atelier` e `index`. Cada tema declara variáveis CSS e escolhas de layout por seção; os estilos correspondentes estão em `src/app/globals.css`. Para criar outro tema, adicione sua definição ao registro e seus estilos usando `data-theme`.
+Os temas e suas composições ficam em `src/themes/registry.ts`. O seletor troca entre `editorial`, `atelier` e `index`; a aparência troca entre `system`, `light` e `dark`. Estilo e aparência são salvos no navegador e restaurados ao recarregar. Cada estilo declara variáveis CSS e escolhas de layout por seção; os estilos correspondentes estão em `src/app/globals.css`. Para criar outro tema, adicione sua definição ao registro e seus estilos usando `data-theme`.
 
 ## SEO e publicação
 

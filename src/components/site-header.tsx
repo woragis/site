@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { site } from "@/content/site";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { ColorModeSwitcher } from "@/components/color-mode-switcher";
 
 export function SiteHeader() {
   return (
@@ -18,6 +19,7 @@ export function SiteHeader() {
         <Link href="/#contato">Contato</Link>
       </nav>
       <ThemeSwitcher />
+      <ColorModeSwitcher />
     </header>
   );
 }

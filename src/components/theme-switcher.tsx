@@ -7,8 +7,8 @@ export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <label className="theme-switcher">
-      <span className="theme-switcher__label">Tema</span>
+    <label className="theme-switcher theme-switcher--style">
+      <span className="theme-switcher__label">Estilo</span>
       <select
         aria-label="Escolher tema visual"
         value={theme}

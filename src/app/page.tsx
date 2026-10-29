@@ -3,6 +3,7 @@ import { ArticleCard } from "@/components/article-card";
 import { EmptyState } from "@/components/empty-state";
 import { ProjectCard } from "@/components/project-card";
 import { SectionHeading } from "@/components/section-heading";
+import { FileOrganizerSpotlight } from "@/components/file-organizer-spotlight";
 import { experience, selectedArticles, selectedProjects, site, skills } from "@/content/site";
 
 export default function HomePage() {
@@ -39,6 +40,8 @@ export default function HomePage() {
         <SectionHeading index="02" label="Seleção" title="Projetos que contam histórias." href="/projetos" />
         {projectItems.length ? <div className="project-grid">{projectItems.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} />)}</div> : <EmptyState title="Os próximos cases começam aqui.">Os projetos serão publicados quando seus detalhes e resultados estiverem prontos.</EmptyState>}
       </section>
+
+      <FileOrganizerSpotlight />
 
       <section className="section experience-section" id="experiencia">
         <div className="page-shell"><SectionHeading index="03" label="Experiência" title="Trabalho, prática e evolução." />
