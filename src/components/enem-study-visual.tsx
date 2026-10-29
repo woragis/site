@@ -3,6 +3,12 @@
 import { useEffect, useState, type CSSProperties } from "react";
 
 const stageNames = ["MATERIAL", "CONTEÚDO", "FLASHCARD", "REVISÃO · SM-2"];
+const stageDescriptions = [
+  { title: "Envio do material", description: "O estudante adiciona um PDF para iniciar o estudo." },
+  { title: "Leitura e organização", description: "Os tópicos importantes são identificados e organizados para estudar." },
+  { title: "Criação dos flashcards", description: "O conteúdo organizado vira perguntas e respostas para praticar a lembrança." },
+  { title: "Estudo e revisão", description: "A pessoa tenta responder, confere o verso e se autoavalia; os totais acompanham cada escolha." },
+];
 const stageDurations = [4300, 5600, 7600, 14000];
 const stageHolds = [1800, 1800, 1800, 900];
 type StagePhase = "working" | "complete";
@@ -58,6 +64,11 @@ export function EnemStudyVisual({ compact = false }: { compact?: boolean }) {
   }, [compact, motionEnabled]);
 
   const state = (index: number) => stageState(index, compact, motionEnabled, activeStage, phase, completed);
+  const cycleComplete = motionEnabled && activeStage === null && completed.length === stageNames.length;
+  const context = activeStage === null ? null : stageDescriptions[activeStage];
+  const contextTitle = context?.title ?? (cycleComplete ? "Revisão concluída" : "Do material à revisão");
+  const contextLabel = context ? `ETAPA ATUAL · 0${(activeStage ?? 0) + 1} / 04` : cycleComplete ? "CICLO CONCLUÍDO" : "VISÃO GERAL";
+  const contextDescription = context?.description ?? (cycleComplete ? "Neste exemplo, três cartões foram revisados e as respostas pessoais atualizaram o placar." : "Acompanhe como um material pode ser organizado, virar flashcards e voltar em revisões espaçadas.");
   const stageClass = (index: number, baseClass: string) => `enem-study-visual__stage ${baseClass} ${state(index)}`;
   const connectorClass = (index: number) => {
     if (compact || !motionEnabled) return "enem-study-visual__connector is-static";
@@ -69,6 +80,10 @@ export function EnemStudyVisual({ compact = false }: { compact?: boolean }) {
   return (
     <div className={`enem-study-visual${compact ? " enem-study-visual--compact" : ""}`} aria-hidden="true">
       <div className="enem-study-visual__topline"><span>ENEM STUDY</span><span>FLUXO ILUSTRATIVO · CICLO DE ESTUDO</span></div>
+      {!compact && <div className="enem-study-visual__context" key={contextTitle}>
+        <div><span>{contextLabel}</span><h2>{contextTitle}</h2></div>
+        <p>{contextDescription}</p>
+      </div>}
       <div className="enem-study-visual__flow">
         <div className={stageClass(0, "enem-study-visual__stage--material")}>
           <small><b>01</b> MATERIAL{!compact && <em>{state(0) === "is-active" ? "LENDO" : state(0) === "is-complete" ? "LIDO" : ""}</em>}</small>
