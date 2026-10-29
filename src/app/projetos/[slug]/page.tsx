@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { projects, selectedProjects } from "@/content/site";
 import { absoluteUrl, pageMetadata, jsonLd } from "@/lib/seo";
-import { FileOrganizerVisual } from "@/components/file-organizer-visual";
+import { FileOrganizerCaseStudy } from "@/components/file-organizer-case-study";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -30,7 +30,6 @@ export default async function ProjectDetailPage({ params }: Props) {
     {project.published && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData)} />}
     <a className="back-link" href="/projetos">← Todos os projetos</a>
     <header className="detail-header"><p className="eyebrow">{project.eyebrow} · {project.scope}{!project.published && " · Rascunho"}</p><h1>{project.title}</h1><p className="detail-lede">{project.summary}</p><div className="detail-facts"><span>Minha atuação<strong>{project.role}</strong></span><span>Tecnologias<strong>{project.stack.join(" · ")}</strong></span></div>{project.links?.length ? <div className="detail-links">{project.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div> : null}</header>
-    {project.slug === "file-organizer" && <figure className="detail-project-visual"><FileOrganizerVisual interactive /><figcaption>Primeiro, o plano. Os arquivos só são movidos com <code>--apply</code>; não são apagados.</figcaption></figure>}
-    <div className="detail-body"><section><p className="eyebrow">01 / Contexto</p><p>{project.context}</p></section><section><p className="eyebrow">02 / Abordagem</p><p>{project.approach}</p></section><section><p className="eyebrow">03 / Resultado</p><p>{project.outcome}</p></section></div>
+    {project.slug === "file-organizer" ? <FileOrganizerCaseStudy /> : <div className="detail-body"><section><p className="eyebrow">01 / Contexto</p><p>{project.context}</p></section><section><p className="eyebrow">02 / Abordagem</p><p>{project.approach}</p></section><section><p className="eyebrow">03 / Resultado</p><p>{project.outcome}</p></section></div>}
   </article>;
 }
