@@ -280,7 +280,29 @@ export const articles: Article[] = [
   },
 ];
 
-export const experience: { period: string; role: string; company: string; description: string }[] = [];
+export const experience: { period: string; role: string; company: string; description?: string }[] = [
+  {
+    period: "Out. 2026 — atual",
+    role: "Estagiário de Desenvolvimento de Software",
+    company: "Lynx",
+  },
+  {
+    period: "Jul. 2026 — atual",
+    role: "Estagiário de Desenvolvimento de Software",
+    company: "Brismarp",
+  },
+  {
+    period: "Nov. 2025 — Jun. 2026",
+    role: "Desenvolvedor freelance · liderança técnica",
+    company: "Projetos independentes",
+    description: "Atuação em desenvolvimento de software e decisões técnicas dos projetos.",
+  },
+  {
+    period: "Nov. 2024 — Nov. 2025",
+    role: "Estagiário de Desenvolvimento de Software",
+    company: "LizardTI",
+  },
+];
 
 export const skills = [
   { label: "Backend", items: ["Go", "Node.js", "Express", "Python", "FastAPI", "Django"] },

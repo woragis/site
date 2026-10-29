@@ -42,7 +42,7 @@ export default function HomePage() {
 
       <section className="section experience-section" id="experiencia">
         <div className="page-shell"><SectionHeading index="03" label="Experiência" title="Trabalho, prática e evolução." />
-          <div className="experience-layout">{experience.length ? experience.map((item) => <article className="experience-item" key={item.period}><p className="experience-item__period">{item.period}</p><div><h3>{item.role}</h3><p className="experience-item__company">{item.company}</p><p className="experience-item__description">{item.description}</p></div><span className="experience-item__arrow" aria-hidden="true">↗</span></article>) : <p className="experience-pending">Trajetória profissional em preparação.</p>}</div>
+          <div className="experience-layout">{experience.length ? experience.map((item) => <article className="experience-item" key={item.period}><p className="experience-item__period">{item.period}</p><div><h3>{item.role}</h3><p className="experience-item__company">{item.company}</p>{item.description && <p className="experience-item__description">{item.description}</p>}</div><span className="experience-item__arrow" aria-hidden="true">↗</span></article>) : <p className="experience-pending">Trajetória profissional em preparação.</p>}</div>
         </div>
       </section>
 
