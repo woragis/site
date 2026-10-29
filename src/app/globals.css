@@ -542,6 +542,11 @@ html[data-theme="index"] .file-organizer-spotlight__visual .file-organizer-visua
 .file-case-demo__status { min-height: 1.4rem; margin: 0; padding: .75rem 1rem .25rem; color: var(--color-muted); font-size: .75rem; }
 .file-case-demo__note { margin: 0; padding: .2rem 1rem 1rem; color: var(--color-muted); font: .56rem/1.5 var(--font-mono); }
 .file-case-story { max-width: 900px; margin: clamp(5rem, 10vw, 9rem) auto 0; }
+.file-case-story__controls { display: flex; min-height: 2.6rem; align-items: center; justify-content: flex-end; gap: .8rem; border-bottom: 1px solid var(--color-line); color: var(--color-muted); font: .5rem var(--font-mono); letter-spacing: .06em; }
+.file-case-story__controls button { min-height: 2rem; border: 1px solid var(--color-line); border-radius: var(--radius-pill); background: var(--color-bg); padding: .35rem .7rem; color: var(--color-ink); font: 500 .55rem var(--font-mono); letter-spacing: 0; cursor: pointer; }
+.file-case-story__controls button:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.file-case-story__controls button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+.file-case-story.is-paused .file-case-scene * { animation-play-state: paused !important; }
 .file-case-story__section { display: grid; grid-template-columns: minmax(8rem, .45fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 5vw, 4rem); border-top: 1px solid var(--color-line); padding-block: 2rem; }
 .file-case-story__section .eyebrow { margin-top: .25rem; }
 .file-case-story__content { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr) minmax(13rem, .68fr); align-items: center; gap: clamp(1rem, 3vw, 2rem); }
@@ -596,17 +601,17 @@ html[data-theme="index"] .file-organizer-spotlight__visual .file-organizer-visua
 .file-case-scene__undo-flow > i { color: var(--color-accent); font-size: .95rem; font-style: normal; }
 .file-case-scene__undo-file { border: 1px solid var(--color-line); color: var(--color-ink); font: .42rem var(--font-mono); }
 .file-case-scene__caption { display: block; margin-top: .55rem; color: var(--color-muted); font: .5rem/1.5 var(--font-mono); }
-.file-case-scene.is-visible.file-case-scene--preview .file-case-scene__route { animation: case-scene-rise .45s ease-out both; animation-delay: calc(var(--scene-index, 0) * .14s); }
+.file-case-scene.is-visible.file-case-scene--preview .file-case-scene__route { animation: case-scene-rise 7.6s ease-in-out infinite; animation-delay: calc((var(--scene-index, 0) * .2s) + .2s); }
 .file-case-scene.is-visible.file-case-scene--preview .file-case-scene__route:nth-of-type(2) { --scene-index: 0; }
 .file-case-scene.is-visible.file-case-scene--preview .file-case-scene__route:nth-of-type(3) { --scene-index: 1; }
 .file-case-scene.is-visible.file-case-scene--preview .file-case-scene__route:nth-of-type(4) { --scene-index: 2; }
-.file-case-scene.is-visible.file-case-scene--preview .file-case-scene__route > i { animation: case-scene-route .8s ease-out both; animation-delay: .45s; }
-.file-case-scene.is-visible.file-case-scene--apply .file-case-scene__apply-source > span { animation: case-scene-depart 1.25s ease-in-out both; animation-delay: calc((var(--scene-index) * .22s) + .35s); }
-.file-case-scene.is-visible.file-case-scene--apply .file-case-scene__apply-target > span { animation: case-scene-arrive .5s ease-out both; animation-delay: calc((var(--scene-index) * .22s) + 1.05s); }
-.file-case-scene.is-visible.file-case-scene--apply .file-case-scene__apply-arrow { animation: case-scene-pulse 1.2s ease-in-out .4s both; }
-.file-case-scene.is-visible.file-case-scene--collision .file-case-scene__collision-row.is-proposed { animation: case-scene-outline .8s ease-in-out .3s both; }
-.file-case-scene.is-visible.file-case-scene--undo .file-case-scene__verify > b { animation: case-scene-check .5s ease-out .25s both; }
-.file-case-scene.is-visible.file-case-scene--undo .file-case-scene__undo-flow > i { animation: case-scene-back .8s ease-in-out .6s both; }
+.file-case-scene.is-visible.file-case-scene--preview .file-case-scene__route > i { animation: case-scene-route 7.6s ease-in-out infinite; animation-delay: .3s; }
+.file-case-scene.is-visible.file-case-scene--apply .file-case-scene__apply-source > span { animation: case-scene-depart 7.6s ease-in-out infinite; animation-delay: calc((var(--scene-index) * .24s) + .25s); }
+.file-case-scene.is-visible.file-case-scene--apply .file-case-scene__apply-target > span { animation: case-scene-arrive 7.6s ease-in-out infinite; animation-delay: calc((var(--scene-index) * .24s) + .75s); }
+.file-case-scene.is-visible.file-case-scene--apply .file-case-scene__apply-arrow { animation: case-scene-pulse 7.6s ease-in-out infinite; animation-delay: .35s; }
+.file-case-scene.is-visible.file-case-scene--collision .file-case-scene__collision-row.is-proposed { animation: case-scene-outline 7.6s ease-in-out infinite; animation-delay: .3s; }
+.file-case-scene.is-visible.file-case-scene--undo .file-case-scene__verify > b { animation: case-scene-check 7.6s ease-in-out infinite; animation-delay: .25s; }
+.file-case-scene.is-visible.file-case-scene--undo .file-case-scene__undo-flow > i { animation: case-scene-back 7.6s ease-in-out infinite; animation-delay: .45s; }
 .file-case-close { margin: clamp(4rem, 9vw, 7rem) auto 0; border-top: 1px solid var(--color-line); padding-top: 1.5rem; }
 .file-case-close h2 { margin-block: .9rem 1.5rem; }
 .file-case-close__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin-top: 2rem; }
@@ -615,14 +620,14 @@ html[data-theme="index"] .file-organizer-spotlight__visual .file-organizer-visua
 .file-case-tech { margin-top: 2.2rem; color: var(--color-muted); font: .66rem/1.8 var(--font-mono); }
 .file-case-tech span { color: var(--color-accent); }
 @keyframes case-cursor { 50% { opacity: 0; } }
-@keyframes case-scene-rise { from { opacity: .45; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes case-scene-route { from { transform: scaleX(.05); } to { transform: scaleX(1); } }
-@keyframes case-scene-depart { 0%, 15% { opacity: 1; transform: translateX(0); } 75%, 100% { opacity: .45; transform: translateX(8px); } }
-@keyframes case-scene-arrive { from { opacity: .35; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes case-scene-pulse { 0%, 100% { opacity: .75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
-@keyframes case-scene-outline { 0%, 100% { background: transparent; } 50% { background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg)); } }
-@keyframes case-scene-check { from { opacity: .4; transform: scale(.65); } to { opacity: 1; transform: scale(1); } }
-@keyframes case-scene-back { 0%, 100% { opacity: .65; transform: translateX(5px); } 50% { opacity: 1; transform: translateX(-4px); } }
+@keyframes case-scene-rise { 0%, 5%, 94%, 100% { opacity: .45; transform: translateY(5px); } 13%, 88% { opacity: 1; transform: translateY(0); } }
+@keyframes case-scene-route { 0%, 5%, 94%, 100% { transform: scaleX(.05); } 16%, 87% { transform: scaleX(1); } }
+@keyframes case-scene-depart { 0%, 8%, 87%, 100% { opacity: 1; transform: translateX(0); } 18%, 78% { opacity: .45; transform: translateX(8px); } }
+@keyframes case-scene-arrive { 0%, 12%, 87%, 100% { opacity: .4; transform: translateX(-6px); } 23%, 78% { opacity: 1; transform: translateX(0); } }
+@keyframes case-scene-pulse { 0%, 9%, 34%, 100% { opacity: .75; transform: scale(1); } 18%, 25% { opacity: 1; transform: scale(1.15); } }
+@keyframes case-scene-outline { 0%, 5%, 92%, 100% { background: transparent; } 13%, 28% { background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg)); } }
+@keyframes case-scene-check { 0%, 5%, 92%, 100% { opacity: .4; transform: scale(.65); } 14%, 84% { opacity: 1; transform: scale(1); } }
+@keyframes case-scene-back { 0%, 6%, 90%, 100% { opacity: .65; transform: translateX(5px); } 18%, 30% { opacity: 1; transform: translateX(-4px); } }
 @keyframes fm-source-out { to { opacity: 0; } }
 @keyframes fm-source-in { to { opacity: 1; } }
 @keyframes fm-target-in { from { opacity: .15; } to { opacity: 1; } }
@@ -786,4 +791,5 @@ html[data-theme="index"] .project-card__visual--file-organizer::before, html[dat
   .file-case-terminal__cursor { animation: none !important; opacity: 0 !important; }
   .file-case-manager__traveler { display: none !important; }
   .file-case-scene.is-visible * { animation: none !important; }
+  .file-case-story__controls { display: none; }
 }

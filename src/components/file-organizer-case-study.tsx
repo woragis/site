@@ -77,9 +77,7 @@ function StoryScene({ kind }: { kind: StorySceneKind }) {
       return;
     }
     const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      scene.classList.add("is-visible");
-      observer.unobserve(scene);
+      scene.classList.toggle("is-visible", entry.isIntersecting);
     }, { threshold: 0.3, rootMargin: "0px 0px -4% 0px" });
     observer.observe(scene);
     return () => observer.disconnect();
@@ -129,6 +127,7 @@ export function FileOrganizerCaseStudy() {
   const [outputCount, setOutputCount] = useState(0);
   const [run, setRun] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [storyMotionPaused, setStoryMotionPaused] = useState(false);
   const [openFolders, setOpenFolders] = useState<Set<string>>(() => new Set(folders.map((folder) => folder.id)));
 
   useEffect(() => {
@@ -296,7 +295,8 @@ export function FileOrganizerCaseStudy() {
       <div className="visually-hidden">Arquivos de demonstração: {files.map((file) => `${file.name}, ${file.size}, destino ${folders.find((folder) => folder.id === file.folder)?.path}. `)}Na prévia os arquivos não mudam de lugar. Aplicar mostra a organização simulada. Undo mostra o retorno à origem.</div>
     </section>
 
-    <div className="file-case-story">
+    <div className={`file-case-story${storyMotionPaused ? " is-paused" : ""}`}>
+      <div className="file-case-story__controls"><span>ANIMAÇÕES AUTOMÁTICAS · CICLO DE 7,6 S</span><button type="button" aria-pressed={storyMotionPaused} onClick={() => setStoryMotionPaused((paused) => !paused)}>{storyMotionPaused ? "Retomar animações" : "Pausar animações"}</button></div>
       <section className="file-case-story__section">
         <p className="eyebrow"><span>01</span> / Planejar antes de mover</p>
         <div className="file-case-story__content"><div><h2>A primeira resposta é um plano.</h2><p>Executar `file-organizer organize ~/Downloads` não muda a pasta. A CLI mostra cada caminho de destino e termina com “Nothing was changed.”. Esse comportamento padrão permite revisar as classificações antes de autorizar qualquer alteração.</p><p>Na simulação, os dez itens ficam em Downloads enquanto a janela mostra a estrutura prevista em `~/Organized`: documentos, imagens, arquivos compactados, planilhas, vídeos e software.</p></div><StoryScene kind="preview" /></div>
