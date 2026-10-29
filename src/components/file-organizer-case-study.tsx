@@ -64,6 +64,62 @@ function filePosition(index: number, list: readonly DemoFile[]) {
   return { start, travelY: end - start, reverseDelay: (list.length - index - 1) * 0.11 };
 }
 
+type StorySceneKind = "preview" | "apply" | "collision" | "undo";
+
+function StoryScene({ kind }: { kind: StorySceneKind }) {
+  const sceneRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+    if (!("IntersectionObserver" in window)) {
+      scene.classList.add("is-visible");
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      scene.classList.add("is-visible");
+      observer.unobserve(scene);
+    }, { threshold: 0.3, rootMargin: "0px 0px -4% 0px" });
+    observer.observe(scene);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={sceneRef} className={`file-case-scene file-case-scene--${kind}`} aria-hidden="true">
+    <div className="file-case-scene__window">
+      <div className="file-case-scene__bar"><span /><span /><span /><b>{kind === "preview" ? "PLANO DE ORGANIZAÇÃO" : kind === "apply" ? "APLICAÇÃO" : kind === "collision" ? "CONFLITO DE NOME" : "UNDO · VERIFICAÇÃO"}</b></div>
+      {kind === "preview" && <div className="file-case-scene__preview">
+        <div className="file-case-scene__mini-heading"><span>Downloads</span><small>prévia</small></div>
+        <div className="file-case-scene__route"><span className="file-case-scene__file">PDF　 contrato.pdf</span><i /><span className="file-case-scene__folder">Documents / PDF</span></div>
+        <div className="file-case-scene__route"><span className="file-case-scene__file">JPG　 viagem.jpg</span><i /><span className="file-case-scene__folder">Pictures</span></div>
+        <div className="file-case-scene__route"><span className="file-case-scene__file">ZIP　 backup.zip</span><i /><span className="file-case-scene__folder">Archives</span></div>
+        <div className="file-case-scene__scene-status"><span /> arquivos no lugar · destinos previstos</div>
+      </div>}
+      {kind === "apply" && <div className="file-case-scene__apply">
+        <div className="file-case-scene__command"><span>$</span> organize ~/Downloads <em>--apply</em></div>
+        <div className="file-case-scene__apply-flow">
+          <div className="file-case-scene__apply-source"><small>DOWNLOADS</small><span style={{ "--scene-index": 0 } as React.CSSProperties}>PDF　 contrato.pdf</span><span style={{ "--scene-index": 1 } as React.CSSProperties}>JPG　 viagem.jpg</span><span style={{ "--scene-index": 2 } as React.CSSProperties}>ZIP　 backup.zip</span></div>
+          <div className="file-case-scene__apply-arrow" aria-hidden="true">›</div>
+          <div className="file-case-scene__apply-target"><small>ORGANIZED</small><span>▰　Documents / PDF</span><span>▰　Pictures</span><span>▰　Archives</span></div>
+        </div>
+        <div className="file-case-scene__scene-status"><span /> 3 arquivos organizados</div>
+      </div>}
+      {kind === "collision" && <div className="file-case-scene__collision">
+        <div className="file-case-scene__mini-heading"><span>Documents / PDF</span><small>1 conflito</small></div>
+        <div className="file-case-scene__collision-row is-existing"><span>PDF</span><b>relatorio.pdf</b><small>já existe</small></div>
+        <div className="file-case-scene__collision-mark"><i /> nome alternativo escolhido <i /></div>
+        <div className="file-case-scene__collision-row is-proposed"><span>PDF</span><b>relatorio (1).pdf</b><small>novo arquivo</small></div>
+      </div>}
+      {kind === "undo" && <div className="file-case-scene__undo">
+        <div className="file-case-scene__verify"><span>SHA-256</span><b>✓</b><small>conteúdo confere</small></div>
+        <div className="file-case-scene__undo-flow"><span className="file-case-scene__undo-folder">Organized / PDF</span><i aria-hidden="true">←</i><span className="file-case-scene__undo-file">PDF　 contrato.pdf</span></div>
+        <div className="file-case-scene__scene-status"><span /> retorno autorizado</div>
+      </div>}
+    </div>
+    <span className="file-case-scene__caption">{kind === "preview" ? "O plano revela os destinos sem mover a origem." : kind === "apply" ? "A confirmação inicia a movimentação do lote." : kind === "collision" ? "O arquivo existente é mantido; o novo recebe outro nome." : "O conteúdo é verificado antes do retorno à origem."}</span>
+  </div>;
+}
+
 export function FileOrganizerCaseStudy() {
   const terminalRef = useRef<HTMLPreElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -243,19 +299,19 @@ export function FileOrganizerCaseStudy() {
     <div className="file-case-story">
       <section className="file-case-story__section">
         <p className="eyebrow"><span>01</span> / Planejar antes de mover</p>
-        <div><h2>A primeira resposta é um plano.</h2><p>Executar `file-organizer organize ~/Downloads` não muda a pasta. A CLI mostra cada caminho de destino e termina com “Nothing was changed.”. Esse comportamento padrão permite revisar as classificações antes de autorizar qualquer alteração.</p><p>Na simulação, os dez itens ficam em Downloads enquanto a janela mostra a estrutura prevista em `~/Organized`: documentos, imagens, arquivos compactados, planilhas, vídeos e software.</p></div>
+        <div className="file-case-story__content"><div><h2>A primeira resposta é um plano.</h2><p>Executar `file-organizer organize ~/Downloads` não muda a pasta. A CLI mostra cada caminho de destino e termina com “Nothing was changed.”. Esse comportamento padrão permite revisar as classificações antes de autorizar qualquer alteração.</p><p>Na simulação, os dez itens ficam em Downloads enquanto a janela mostra a estrutura prevista em `~/Organized`: documentos, imagens, arquivos compactados, planilhas, vídeos e software.</p></div><StoryScene kind="preview" /></div>
       </section>
       <section className="file-case-story__section">
         <p className="eyebrow"><span>02</span> / Aplicar explicitamente</p>
-        <div><h2>O comando e a interface contam a mesma história.</h2><p>Acrescentar `--apply` é a confirmação explícita. Na cena, a linha termina de ser digitada, a CLI apresenta os destinos e então cada item atravessa a janela. As pastas abrem e deixam visível o conteúdo que receberam.</p><p>As regras vêm da configuração do projeto. PDFs vão para `Documents/PDF`, imagens para `Pictures`, arquivos compactados para `Archives`, planilhas para `Documents/Excel`, vídeos para `Videos` e o AppImage para `Software`.</p></div>
+        <div className="file-case-story__content"><div><h2>O comando e a interface contam a mesma história.</h2><p>Acrescentar `--apply` é a confirmação explícita. Na cena, a linha termina de ser digitada, a CLI apresenta os destinos e então cada item atravessa a janela. As pastas abrem e deixam visível o conteúdo que receberam.</p><p>As regras vêm da configuração do projeto. PDFs vão para `Documents/PDF`, imagens para `Pictures`, arquivos compactados para `Archives`, planilhas para `Documents/Excel`, vídeos para `Videos` e o AppImage para `Software`.</p></div><StoryScene kind="apply" /></div>
       </section>
       <section className="file-case-story__section">
         <p className="eyebrow"><span>03</span> / Proteger o destino</p>
-        <div><h2>Colisão de nome não significa sobrescrita.</h2><p>Quando `relatorio.pdf` já existe com outro conteúdo em `Documents/PDF`, a política padrão escolhe `relatorio (1).pdf`. A cena de colisão mantém o arquivo existente visível e mostra o novo nome como uma proposta da prévia.</p><p>O projeto também compara SHA-256 para detectar conteúdo duplicado. Pela configuração padrão, duplicatas exatas são ignoradas; elas não são confundidas com arquivos diferentes que apenas compartilham o mesmo nome.</p></div>
+        <div className="file-case-story__content"><div><h2>Colisão de nome não significa sobrescrita.</h2><p>Quando `relatorio.pdf` já existe com outro conteúdo em `Documents/PDF`, a política padrão escolhe `relatorio (1).pdf`. A cena de colisão mantém o arquivo existente visível e mostra o novo nome como uma proposta da prévia.</p><p>O projeto também compara SHA-256 para detectar conteúdo duplicado. Pela configuração padrão, duplicatas exatas são ignoradas; elas não são confundidas com arquivos diferentes que apenas compartilham o mesmo nome.</p></div><StoryScene kind="collision" /></div>
       </section>
       <section className="file-case-story__section">
         <p className="eyebrow"><span>04</span> / Desfazer com verificação</p>
-        <div><h2>O caminho de volta também faz parte do fluxo.</h2><p>`file-organizer undo` reverte o lote mais recente. Antes de mover os arquivos de volta, a ferramenta verifica se o conteúdo no destino ainda corresponde ao que foi registrado; se mudou, recusa a operação.</p><p>A animação retorna os dez arquivos para Downloads e esvazia a visualização de destino. É uma representação do fluxo: o site não executa o comando nem altera arquivos.</p></div>
+        <div className="file-case-story__content"><div><h2>O caminho de volta também faz parte do fluxo.</h2><p>`file-organizer undo` reverte o lote mais recente. Antes de mover os arquivos de volta, a ferramenta verifica se o conteúdo no destino ainda corresponde ao que foi registrado; se mudou, recusa a operação.</p><p>A animação retorna os dez arquivos para Downloads e esvazia a visualização de destino. É uma representação do fluxo: o site não executa o comando nem altera arquivos.</p></div><StoryScene kind="undo" /></div>
       </section>
       <section className="file-case-close">
         <p className="eyebrow"><span>05</span> / Decisões de engenharia</p>
