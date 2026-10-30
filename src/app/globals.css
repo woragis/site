@@ -1340,6 +1340,99 @@ html[data-theme="index"] .project-card__visual--enem-study::before, html[data-th
   .weatherly-close__grid { gap: .5rem; }
 }
 
+/* Festas case study: static rental workflow diagrams */
+.festas-case { max-width: 1160px; margin: clamp(4rem, 8vw, 8rem) auto 0; }
+.festas-case__intro { max-width: 800px; margin: 0 auto clamp(3rem, 6vw, 5rem); }
+.festas-case__intro h2, .festas-case__hero-copy h2, .festas-close h2 { max-width: 800px; margin: 1rem 0 1.4rem; font-family: var(--font-display); font-size: clamp(2.5rem, 5.5vw, 5.2rem); font-weight: 500; letter-spacing: -.065em; line-height: .99; }
+.festas-case__intro > p:not(.eyebrow), .festas-case__hero-copy > p:not(.eyebrow), .festas-section__content > div:first-child > p { color: var(--color-muted); font-size: clamp(.92rem, 1.2vw, 1.05rem); line-height: 1.8; }
+.festas-case__note { border-left: 2px solid var(--color-accent); padding-left: 1rem; color: var(--color-muted); font-size: .82rem !important; }
+.festas-case__hero { display: grid; grid-template-columns: minmax(15rem, .78fr) minmax(0, 1.22fr); align-items: center; gap: clamp(2rem, 6vw, 5rem); margin: 0 0 clamp(5rem, 10vw, 9rem); border: 1px solid var(--color-line); border-radius: var(--radius-xl); background: var(--color-paper-strong); padding: clamp(1.2rem, 4vw, 3rem); box-shadow: var(--shadow-card); }
+.festas-case__hero-copy h2 { font-size: clamp(2.2rem, 4.2vw, 4rem); }
+.festas-case__hero-copy > p:not(.eyebrow) { font-size: .92rem; }
+.festas-story { display: grid; gap: clamp(4rem, 8vw, 7rem); }
+.festas-section > .eyebrow { margin-bottom: 1.3rem; }
+.festas-section__content { display: grid; grid-template-columns: minmax(0, .95fr) minmax(20rem, 1.05fr); align-items: center; gap: clamp(2rem, 6vw, 5rem); }
+.festas-section__content > div:first-child h2 { max-width: 37rem; margin: 0 0 1.1rem; font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.65rem); font-weight: 500; letter-spacing: -.055em; line-height: 1.03; }
+.festas-section__content > div:first-child p { margin: .75rem 0; }
+.festas-rental-flow, .festas-availability, .festas-inventory-panel, .festas-maintenance-panel, .festas-order-record, .festas-payment-layers { min-width: 0; margin: 0; border: 1px solid var(--color-line); border-radius: var(--radius-xl); background: var(--color-bg); padding: clamp(1rem, 2.5vw, 1.6rem); box-shadow: var(--shadow-card); }
+.festas-rental-flow { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .75rem; }
+.festas-rental-flow__store, .festas-rental-flow__admin { display: grid; align-content: start; gap: .5rem; border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-paper-strong); padding: .8rem; }
+.festas-rental-flow__store > small, .festas-rental-flow__admin > small, .festas-inventory-panel__heading > small, .festas-inventory-panel__units > small, .festas-maintenance-panel small, .festas-order-record small, .festas-payment-layers small { color: var(--color-muted); font: .43rem var(--font-mono); letter-spacing: .05em; }
+.festas-rental-flow__store > b, .festas-rental-flow__admin > b { font-family: var(--font-display); font-size: .95rem; font-weight: 500; }
+.festas-rental-flow__store > span, .festas-rental-flow__admin > span { color: var(--color-muted); font-size: .5rem; }
+.festas-rental-item { display: flex; min-width: 0; align-items: center; gap: .45rem; border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-bg); padding: .45rem; }
+.festas-rental-item > span { display: grid; flex: 0 0 auto; width: 1.45rem; aspect-ratio: 1; place-items: center; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg)); color: var(--color-accent); font-size: .72rem; }
+.festas-rental-item > div { display: grid; min-width: 0; gap: .2rem; }
+.festas-rental-item b { overflow: hidden; font-size: .5rem; text-overflow: ellipsis; white-space: nowrap; }
+.festas-rental-item small { color: var(--color-muted); font-size: .44rem; }
+.festas-rental-flow__arrow { display: grid; justify-items: center; gap: .25rem; color: var(--color-accent); }
+.festas-rental-flow__arrow > i { font-size: 1.2rem; font-style: normal; }
+.festas-rental-flow__arrow > small { color: var(--color-muted); font: .4rem var(--font-mono); text-align: center; }
+.festas-rental-flow__status { border-radius: var(--radius-sm); background: color-mix(in srgb, #bc8b40 10%, var(--color-bg)); padding: .45rem; color: var(--color-muted); font-size: .48rem; }
+.festas-rental-flow__status i { color: #bc8b40; font-size: .55rem; font-style: normal; }
+.festas-rental-flow figcaption, .festas-availability figcaption, .festas-payment-layers figcaption { grid-column: 1 / -1; color: var(--color-muted); font-size: .51rem; line-height: 1.5; text-align: center; }
+.festas-inventory-panel { display: grid; gap: .8rem; }
+.festas-inventory-panel__heading { display: grid; gap: .35rem; border-bottom: 1px solid var(--color-line); padding-bottom: .65rem; }
+.festas-inventory-panel__heading > b { font-family: var(--font-display); font-size: 1.2rem; font-weight: 500; }
+.festas-inventory-panel__heading > span { color: var(--color-muted); font-size: .55rem; }
+.festas-inventory-panel__units { display: grid; gap: .4rem; }
+.festas-inventory-panel__units > small { margin-bottom: .15rem; }
+.festas-inventory-panel__units .festas-rental-item > div { grid-template-columns: auto 1fr; align-items: center; flex: 1; }
+.festas-inventory-panel__units .festas-rental-item small { text-align: right; }
+.festas-availability { display: grid; gap: .5rem; }
+.festas-availability__head { display: flex; justify-content: space-between; gap: .4rem; padding-bottom: .55rem; border-bottom: 1px solid var(--color-line); color: var(--color-muted); font: .46rem var(--font-mono); }
+.festas-availability__head b { color: var(--color-ink); }
+.festas-availability__row { display: grid; grid-template-columns: 1fr 1fr .7rem; align-items: center; gap: .4rem; border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-paper-strong); padding: .55rem; font: .5rem var(--font-mono); }
+.festas-availability__row > span { font-weight: 600; }
+.festas-availability__row > b { color: #548663; font-size: .47rem; font-weight: 500; }
+.festas-availability__row > i { width: .55rem; aspect-ratio: 1; border-radius: 50%; background: #548663; }
+.festas-availability__row:nth-of-type(2) > b { color: #ae7355; }
+.festas-availability__row:nth-of-type(2) > i { background: #ae7355; }
+.festas-availability__row.is-maintenance > b { color: var(--color-muted); }
+.festas-availability__row.is-maintenance > i { background: var(--color-muted); }
+.festas-availability__legend { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .2rem; color: var(--color-muted); font-size: .47rem; }
+.festas-availability__legend > span { display: flex; align-items: center; gap: .3rem; }
+.festas-availability__legend i { width: .45rem; aspect-ratio: 1; border-radius: 50%; background: #ae7355; }
+.festas-availability__legend > span:last-child i { background: #548663; }
+.festas-order-record { display: grid; gap: .45rem; }
+.festas-order-record__heading { display: grid; gap: .3rem; border-bottom: 1px solid var(--color-line); padding-bottom: .7rem; }
+.festas-order-record__heading > b { font-family: var(--font-display); font-size: 1rem; font-weight: 500; }
+.festas-order-record__heading > span { color: var(--color-muted); font-size: .5rem; }
+.festas-order-record > div:not(.festas-order-record__heading), .festas-order-record footer { display: flex; justify-content: space-between; gap: .5rem; border-bottom: 1px solid var(--color-line); padding: .4rem 0; font-size: .53rem; }
+.festas-order-record > div > b, .festas-order-record footer > b { font: 600 .5rem var(--font-mono); text-align: right; }
+.festas-order-record footer { border: 0; }
+.festas-order-record footer > span { color: var(--color-muted); }
+.festas-order-record > p, .festas-maintenance-panel > p { margin: .2rem 0 0; color: var(--color-muted); font-size: .5rem; line-height: 1.5; text-align: center; }
+.festas-maintenance-panel { display: grid; gap: .7rem; }
+.festas-maintenance-panel__unit, .festas-maintenance-panel__log { display: grid; gap: .35rem; border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-paper-strong); padding: .8rem; }
+.festas-maintenance-panel__unit > b, .festas-maintenance-panel__log > b { font-family: var(--font-display); font-size: .9rem; font-weight: 500; }
+.festas-maintenance-panel__unit > span, .festas-maintenance-panel__log > span { color: var(--color-muted); font-size: .5rem; }
+.festas-maintenance-panel__unit > strong { justify-self: start; border-radius: var(--radius-pill); background: color-mix(in srgb, #ae7355 12%, var(--color-bg)); padding: .35rem .5rem; color: #ae7355; font: .43rem var(--font-mono); }
+.festas-maintenance-panel__log { border-style: dashed; }
+.festas-payment-layers { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .65rem; }
+.festas-payment-layers > div { display: grid; min-height: 8rem; align-content: center; gap: .55rem; border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-paper-strong); padding: .75rem; }
+.festas-payment-layers > div > b { font-family: var(--font-display); font-size: .9rem; font-weight: 500; }
+.festas-payment-layers > div > span { color: var(--color-muted); font-size: .5rem; }
+.festas-payment-layers > i { color: var(--color-accent); font-size: 1.1rem; font-style: normal; }
+.festas-close { margin-top: clamp(4rem, 8vw, 7rem); }
+.festas-close h2 { max-width: 780px; font-size: clamp(2.3rem, 4.7vw, 4.4rem); }
+.festas-close__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin: 2rem 0; }
+.festas-close__grid > p { margin: 0; border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-paper-strong); padding: 1.1rem; color: var(--color-muted); font-size: .78rem; line-height: 1.7; }
+.festas-close__grid strong { color: var(--color-ink); }
+@media (max-width: 760px) {
+  .festas-case__hero { grid-template-columns: 1fr; }
+  .festas-section__content { grid-template-columns: 1fr; }
+  .festas-close__grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .festas-rental-flow { grid-template-columns: 1fr; }
+  .festas-rental-flow__arrow > i { transform: rotate(90deg); }
+  .festas-payment-layers { grid-template-columns: 1fr; }
+  .festas-payment-layers > i { justify-self: center; }
+  .festas-payment-layers > div { min-height: auto; }
+  .festas-close__grid { gap: .5rem; }
+}
+
 /* Lingo case study: static product and system diagrams */
 .lingo-case { max-width: 1160px; margin: clamp(4rem, 8vw, 8rem) auto 0; }
 .lingo-case__intro { max-width: 800px; margin: 0 auto clamp(3rem, 6vw, 5rem); }

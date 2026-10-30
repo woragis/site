@@ -8,6 +8,7 @@ import { EnemStudyCaseStudy } from "@/components/enem-study-case-study";
 import { PrateleiraCaseStudy } from "@/components/prateleira-case-study";
 import { WeatherlyCaseStudy } from "@/components/weatherly-case-study";
 import { LingoCaseStudy } from "@/components/lingo-case-study";
+import { FestasCaseStudy } from "@/components/festas-case-study";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -35,6 +36,6 @@ export default async function ProjectDetailPage({ params }: Props) {
     {project.published && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData)} />}
     <Link className="back-link" href="/projetos">← Todos os projetos</Link>
     <header className="detail-header"><p className="eyebrow">{project.eyebrow} · {project.scope}{!project.published && " · Rascunho"}</p><h1>{project.title}</h1><p className="detail-lede">{project.summary}</p><div className="detail-facts"><span>Minha atuação<strong>{project.role}</strong></span><span>Tecnologias<strong>{project.stack.join(" · ")}</strong></span></div>{project.links?.length ? <div className="detail-links">{project.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div> : null}</header>
-    {project.slug === "file-organizer" ? <FileOrganizerCaseStudy /> : project.slug === "enem-study" ? <EnemStudyCaseStudy /> : project.slug === "prateleira" ? <PrateleiraCaseStudy /> : project.slug === "weatherly" ? <WeatherlyCaseStudy /> : project.slug === "lingo" ? <LingoCaseStudy /> : <div className="detail-body"><section><p className="eyebrow">01 / Contexto</p><p>{project.context}</p></section><section><p className="eyebrow">02 / Abordagem</p><p>{project.approach}</p></section><section><p className="eyebrow">03 / Resultado</p><p>{project.outcome}</p></section></div>}
+    {project.slug === "file-organizer" ? <FileOrganizerCaseStudy /> : project.slug === "enem-study" ? <EnemStudyCaseStudy /> : project.slug === "prateleira" ? <PrateleiraCaseStudy /> : project.slug === "weatherly" ? <WeatherlyCaseStudy /> : project.slug === "lingo" ? <LingoCaseStudy /> : project.slug === "festas" ? <FestasCaseStudy /> : <div className="detail-body"><section><p className="eyebrow">01 / Contexto</p><p>{project.context}</p></section><section><p className="eyebrow">02 / Abordagem</p><p>{project.approach}</p></section><section><p className="eyebrow">03 / Resultado</p><p>{project.outcome}</p></section></div>}
   </article>;
 }
