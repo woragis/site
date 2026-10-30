@@ -311,6 +311,64 @@ export const projects: Project[] = [
     links: [{ label: "Repositório", href: "https://github.com/woragis/valorant-wiki" }],
   },
   {
+    slug: "parties",
+    title: "Parties · em revisão",
+    eyebrow: "Produto em construção · locação",
+    summary:
+      "Base de sistema para organizar eventos, clientes, itens de locação, manutenção e pagamentos.",
+    scope: "API + aplicação web · mobile em avaliação",
+    role: "Contribuição em validação",
+    stack: ["Go", "Fiber", "PostgreSQL", "Redis", "SvelteKit", "TypeScript"],
+    context:
+      "Operações de locação para eventos precisam relacionar clientes e datas a itens, disponibilidade, manutenção e pagamentos.",
+    approach:
+      "O backend contém domínios separados para eventos, clientes, itens, atribuições, manutenção e pagamentos. A aplicação web tem telas para eventos e pagamentos, mas a documentação e a experiência ainda não formam um fluxo de produto coerente.",
+    outcome:
+      "Case em revisão para distinguir Parties do Festas. O checkout está em detached HEAD; a página inicial web e o README mobile ainda parecem scaffolds, e os fluxos entre inventário, evento e pagamento precisam ser validados antes de apresentar o produto como funcional.",
+    featured: false,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/parties" }],
+  },
+  {
+    slug: "domains-finder",
+    title: "Domains Finder",
+    eyebrow: "Ferramenta · Go",
+    summary:
+      "CLI para transformar um briefing de produto em sugestões de nomes e verificações de domínio com DNS e RDAP.",
+    scope: "CLI + interface local opcional",
+    role: "Projeto pessoal e desenvolvimento",
+    stack: ["Go", "SQLite", "DNS", "RDAP", "Gemini API"],
+    context:
+      "Escolher um nome para um produto envolve capturar critérios, explorar opções e verificar domínios sem confundir uma consulta momentânea com garantia de disponibilidade.",
+    approach:
+      "A ferramenta normaliza um briefing, gera candidatos com um completador configurável, associa domínios conforme TLDs escolhidos, classifica resultados e consulta DNS/RDAP em pipeline concorrente com armazenamento local.",
+    outcome:
+      "O repositório tem testes para nomes, ranking, RDAP, CLI, servidor e persistência. O estado de domínio é apenas uma observação com validade/cache; não garante que o domínio permaneça disponível para registro. O projeto ainda não tem remoto Git configurado.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
+    slug: "logo-generator",
+    title: "Pipeline de criação e exportação de assets",
+    eyebrow: "Ferramenta · automação visual",
+    summary:
+      "CLI Python para processar imagens de marca, remover fundos e exportar conjuntos de ícones para web e mobile.",
+    scope: "CLI local · geração opcional por API",
+    role: "Ferramenta pessoal em evolução",
+    stack: ["Python", "Pillow", "OpenAI Images API", "rembg", "YAML"],
+    context:
+      "Uma imagem de marca precisa de diferentes cortes, transparência e tamanhos para caber em favicon, navegação, PWA e outros destinos sem deformar o original.",
+    approach:
+      "A ferramenta recebe uma imagem existente ou uma geração opcional, processa transparência e recorte, e exporta masters, PNG/WebP, favicon, ícone Apple e tamanhos PWA. Manifestos YAML permitem fluxos em lote e cópia configurável dos resultados.",
+    outcome:
+      "É um utilitário local, não um serviço hospedado. Prompts e manifestos atuais contêm referências de marcas/produtos específicos; o case público fica genérico e sem capturas ou assets identificáveis até confirmar permissões para cada material.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
     slug: "testmaster",
     title: "Testmaster",
     eyebrow: "Edtech · ferramenta de estudo",
