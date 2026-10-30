@@ -409,6 +409,65 @@ export const projects: Project[] = [
     links: [{ label: "Repositório", href: "https://github.com/woragis/gameboy-emulator" }],
   },
   {
+    slug: "pokemon-center",
+    title: "Pokémon Center · em validação",
+    eyebrow: "Ecossistema de fã · WIP",
+    summary:
+      "Projeto registrado no catálogo como um conjunto de ferramentas para explorar dados Pokémon e montar times; o código ainda não foi revisado.",
+    scope: "Escopo de monorepo a confirmar",
+    role: "Projeto pessoal · contribuição a confirmar",
+    stack: ["Go (catálogo)", "Python (catálogo)", "PostgreSQL (catálogo)", "Redis (catálogo)", "Next.js (catálogo)"],
+    context:
+      "Um conjunto de ferramentas para dados de Pokémon pode combinar ingestão, processamento e experiências de consulta, desde que seus componentes e limites estejam claramente definidos.",
+    approach:
+      "O catálogo pessoal descreve um WIP com catálogo de dados, montagem de times, jobs assíncronos e ingestão da PokéAPI. Não foi possível acessar o repositório remoto nesta revisão, então esses pontos ainda não foram confirmados no código.",
+    outcome:
+      "Este rascunho registra somente a intenção anotada no catálogo. A composição do monorepo, aplicações existentes, stack, contribuição e fluxos funcionais permanecem por verificar. O projeto deve ser identificado como trabalho de fã, sem sugerir vínculo oficial; imagens e outros assets precisam de autorização/licença apropriada.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
+    slug: "mario",
+    title: "Mario em Pygame · experimento",
+    eyebrow: "Jogo 2D · Python",
+    summary:
+      "Experimento de plataforma em Pygame com mapa em tiles e módulos iniciais de jogador, gravidade e câmera.",
+    scope: "Protótipo local · interação principal incompleta",
+    role: "Projeto pessoal",
+    stack: ["Python", "Pygame", "tile maps", "física 2D"],
+    context:
+      "Um jogo de plataforma pequeno combina mapa, loop de eventos, movimento do personagem, colisões e câmera em uma experiência interativa coerente.",
+    approach:
+      "O repositório desenha um mapa textual em tiles e contém módulos de jogador e câmera com movimento e gravidade iniciais. No loop principal revisado, a atualização do jogador, a câmera e o desenho do personagem estão comentados; por isso, a cena executada ainda não demonstra o jogo completo.",
+    outcome:
+      "O checkout não inclui README e a execução observada é essencialmente uma visualização estática do mapa. O case é apresentado como experimento em andamento, não como jogo finalizado. Antes de divulgar, também é necessário rever os assets e evitar redistribuir material protegido ou sugerir vínculo oficial com a Nintendo.",
+    featured: false,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/mario" }],
+  },
+  {
+    slug: "financial-market-trend-analyzer",
+    title: "Financial Market Trend Analyzer · em validação",
+    eyebrow: "Análise quantitativa exploratória · Python",
+    summary:
+      "Pipeline local para coletar séries de mercado, calcular indicadores, comparar ativos e experimentar classificadores de tendência.",
+    scope: "Análise offline · resultados ainda não reproduzidos",
+    role: "Projeto pessoal · contribuição a confirmar",
+    stack: ["Python", "Pandas", "yfinance", "scikit-learn", "XGBoost", "Matplotlib"],
+    context:
+      "Séries de mercado precisam ser preparadas, comparadas e avaliadas com separação temporal adequada para que análises exploratórias não sejam confundidas com previsões confiáveis.",
+    approach:
+      "O código busca cotações via yfinance, calcula retornos e indicadores técnicos, produz correlações e estatísticas e compara modelos classificadores com uma divisão sequencial entre treino e teste. Os arquivos de dados e os resultados gerados não estão versionados no checkout revisado.",
+    outcome:
+      "O README afirma 72% de acurácia, mas esse resultado não pôde ser reproduzido porque o repositório não contém dataset, artefatos ou relatório de execução. A métrica, o desenho de validação e o comportamento fora da amostra precisam de auditoria antes de qualquer alegação de desempenho. Ferramenta educacional; não fornece aconselhamento financeiro.",
+    featured: false,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/financial-market-trend-analyzer" }],
+  },
+  {
     slug: "testmaster",
     title: "Testmaster",
     eyebrow: "Edtech · ferramenta de estudo",
