@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { projects, selectedProjects } from "@/content/site";
+import { projects, publishedArticles, selectedProjects } from "@/content/site";
 import { absoluteUrl, pageMetadata, jsonLd } from "@/lib/seo";
 import { FileOrganizerCaseStudy } from "@/components/file-organizer-case-study";
 import { EnemStudyCaseStudy } from "@/components/enem-study-case-study";
@@ -29,6 +29,7 @@ import { FinancialAnalyzerCaseStudy } from "@/components/financial-analyzer-case
 import { ConceptualProjectsCaseStudies } from "@/components/conceptual-projects-case-studies";
 import { ProjectBanner, ProjectLogo } from "@/components/project-media";
 import { ProjectStory } from "@/components/project-story";
+import { ArticleCard } from "@/components/article-card";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -50,6 +51,7 @@ export default async function ProjectDetailPage({ params }: Props) {
   const { slug } = await params;
   const project = projects.find((item) => item.slug === slug && item.selected);
   if (!project) notFound();
+  const relatedArticles = publishedArticles.filter((article) => article.projectSlugs?.includes(project.slug));
   const structuredData = { "@context": "https://schema.org", "@type": "CreativeWork", name: project.title, description: project.summary, creator: { "@type": "Person", name: "Jezreel de Andrade" }, url: absoluteUrl(`/projetos/${project.slug}`), keywords: project.stack.join(", ") };
 
   return <article className="page-shell detail-page">
@@ -58,5 +60,6 @@ export default async function ProjectDetailPage({ params }: Props) {
     {project.media?.detailBanner && <ProjectBanner image={project.media.detailBanner} />}
     <header className="detail-header">{project.media?.logo && <ProjectLogo image={project.media.logo} />}<p className="eyebrow">{project.eyebrow} · {project.scope}{!project.published && " · Rascunho"}</p><h1>{project.title}</h1><p className="detail-lede">{project.summary}</p><div className="detail-facts"><span>Minha atuação<strong>{project.role}</strong></span><span>Tecnologias<strong>{project.stack.join(" · ")}</strong></span></div>{project.links?.length ? <div className="detail-links">{project.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div> : null}</header>
     {project.story?.length ? <ProjectStory project={project} /> : project.slug === "file-organizer" ? <FileOrganizerCaseStudy /> : project.slug === "enem-study" ? <EnemStudyCaseStudy /> : project.slug === "prateleira" ? <PrateleiraCaseStudy /> : project.slug === "weatherly" ? <WeatherlyCaseStudy /> : project.slug === "lingo" ? <LingoCaseStudy /> : project.slug === "festas" ? <FestasCaseStudy /> : project.slug === "testmaster" ? <TestmasterCaseStudy /> : project.slug === "praxis" ? <PraxisCaseStudy /> : project.slug === "gaudivo" ? <GaudivoCaseStudy /> : project.slug === "scholar" ? <ScholarCaseStudy /> : project.slug === "consultorio-nutricional" ? <NutritionPracticeCaseStudy /> : project.slug === "treino-pessoal" ? <WorkoutPrototypeCaseStudy /> : project.slug === "fitness-progress" ? <FitnessPlatformCaseStudy /> : project.slug === "nutritionist-saas" ? <ClinicPlatformCaseStudy /> : project.slug === "valorant-wiki" ? <ValorantWikiCaseStudy /> : project.slug === "parties" ? <PartiesCaseStudy /> : project.slug === "domains-finder" ? <DomainsFinderCaseStudy /> : project.slug === "logo-generator" ? <LogoGeneratorCaseStudy /> : project.slug === "social-media-sentiment-analysis" ? <SocialSentimentCaseStudy /> : project.slug === "gameboy-emulator" ? <GameboyEmulatorCaseStudy /> : project.slug === "pokemon-center" ? <PokemonCenterCaseStudy /> : project.slug === "pokemon-wiki" ? <ConceptualProjectsCaseStudies kind="pokemon-wiki" /> : project.slug === "mario" ? <MarioCaseStudy /> : project.slug === "financial-market-trend-analyzer" ? <FinancialAnalyzerCaseStudy /> : project.slug === "anime-ai-chat" ? <ConceptualProjectsCaseStudies kind="anime-ai-chat" /> : project.slug === "fighting-teacher" ? <ConceptualProjectsCaseStudies kind="fighting-teacher" /> : project.slug === "search" ? <ConceptualProjectsCaseStudies kind="search" /> : <div className="detail-body"><section><p className="eyebrow">01 / Contexto</p><p>{project.context}</p></section><section><p className="eyebrow">02 / Abordagem</p><p>{project.approach}</p></section><section><p className="eyebrow">03 / Resultado</p><p>{project.outcome}</p></section></div>}
+    {relatedArticles.length > 0 && <section className="project-related-articles" aria-labelledby="project-related-articles-title"><header><p className="eyebrow">CONTINUAÇÃO</p><h2 id="project-related-articles-title">Artigos relacionados</h2><p>Textos publicados que exploram decisões e ideias ligadas a {project.title}.</p></header><div className="article-list">{relatedArticles.map((article, index) => <ArticleCard key={article.slug} article={article} index={index} />)}</div><Link className="project-related-articles__all" href={`/artigos?projeto=${project.slug}`}>Ver todos os artigos deste projeto ↗</Link></section>}
   </article>;
 }

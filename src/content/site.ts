@@ -598,10 +598,23 @@ export type Article = {
   publishedAt?: string;
   readingTime: string;
   content: string[];
+  projectSlugs?: string[];
+  linkedinUrl?: string;
+  cover?: ProjectImage;
+  galleries?: ProjectGallery[];
+  story?: ArticleStoryBlock[];
   selected: boolean;
   published: boolean;
   sourceLabel: string;
 };
+
+export type ArticleStoryBlock =
+  | { type: "heading"; id: string; title: string; level?: 2 | 3 }
+  | { type: "paragraphs"; id: string; paragraphs: string[] }
+  | { type: "image"; id: string; image: ProjectImage; layout?: "inset" | "full" }
+  | { type: "video"; id: string; video: ProjectVideo; layout?: "inset" | "full" }
+  | { type: "gallery"; id: string; galleryId: string; layout?: "inset" | "full" }
+  | { type: "callout"; id: string; title: string; body: string; tone?: "note" | "result" };
 
 export const articles: Article[] = [
   {
@@ -611,6 +624,7 @@ export const articles: Article[] = [
     summary:
       "Uma regra de modelagem simples para evitar imprecisão em valores monetários e manter consistência entre banco, aplicação e pagamentos.",
     readingTime: "4 min",
+    projectSlugs: ["prateleira"],
     content: [
       "Na Prateleira, valores monetários são representados como inteiros em centavos. R$ 12,90 vira 1290. Isso evita depender de aritmética binária de ponto flutuante para somas e cálculos de margem.",
       "A interface continua recebendo e mostrando valores em reais. Na fronteira da aplicação, a entrada é convertida para centavos; na saída, `Intl.NumberFormat` formata o valor para pt-BR. Assim, a representação de apresentação fica separada da representação usada nos cálculos.",
@@ -628,6 +642,7 @@ export const articles: Article[] = [
     summary:
       "Como contratos explícitos e versionados ajudam dois runtimes a colaborar na fronteira de uma fila Redis.",
     readingTime: "5 min",
+    projectSlugs: ["lingo"],
     content: [
       "No Lingo, a API em Go e os workers em Python têm responsabilidades diferentes. Eles não precisam compartilhar código para trocar trabalho; precisam concordar sobre o formato e o significado das mensagens.",
       "A documentação do projeto descreve contratos com `schema_version`, um `type` de job e um payload tipado, acompanhados por exemplos JSON. Isso torna a fronteira inspecionável e permite validar o que cada consumidor espera receber.",
@@ -645,6 +660,7 @@ export const articles: Article[] = [
     summary:
       "Uma ordem de verificação para controlar acesso, cotas e custo antes de enfileirar trabalho que chama um provedor de IA.",
     readingTime: "5 min",
+    projectSlugs: ["lingo"],
     content: [
       "Uma fila torna possível processar tarefas de IA fora do ciclo de uma requisição HTTP, mas não deve transformar qualquer chamada em trabalho gratuito e ilimitado.",
       "Na série técnica do Lingo, o fluxo proposto valida primeiro o JWT, depois o entitlement da conta e a cota disponível. Só então a API enfileira o job. A ordem importa: enfileirar antes de confirmar autorização e cota pode criar trabalho que a pessoa não tem direito de executar ou cujo custo não foi contabilizado.",
@@ -662,6 +678,7 @@ export const articles: Article[] = [
     summary:
       "Por que consultar apenas o status atual de um item não basta para saber se ele estará livre na data escolhida.",
     readingTime: "5 min",
+    projectSlugs: ["festas"],
     content: [
       "Em um sistema de locação, um item pode estar livre agora e reservado para uma festa futura. Portanto, disponibilidade depende da janela do evento e das atribuições que se sobrepõem a ela.",
       "O fluxo documentado no Festas busca unidades do tipo solicitado, exclui as que estão em manutenção e verifica as atribuições ativas em eventos cuja janela cruza a data consultada. Uma unidade sem conflito pode ser oferecida como disponível.",
