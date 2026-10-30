@@ -253,6 +253,64 @@ export const projects: Project[] = [
     published: false,
   },
   {
+    slug: "fitness-progress",
+    title: "Plataforma de treino e progresso",
+    eyebrow: "Produto em laboratório · fitness",
+    summary:
+      "Experiência web e mobile para registrar treinos, acompanhar evolução e explorar orientação contextual por IA.",
+    scope: "SaaS em laboratório · web + Flutter",
+    role: "Contribuição e escopo em validação",
+    stack: ["Next.js", "TypeScript", "Prisma", "Flutter", "PostgreSQL", "Platform Core", "LLM"],
+    context:
+      "Uma rotina de treino combina execução diária, histórico de carga, objetivos e sinais de progresso que precisam fazer sentido ao longo do tempo.",
+    approach:
+      "O código observado reúne registro de treino, recordes pessoais, objetivos, métricas, gamificação e módulos de coach/nutrição. O produto web usa serviços compartilhados do Platform Core; o cliente Flutter inclui áreas de treino, histórico e coach.",
+    outcome:
+      "Este case permanece anonimizado e identificado como laboratório. Minha participação e autorização para divulgar a marca, o código ou telas precisam ser confirmadas; IA real, visão por imagem, billing e release mobile dependem de configuração e validação próprias.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
+    slug: "clinic-platform",
+    title: "Plataforma configurável para consultórios",
+    eyebrow: "Produto em laboratório · saúde",
+    summary:
+      "SaaS com site público configurável, agenda de atendimentos e backoffice para gestão do consultório.",
+    scope: "SaaS em laboratório · web",
+    role: "Contribuição em validação",
+    stack: ["Next.js", "TypeScript", "Prisma", "Auth.js", "PostgreSQL", "Stripe"],
+    context:
+      "Profissionais de saúde precisam de uma presença pública e de uma rotina administrativa que possam ajustar sem depender de conteúdo fixo no código.",
+    approach:
+      "O projeto concentra tema, horários, SEO e ordem das seções em configuração por site; inclui páginas públicas, agendamento e backoffice para serviços, agenda e contatos, com acesso administrativo e billing documentados.",
+    outcome:
+      "A relação entre produto próprio e trabalho para cliente ainda precisa ser esclarecida. O case está anonimizado, sem link de repositório, marca ou credenciais seed; booking, cobrança e isolamento por organização devem ser validados antes de falar em operação real.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
+    slug: "valorant-wiki",
+    title: "Valorant Wiki · em construção",
+    eyebrow: "Projeto pessoal · jogo",
+    summary:
+      "Estrutura inicial de uma wiki com rotas para personagens, mapas e armas; o conteúdo funcional ainda precisa ser desenvolvido.",
+    scope: "Aplicação web · Next.js",
+    role: "Projeto pessoal",
+    stack: ["Next.js", "React", "TypeScript"],
+    context:
+      "Uma wiki de jogo precisa transformar dados variados em páginas fáceis de navegar e consultar, com fontes e atualizações confiáveis.",
+    approach:
+      "O checkout atual contém navegação e rotas de listagem/detalhe para personagens, mapas e armas, mas as páginas revisadas ainda exibem apenas títulos. O próximo trabalho é decidir a fonte de dados e construir conteúdo e navegação reais.",
+    outcome:
+      "Projeto em estágio inicial, ainda sem uma demonstração funcional de wiki. Esta página registra a intenção e o estado observado; qualquer conteúdo, imagem ou identidade visual deve respeitar as fontes e políticas aplicáveis, sem sugerir vínculo oficial com a Riot Games.",
+    featured: false,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/valorant-wiki" }],
+  },
+  {
     slug: "testmaster",
     title: "Testmaster",
     eyebrow: "Edtech · ferramenta de estudo",
