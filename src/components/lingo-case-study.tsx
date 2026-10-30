@@ -56,14 +56,14 @@ function AiModes() {
 export function LingoCaseStudy() {
   return <div className="lingo-case">
     <section className="lingo-case__intro">
-      <p className="eyebrow"><span>CASE / IDIOMAS</span> PRODUTO · WEB + MOBILE</p>
-      <h2>Aprender uma língua também é voltar ao que quase escapou da memória.</h2>
-      <p>O Lingo combina lições curtas com exercícios de formatos diferentes e uma agenda de revisão espaçada. A pessoa pratica uma ideia, recebe feedback e avalia o quanto lembrou; essa avaliação ajuda o scheduler FSRS a decidir quando aquele cartão deve voltar.</p>
-      <p className="lingo-case__note">Este estudo de caso descreve o código e os modos de execução documentados. Os exercícios exibidos são exemplos editoriais; recursos de IA e voz dependem de configuração e são identificados conforme o modo.</p>
+      <p className="eyebrow"><span>PROJETO EXPLORATÓRIO / IDIOMAS</span> PROTÓTIPO · WEB + FLUTTER</p>
+      <h2>Um protótipo para explorar como transformar estudo em hábito.</h2>
+      <p>O Lingo foi um projeto exploratório de aprendizagem de idiomas, próximo de um protótipo acadêmico. Ele investiga lições curtas, formatos de exercício e revisão espaçada: a pessoa pratica, recebe feedback e avalia o quanto lembrou; essa avaliação ajuda o scheduler FSRS a decidir quando o cartão deve voltar.</p>
+      <p className="lingo-case__note">Este estudo descreve o código e os modos documentados, sem apresentar o Lingo como produto lançado. Os exercícios são exemplos editoriais; IA e voz dependem de configuração e são identificadas conforme o modo.</p>
     </section>
 
     <section className="lingo-case__hero">
-      <div className="lingo-case__hero-copy"><p className="eyebrow"><span>MAPA DO PRODUTO</span> CLIENTES E SERVIÇOS</p><h2>Uma experiência de estudo, com integrações nas fronteiras certas.</h2><p>O app web mantém o domínio de lições, cartões e revisões. Capacidades compartilhadas como autenticação, cobrança, arquivos e jobs são acessadas pelo Platform Core; os workers processam tarefas de LLM e transcrição conforme o ambiente.</p></div>
+      <div className="lingo-case__hero-copy"><p className="eyebrow"><span>MAPA DO PROTÓTIPO</span> CLIENTES E SERVIÇOS</p><h2>Uma experiência de estudo, com integrações nas fronteiras certas.</h2><p>O app web mantém o domínio de lições, cartões e revisões. Capacidades compartilhadas como autenticação, cobrança, arquivos e jobs são acessadas pelo Platform Core; os workers processam tarefas de LLM e transcrição conforme o ambiente.</p></div>
       <LingoSystemMap />
     </section>
 
@@ -88,7 +88,7 @@ export function LingoCaseStudy() {
         <p className="eyebrow"><span>05</span> / Clientes web e mobile</p><div className="lingo-section__content"><div><h2>O domínio do produto atende mais de uma interface.</h2><p>O repositório principal contém a aplicação web Next.js e suas APIs. O cliente móvel é Flutter, com telas próprias e acesso às APIs do Lingo. Integrações de autenticação, billing, armazenamento e jobs passam pela fronteira compartilhada com o Platform Core.</p><p>O mapa de arquitetura ajuda a entender responsabilidades e dependências. Ele não afirma que cada serviço esteja disponível em qualquer ambiente: o README separa explicitamente laboratório local, configuração de produção e funcionalidades futuras.</p></div><div className="lingo-client-map"><div><small>CLIENTE WEB</small><b>Next.js</b></div><i>↘</i><div className="lingo-client-map__domain"><small>DOMÍNIO LINGO</small><b>lições · cartões · revisões</b></div><i>↙</i><div><small>CLIENTE MOBILE</small><b>Flutter</b></div><p>Clientes diferentes; domínio e serviços compartilhados.</p></div></div>
       </section>
 
-      <section className="lingo-close"><p className="eyebrow"><span>06</span> / Estado e escopo</p><h2>O case distingue o que está no código do que depende de operação.</h2><div className="lingo-close__grid"><p><strong>Base do produto.</strong><br />Lições, formatos de exercício, cartões e revisão com FSRS têm fluxos implementados no app.</p><p><strong>Integrações condicionais.</strong><br />Geração com LLM, transcrição real, billing e IAP dependem de serviços e configuração apropriados.</p><p><strong>Futuro declarado.</strong><br />Conversa em tempo real e roleplay aparecem como ideias posteriores, não como recursos prontos.</p></div><p className="lingo-case__note">Estudo de caso em revisão. Use somente dados fictícios na demonstração; não exponha contas de seed, tokens ou configuração local.</p></section>
+      <section className="lingo-close"><p className="eyebrow"><span>06</span> / Protótipo e aprendizados</p><h2>O valor deste projeto está em explorar os fluxos e suas fronteiras técnicas.</h2><div className="lingo-close__grid"><p><strong>Exploração de produto.</strong><br />Lições, exercícios, cartões e revisão com FSRS compõem a hipótese de experiência testada pelo protótipo.</p><p><strong>Integrações condicionais.</strong><br />Geração com LLM, transcrição real, billing e IAP dependem de serviços e configuração apropriados.</p><p><strong>Próximo produto.</strong><br />Gaudivo é a iniciativa separada que pretende evoluir para lançamento mobile; o Lingo permanece como projeto exploratório.</p></div><p className="lingo-case__note">Estudo de caso em revisão. Use somente dados fictícios na demonstração; não exponha contas de seed, tokens ou configuração local.</p></section>
     </div>
   </div>;
 }

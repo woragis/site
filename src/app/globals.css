@@ -1433,6 +1433,63 @@ html[data-theme="index"] .project-card__visual--enem-study::before, html[data-th
   .festas-close__grid { gap: .5rem; }
 }
 
+/* Static editorial case studies for Praxis and Gaudivo */
+.learning-case { max-width: 1160px; margin: clamp(4rem, 8vw, 8rem) auto 0; }
+.learning-case__intro { max-width: 810px; margin: 0 auto clamp(3rem, 6vw, 5rem); }
+.learning-case__intro h2, .learning-case__hero h2, .learning-case__close h2 { max-width: 800px; margin: 1rem 0 1.2rem; font-family: var(--font-display); font-size: clamp(2.4rem, 5.2vw, 5rem); font-weight: 500; letter-spacing: -.06em; line-height: 1; }
+.learning-case__intro > p:not(.eyebrow), .learning-case__hero > div > p:not(.eyebrow), .learning-case__story section > div:first-of-type > p { color: var(--color-muted); font-size: clamp(.92rem, 1.15vw, 1.04rem); line-height: 1.8; }
+.learning-case__note { border-left: 2px solid var(--color-accent); padding-left: 1rem; color: var(--color-muted); font-size: .82rem !important; }
+.learning-case__hero { display: grid; grid-template-columns: minmax(15rem, .8fr) minmax(0, 1.2fr); align-items: center; gap: clamp(2rem, 6vw, 5rem); margin-bottom: clamp(5rem, 10vw, 9rem); border: 1px solid var(--color-line); border-radius: var(--radius-xl); background: var(--color-paper-strong); padding: clamp(1.2rem, 4vw, 3rem); box-shadow: var(--shadow-card); }
+.learning-case__hero h2 { font-size: clamp(2.1rem, 4vw, 3.7rem); }
+.learning-map, .praxis-lesson, .praxis-code, .praxis-memory, .praxis-mentor, .gaudivo-goals, .gaudivo-session, .gaudivo-review, .gaudivo-progress { min-width: 0; margin: 0; border: 1px solid var(--color-line); border-radius: var(--radius-xl); background: var(--color-bg); padding: clamp(1rem, 2.5vw, 1.6rem); box-shadow: var(--shadow-card); }
+.learning-map { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: .55rem; }
+.learning-map > div { display: grid; min-width: 0; min-height: 7rem; align-content: center; gap: .4rem; border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-paper-strong); padding: .8rem; }
+.learning-map small, .praxis-lesson small, .praxis-code small, .praxis-memory small, .praxis-mentor small, .gaudivo-goals small, .gaudivo-session small, .gaudivo-progress small, .gaudivo-review small { color: var(--color-muted); font: .5rem var(--font-mono); letter-spacing: .06em; }
+.learning-map b, .praxis-lesson b, .gaudivo-session > b, .gaudivo-progress > b { font-family: var(--font-display); font-size: .9rem; font-weight: 500; }
+.learning-map span, .learning-map > p, .praxis-lesson span, .praxis-lesson em, .praxis-code > span, .praxis-mentor > span, .gaudivo-session p, .gaudivo-progress p { color: var(--color-muted); font-size: .58rem; line-height: 1.55; }
+.learning-map > i, .gaudivo-review > i { color: var(--color-accent); font-style: normal; }
+.learning-map > p { grid-column: 1 / -1; margin: .3rem 0 0; text-align: center; }
+.learning-case__story { display: grid; gap: clamp(4rem, 8vw, 7rem); }
+.learning-case__story section { display: grid; grid-template-columns: minmax(0, .95fr) minmax(20rem, 1.05fr); align-items: center; gap: clamp(1.5rem, 5vw, 4.5rem); }
+.learning-case__story section > .eyebrow { grid-column: 1 / -1; margin: 0 0 -1.2rem; }
+.learning-case__story h2 { max-width: 38rem; margin: 0 0 1rem; font-family: var(--font-display); font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 500; letter-spacing: -.055em; line-height: 1.04; }
+.learning-case__story section > div:first-of-type > p { margin: .7rem 0; }
+.praxis-lesson, .praxis-code, .praxis-memory, .praxis-mentor, .gaudivo-goals, .gaudivo-session, .gaudivo-progress { display: grid; align-content: center; gap: .75rem; }
+.praxis-lesson > em { border-top: 1px solid var(--color-line); padding-top: .65rem; font-style: normal; }
+.praxis-code pre { overflow-x: auto; margin: 0; border-radius: var(--radius-md); background: var(--color-paper-strong); padding: 1rem; color: var(--color-ink); font: .66rem/1.8 var(--font-mono); }
+.praxis-memory > div, .gaudivo-session > div, .gaudivo-progress > div { display: flex; align-items: center; justify-content: space-between; gap: .75rem; border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-paper-strong); padding: .75rem; font-size: .65rem; }
+.praxis-memory > div > b { color: var(--color-accent); font-size: .57rem; font-weight: 500; text-align: right; }
+.praxis-mentor > p { margin: 0; font-family: var(--font-display); font-size: 1.15rem; line-height: 1.4; }
+.gaudivo-goals { grid-template-columns: 1fr 1fr; }
+.gaudivo-goals > small { grid-column: 1 / -1; }
+.gaudivo-goals > span { display: flex; justify-content: space-between; border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-paper-strong); padding: .75rem; font-size: .66rem; }
+.gaudivo-goals > .is-selected { border-color: var(--color-accent); color: var(--color-accent); }
+.gaudivo-session footer { display: flex; gap: .35rem; }
+.gaudivo-session footer > i { height: .35rem; flex: 1; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--color-accent) 23%, var(--color-paper-strong)); }
+.gaudivo-session footer > i:first-child, .gaudivo-session footer > i:nth-child(2) { background: var(--color-accent); }
+.gaudivo-session p, .gaudivo-progress p { margin: 0; }
+.gaudivo-review { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .6rem; }
+.gaudivo-review > div { display: grid; min-height: 7rem; align-content: center; gap: .45rem; border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-paper-strong); padding: .8rem; }
+.gaudivo-review > div > b { font-family: var(--font-display); font-size: .85rem; font-weight: 500; }
+.gaudivo-review > div > span { color: var(--color-muted); font-size: .56rem; }
+.gaudivo-progress > div strong { color: var(--color-accent); }
+.learning-case__close { margin-top: clamp(4rem, 8vw, 7rem); }
+.learning-case__close > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+.learning-case__close > div > p { margin: 0; border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-paper-strong); padding: 1rem; color: var(--color-muted); font-size: .78rem; line-height: 1.7; }
+.learning-case__close strong { color: var(--color-ink); }
+@media (max-width: 760px) {
+  .learning-case__hero, .learning-case__story section { grid-template-columns: 1fr; }
+  .learning-case__story section > .eyebrow { margin-bottom: -.5rem; }
+  .learning-case__close > div { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .learning-map { grid-template-columns: 1fr; }
+  .learning-map > i, .gaudivo-review > i { justify-self: center; transform: rotate(90deg); }
+  .learning-map > div { min-height: 5rem; }
+  .learning-map > p { grid-column: 1; }
+  .gaudivo-review { grid-template-columns: 1fr; }
+}
+
 /* Testmaster case study: static document-to-review diagrams */
 .testmaster-case { max-width: 1160px; margin: clamp(4rem, 8vw, 8rem) auto 0; }
 .testmaster-case__intro { max-width: 810px; margin: 0 auto clamp(3rem, 6vw, 5rem); }

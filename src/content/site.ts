@@ -137,22 +137,62 @@ export const projects: Project[] = [
   {
     slug: "lingo",
     title: "Lingo",
-    eyebrow: "Edtech · idiomas",
+    eyebrow: "Projeto exploratório · idiomas",
     summary:
-      "Aplicação de aprendizagem de idiomas que combina exercícios, trilhas e memória de longo prazo com FSRS.",
-    scope: "SaaS · web + mobile",
-    role: "Produto e engenharia",
-    stack: ["Go", "Python", "Next.js", "Redis", "PostgreSQL", "FSRS"],
+      "Protótipo de aprendizagem de idiomas usado para explorar lições, exercícios e revisão espaçada com FSRS.",
+    scope: "Protótipo · web + Flutter",
+    role: "Exploração de produto e engenharia",
+    stack: ["Next.js", "TypeScript", "Flutter", "Redis", "PostgreSQL", "FSRS", "Platform Core"],
     context:
-      "O produto busca ajudar a criar o hábito de estudar idiomas e reter o conteúdo praticado ao longo do tempo.",
+      "O projeto explora como organizar sessões curtas de idiomas e ajudar a pessoa a retomar conteúdos estudados ao longo do tempo.",
     approach:
-      "A arquitetura separa a API em Go dos workers de IA em Python, com Redis na fronteira e contratos versionados para os jobs. A aplicação documenta múltiplos modos de exercício e distingue recursos de lab, produção e roadmap.",
+      "O app Next.js e o cliente Flutter usam o domínio do Lingo; serviços compartilhados do Platform Core fazem a fronteira com jobs e workers Python. O protótipo documenta formatos de exercício e revisão, além de distinguir modos de lab, integrações configuradas e ideias futuras.",
     outcome:
       "A documentação deixa explícito que IA e reconhecimento de fala podem operar em modo simulado no lab. A voz real depende de configuração do worker de transcrição; conversa em tempo real é roadmap.",
     featured: true,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/lingo" }],
+  },
+  {
+    slug: "praxis",
+    title: "Praxis",
+    eyebrow: "Edtech · programação",
+    summary:
+      "Ambiente de aprendizagem de programação com lições curtas, projetos guiados, memória de habilidades e mentor.",
+    scope: "Produto · web + Flutter",
+    role: "Produto e engenharia",
+    stack: ["Next.js", "TypeScript", "Prisma", "Flutter", "FSRS", "Platform Core"],
+    context:
+      "Aprender programação pede mais do que assistir a conteúdo: é preciso escrever código, praticar conceitos e voltar às habilidades que ainda não se consolidaram.",
+    approach:
+      "Praxis organiza a experiência em lições, projetos guiados e revisão de habilidades. O app inclui um mentor cuja execução real depende do Platform Core e de configuração de IA; o laboratório pode usar respostas simuladas.",
+    outcome:
+      "O repositório documenta fluxos de aprendizagem, app web e cliente Flutter, além de testes unitários, smoke e E2E. O preview e os gates operacionais de produção ainda precisam ser validados antes de apresentar o produto como lançamento ativo.",
+    featured: true,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/mimo" }],
+  },
+  {
+    slug: "gaudivo",
+    title: "Gaudivo",
+    eyebrow: "Produto · idiomas",
+    summary:
+      "Aplicativo de idiomas em desenvolvimento, com trilhas definidas por objetivo, sessões diárias e revisão espaçada.",
+    scope: "Produto web · lançamento mobile planejado",
+    role: "Produto e engenharia",
+    stack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "SRS", "Platform Core"],
+    context:
+      "Pessoas aprendem idiomas por motivos diferentes. Uma trilha para viajar, trabalhar, ganhar fluência ou estudar para uma prova deve começar pelo objetivo de quem aprende.",
+    approach:
+      "O onboarding seleciona o objetivo e resolve uma trilha própria. A duração diária e o ritmo ajustam o tamanho e o comportamento da sessão; as respostas alimentam a revisão espaçada e o progresso de estudo.",
+    outcome:
+      "O código revisado contém uma aplicação web com onboarding, aprendizagem e revisão. O plano é levar o produto às lojas Android e iOS; a publicação e um cliente mobile ainda não estão confirmados neste repositório.",
+    featured: true,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/gaudivo" }],
   },
   {
     slug: "testmaster",
