@@ -369,6 +369,46 @@ export const projects: Project[] = [
     published: false,
   },
   {
+    slug: "social-media-sentiment-analysis",
+    title: "Social Media Sentiment Analysis · em construção",
+    eyebrow: "Projeto de NLP · Python",
+    summary:
+      "Pipeline inicial que limpa textos, estima polaridade com TextBlob e VADER e organiza resultados em análises e relatórios.",
+    scope: "Pipeline local de análise · dados ainda não incluídos",
+    role: "Projeto pessoal",
+    stack: ["Python", "Pandas", "NLTK", "TextBlob", "Tweepy", "Matplotlib"],
+    context:
+      "Analisar publicações exige separar coleta, preparação de texto, estimativa de sentimento e agregação temporal, sem tratar a classificação como medida objetiva da opinião de pessoas.",
+    approach:
+      "O código organiza coleta via integração Twitter e função de scraping Reddit, pré-processamento em inglês, estimativas TextBlob/VADER, agregação de tendências e geração de visualizações e relatórios. O fluxo principal usa Twitter; os dados não estão versionados no repositório.",
+    outcome:
+      "O repositório contém uma estrutura inicial do pipeline, mas não comprova a alegação de 10 mil publicações do README: não há dataset nem resultados publicados no checkout. A qualidade, idioma, permissões da coleta e utilidade das conclusões ainda precisam ser validados; o case é um projeto em construção.",
+    featured: false,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/social-media-sentiment-analysis" }],
+  },
+  {
+    slug: "gameboy-emulator",
+    title: "Game Boy Emulator · laboratório",
+    eyebrow: "Projeto de sistemas · Zig",
+    summary:
+      "Experimento de baixo nível com componentes iniciais de CPU, memória, leitura de ROM e uma GPU em framebuffer.",
+    scope: "Protótipo local · execução de jogos não validada",
+    role: "Projeto pessoal",
+    stack: ["Zig", "SDL2", "emulação", "CPU", "memória"],
+    context:
+      "Um emulador precisa reproduzir regras de hardware em camadas: instruções da CPU, mapa de memória, temporização, vídeo, entrada e comportamento do cartucho.",
+    approach:
+      "O repositório separa CPU, registradores/memória, carregamento de ROM, framebuffer e integração SDL2. A implementação atual cobre apenas um subconjunto inicial e ainda contém regras incompletas; a chamada de renderização está comentada no loop principal.",
+    outcome:
+      "O estado revisado é de laboratório, não de emulador compatível: não foi confirmado um jogo funcional, a GPU usa premissas fixas e a integração de janela/renderização ainda não está conectada ao ciclo principal. A demonstração futura deve usar homebrew ou ROM com uso permitido, sem redistribuir jogos comerciais.",
+    featured: false,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/gameboy-emulator" }],
+  },
+  {
     slug: "testmaster",
     title: "Testmaster",
     eyebrow: "Edtech · ferramenta de estudo",
