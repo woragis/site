@@ -272,12 +272,12 @@ export const projects: Project[] = [
     published: false,
   },
   {
-    slug: "clinic-platform",
-    title: "Plataforma configurável para consultórios",
+    slug: "nutritionist-saas",
+    title: "Nutritionist SaaS · em revisão",
     eyebrow: "Produto em laboratório · saúde",
     summary:
       "SaaS com site público configurável, agenda de atendimentos e backoffice para gestão do consultório.",
-    scope: "SaaS em laboratório · web",
+    scope: "SaaS configurável · web",
     role: "Contribuição em validação",
     stack: ["Next.js", "TypeScript", "Prisma", "Auth.js", "PostgreSQL", "Stripe"],
     context:
@@ -468,6 +468,83 @@ export const projects: Project[] = [
     links: [{ label: "Repositório", href: "https://github.com/woragis/financial-market-trend-analyzer" }],
   },
   {
+    slug: "anime-ai-chat",
+    title: "Anime AI Chat · conceito",
+    eyebrow: "Ideia de produto · IA conversacional",
+    summary:
+      "Conceito de uma experiência conversacional ligada ao universo de anime; proposta e implementação ainda precisam ser definidas.",
+    scope: "Conceito · sem aplicação revisada",
+    role: "Exploração de produto",
+    stack: ["IA conversacional · a definir", "Aplicação · a definir"],
+    context:
+      "Uma experiência conversacional temática precisa de um propósito claro e de uma identidade própria para ir além de um chatbot genérico.",
+    approach:
+      "Até agora, o nome sugere um chat de IA relacionado a anime. O submódulo local não está inicializado e não foi possível confirmar código, público, fluxo, modelo ou funcionalidades existentes.",
+    outcome:
+      "Esta página registra uma ideia em descoberta, não um produto implementado. O próximo passo é escolher um caso de uso e decidir como usar personagens, histórias e materiais originais ou autorizados sem sugerir associação oficial com obras existentes.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
+    slug: "fighting-teacher",
+    title: "Fighting Teacher · conceito",
+    eyebrow: "Ideia de produto · aprendizagem de artes marciais",
+    summary:
+      "Conceito de uma plataforma de aprendizagem para artes marciais; público, modalidade inicial e experiência ainda não foram definidos.",
+    scope: "Conceito · sem aplicação demonstrável",
+    role: "Exploração de produto",
+    stack: ["Produto · a definir", "Tecnologia · a definir"],
+    context:
+      "Ensinar movimentos e progressão exige escolher para quem a ferramenta existe e como apresentar conteúdo com contexto, segurança e acompanhamento adequados.",
+    approach:
+      "O material disponível descreve apenas uma ideia ampla para ensinar várias artes marciais, com assinatura como possibilidade. O repositório local contém somente um README placeholder, sem aplicação ou fluxo demonstrável.",
+    outcome:
+      "O case permanece um conceito. Antes de planejar funcionalidades, será necessário definir se o produto atende alunos, academias ou instrutores, escolher uma modalidade piloto e garantir permissão para vídeos e materiais didáticos.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
+    slug: "search",
+    title: "Search · ferramentas locais de pesquisa",
+    eyebrow: "Toolbox pessoal · busca e descoberta",
+    summary:
+      "Conjunto de scripts locais para pesquisar tendências, imagens, vídeos, música e listas de anime em diferentes fontes.",
+    scope: "Coleção de CLIs e scripts · saídas locais",
+    role: "Projeto pessoal e automação",
+    stack: ["Node.js", "Python", "APIs de busca", "yt-dlp"],
+    context:
+      "Fluxos de pesquisa de conteúdo costumam repetir buscas, coleta de referências e organização de resultados em diferentes fontes e formatos.",
+    approach:
+      "O workspace agrupa cinco ferramentas: anime-list, pictures, media-search, music-download e trends-search. Os READMEs descrevem scripts para consultar fontes e guardar resultados localmente; módulos e dependências variam entre cada ferramenta.",
+    outcome:
+      "É uma toolbox de pesquisa pessoal, não um dashboard ou produto hospedado. A cobertura de fontes e a execução atual de cada submódulo ainda precisam ser verificadas; resultados de mídia ficam locais e não devem ser redistribuídos sem direitos apropriados.",
+    featured: false,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/search" }],
+  },
+  {
+    slug: "pokemon-wiki",
+    title: "Pokémon Wiki · em validação",
+    eyebrow: "Projeto de fã · escopo a confirmar",
+    summary:
+      "Repositório candidato para uma wiki Pokémon; não foi possível revisar o código nem confirmar as páginas existentes.",
+    scope: "Aplicação e dados a confirmar",
+    role: "Projeto pessoal · contribuição a confirmar",
+    stack: ["Tecnologias a confirmar"],
+    context:
+      "Uma wiki precisa de dados rastreáveis, páginas de consulta úteis e uma política clara para fontes, atualizações e materiais visuais.",
+    approach:
+      "A ficha local identifica um repositório Pokémon Wiki separado do Pokémon Center, mas o acesso ao remoto exige autenticação nesta revisão. Não foi possível verificar tecnologias, conteúdo, arquitetura ou funcionalidades.",
+    outcome:
+      "O case permanece provisório e sem link público. Antes de descrevê-lo como wiki funcional, é preciso recuperar acesso, entender sua relação com Pokémon Center e validar direitos de uso de dados e imagens. É um projeto independente de fã, sem afiliação oficial.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
     slug: "testmaster",
     title: "Testmaster",
     eyebrow: "Edtech · ferramenta de estudo",
@@ -486,26 +563,6 @@ export const projects: Project[] = [
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/testmaster" }],
-  },
-  {
-    slug: "nutritionist",
-    title: "Nutritionist",
-    eyebrow: "Produto para cliente · saúde",
-    summary:
-      "Site configurável e backoffice para um consultório, com landing page, agendamento e gestão da agenda.",
-    scope: "Projeto para cliente · web",
-    role: "Engenharia de software",
-    stack: ["Next.js", "TypeScript", "PostgreSQL", "Prisma", "Auth.js", "Stripe"],
-    context:
-      "A experiência combina um site público para pacientes com uma área administrativa para a profissional cuidar do conteúdo, agenda e contatos.",
-    approach:
-      "A configuração do site concentra tema, horários, SEO e ordem das seções em `SiteConfig`; agendamento e acesso ao backoffice são organizados por organização.",
-    outcome:
-      "A ficha de portfólio condiciona a divulgação à confirmação da relação de trabalho e à autorização para mostrar marca, telas ou conteúdo identificável. Por isso, este case permanece em revisão.",
-    featured: false,
-    selected: false,
-    published: false,
-    links: [{ label: "Repositório", href: "https://github.com/woragis/nutritionist" }],
   },
 ];
 
