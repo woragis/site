@@ -195,6 +195,64 @@ export const projects: Project[] = [
     links: [{ label: "Repositório", href: "https://github.com/woragis/gaudivo" }],
   },
   {
+    slug: "scholar",
+    title: "Scholar",
+    eyebrow: "Edtech · cursos autorais",
+    summary:
+      "Plataforma B2C para publicar uma trilha de curso, oferecer aulas de preview e acompanhar o estudo de alunos matriculados.",
+    scope: "Produto web · cliente Flutter",
+    role: "Produto e engenharia",
+    stack: ["Next.js", "TypeScript", "Prisma", "Flutter", "PostgreSQL", "Platform Core"],
+    context:
+      "Uma pessoa autora precisa publicar uma trilha organizada e permitir que estudantes conheçam parte do conteúdo antes de decidir pelo acesso completo.",
+    approach:
+      "Scholar separa o papel de administração do curso e o de estudante: autoria organiza cursos, módulos e aulas; o catálogo oferece preview, e a área de estudo registra progresso, notas e acesso conforme a matrícula.",
+    outcome:
+      "O repositório documenta o fluxo de curso, preview e player, além de uma integração de cobrança cuja operação real exige configuração do Platform Core e Stripe. A página de currículo próprio e o soft-launch ainda precisam ser validados antes de apresentar o serviço como lançado.",
+    featured: true,
+    selected: true,
+    published: false,
+    links: [{ label: "Repositório", href: "https://github.com/woragis/saas-scholar" }],
+  },
+  {
+    slug: "consultorio-nutricional",
+    title: "Sistema para consultório nutricional",
+    eyebrow: "Projeto para cliente · saúde",
+    summary:
+      "Site e backoffice para organizar serviços, disponibilidade de agenda e solicitações de atendimento de um consultório.",
+    scope: "Projeto para cliente · web",
+    role: "Engenharia de software",
+    stack: ["SvelteKit", "TypeScript", "Drizzle", "PostgreSQL", "WhatsApp", "Email"],
+    context:
+      "A experiência combina informações públicas do consultório com ferramentas administrativas para manter conteúdo e acompanhar solicitações de horário.",
+    approach:
+      "O código inclui gestão de serviços e especialidades, consulta de horários disponíveis e criação de solicitações de agendamento. Também documenta integrações de comunicação por WhatsApp e email, que dependem de serviços externos configurados.",
+    outcome:
+      "Este rascunho está anonimizado. A contribuição específica, o estado operacional das integrações e a autorização para divulgar cliente, marca ou telas ainda precisam ser confirmados; nenhuma informação de paciente ou saúde deve aparecer na demonstração.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
+    slug: "treino-pessoal",
+    title: "Protótipo de acompanhamento de treinos",
+    eyebrow: "Protótipo · fitness",
+    summary:
+      "Aplicação individual para planejar rotinas, registrar séries durante o treino e acompanhar histórico e evolução no navegador.",
+    scope: "Protótipo web · armazenamento local",
+    role: "Produto e desenvolvimento",
+    stack: ["React", "JavaScript", "Vite", "localStorage", "Recharts"],
+    context:
+      "Acompanhar um treino envolve alternar entre a rotina planejada, o registro de cada série e a consulta do que aconteceu em sessões anteriores.",
+    approach:
+      "O protótipo reúne treino do dia, edição de rotinas, registro de carga e repetições, cronômetro de descanso, histórico e gráficos de evolução. Os dados ficam no armazenamento local do navegador.",
+    outcome:
+      "É um protótipo individual, não um SaaS multiusuário: não há sincronização remota no app de origem. Existe outro protótipo chamado Forte, mas a relação entre os dois e qual será a base de uma possível evolução ainda estão em avaliação.",
+    featured: false,
+    selected: true,
+    published: false,
+  },
+  {
     slug: "testmaster",
     title: "Testmaster",
     eyebrow: "Edtech · ferramenta de estudo",
