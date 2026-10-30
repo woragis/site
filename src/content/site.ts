@@ -1,3 +1,5 @@
+import projectCuration from "@/content/project-curation.json";
+
 export const site = {
   name: "Jezreel de Andrade",
   shortName: "Jezreel",
@@ -24,11 +26,60 @@ export type Project = {
   context: string;
   approach: string;
   outcome: string;
-  featured: boolean;
   selected: boolean;
   published: boolean;
   links?: { label: string; href: string }[];
+  media?: ProjectMediaSet;
+  galleries?: ProjectGallery[];
+  story?: ProjectStoryBlock[];
 };
+
+export type ProjectImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  caption?: string;
+  focalPoint?: { x: number; y: number };
+};
+
+export type ProjectVideo = {
+  src: string;
+  poster: ProjectImage;
+  title: string;
+  caption?: string;
+  transcript?: string;
+  subtitles?: string;
+};
+
+export type ProjectGalleryItem = {
+  image: ProjectImage;
+  title: string;
+  caption?: string;
+};
+
+export type ProjectGallery = {
+  id: string;
+  title: string;
+  description?: string;
+  device: "mobile" | "desktop" | "mixed";
+  presentation: "app-store-carousel" | "browser-carousel" | "editorial-grid";
+  items: ProjectGalleryItem[];
+};
+
+export type ProjectMediaSet = {
+  logo?: ProjectImage;
+  detailBanner?: ProjectImage;
+  homeFeature?: ProjectImage | ProjectVideo;
+  cardCover?: ProjectImage;
+};
+
+export type ProjectStoryBlock =
+  | { type: "text"; id: string; eyebrow?: string; title?: string; paragraphs: string[]; layout?: "narrow" | "split" }
+  | { type: "image"; id: string; image: ProjectImage; layout?: "inset" | "full" }
+  | { type: "video"; id: string; video: ProjectVideo; layout?: "inset" | "full" }
+  | { type: "gallery"; id: string; galleryId: string; layout?: "inset" | "full" }
+  | { type: "callout"; id: string; title: string; body: string; tone?: "note" | "result" };
 
 export const projects: Project[] = [
   {
@@ -46,7 +97,6 @@ export const projects: Project[] = [
       "A aplicação web usa Route Handlers como BFF para consultar o provedor de clima, manter a chave no servidor e aplicar cache de aproximadamente 15 minutos. O app mobile em Expo consome essa camada.",
     outcome:
       "O MVP documentado oferece busca por cidade e geolocalização, além de estados de carregamento e de erro para GPS e API. A demo web está registrada como produção na documentação do projeto.",
-    featured: true,
     selected: true,
     published: false,
     links: [
@@ -70,7 +120,6 @@ export const projects: Project[] = [
       "O comando de organização mostra um plano antes de agir; `--apply` confirma as movimentações. O projeto também documenta prevenção de colisões, detecção de duplicatas por SHA-256 e desfazer o último lote.",
     outcome:
       "A CLI oferece comandos para scan, organização, undo, duplicatas, TUI e execução agendada ou daemon. A demonstração deve ser feita em uma pasta descartável, conforme as instruções do projeto.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -89,7 +138,6 @@ export const projects: Project[] = [
       "O domínio registra estoque com lotes e validade, separa papéis da equipe e inclui um ponto de venda com dinheiro, PIX e cartão. A aplicação documenta cobrança SaaS via Stripe e upload local ou Vercel Blob.",
     outcome:
       "A documentação delimita o escopo atual: emissão fiscal e integração TEF ficam fora do produto. A demonstração deve usar dados fictícios e não exibir as contas seed documentadas no README.",
-    featured: true,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/prateleira" }],
@@ -109,7 +157,6 @@ export const projects: Project[] = [
       "O código reúne upload de PDF, flashcards, repetição espaçada SM-2, questões, simulados, redação e um tutor em revisão. Billing, arquivos e jobs de LLM são integrados pelo platform-core.",
     outcome:
       "O case descreve o estado atual do código, não um lançamento concluído. O ambiente local usa IA demonstrativa por padrão; a correção de redação, o tutor e a cobertura do banco de questões precisam de validação antes de serem apresentados como recursos prontos.",
-    featured: true,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/saas-enem" }],
@@ -129,7 +176,6 @@ export const projects: Project[] = [
       "O produto separa a área administrativa `/app`, a vitrine `/loja` e o billing da assinatura. Os fluxos de cobrança também distinguem a assinatura SaaS do pagamento de um aluguel.",
     outcome:
       "A documentação descreve catálogo, estoque, manutenção, equipe e pedidos. Demo pública não confirmada; a demonstração local usa dados fictícios e não deve expor credenciais seed ou configuração de storage.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/festas" }],
@@ -149,7 +195,6 @@ export const projects: Project[] = [
       "O app Next.js e o cliente Flutter usam o domínio do Lingo; serviços compartilhados do Platform Core fazem a fronteira com jobs e workers Python. O protótipo documenta formatos de exercício e revisão, além de distinguir modos de lab, integrações configuradas e ideias futuras.",
     outcome:
       "A documentação deixa explícito que IA e reconhecimento de fala podem operar em modo simulado no lab. A voz real depende de configuração do worker de transcrição; conversa em tempo real é roadmap.",
-    featured: true,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/lingo" }],
@@ -169,7 +214,6 @@ export const projects: Project[] = [
       "Praxis organiza a experiência em lições, projetos guiados e revisão de habilidades. O app inclui um mentor cuja execução real depende do Platform Core e de configuração de IA; o laboratório pode usar respostas simuladas.",
     outcome:
       "O repositório documenta fluxos de aprendizagem, app web e cliente Flutter, além de testes unitários, smoke e E2E. O preview e os gates operacionais de produção ainda precisam ser validados antes de apresentar o produto como lançamento ativo.",
-    featured: true,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/mimo" }],
@@ -189,7 +233,6 @@ export const projects: Project[] = [
       "O onboarding seleciona o objetivo e resolve uma trilha própria. A duração diária e o ritmo ajustam o tamanho e o comportamento da sessão; as respostas alimentam a revisão espaçada e o progresso de estudo.",
     outcome:
       "O código revisado contém uma aplicação web com onboarding, aprendizagem e revisão. O plano é levar o produto às lojas Android e iOS; a publicação e um cliente mobile ainda não estão confirmados neste repositório.",
-    featured: true,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/gaudivo" }],
@@ -209,7 +252,6 @@ export const projects: Project[] = [
       "Scholar separa o papel de administração do curso e o de estudante: autoria organiza cursos, módulos e aulas; o catálogo oferece preview, e a área de estudo registra progresso, notas e acesso conforme a matrícula.",
     outcome:
       "O repositório documenta o fluxo de curso, preview e player, além de uma integração de cobrança cuja operação real exige configuração do Platform Core e Stripe. A página de currículo próprio e o soft-launch ainda precisam ser validados antes de apresentar o serviço como lançado.",
-    featured: true,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/saas-scholar" }],
@@ -229,7 +271,6 @@ export const projects: Project[] = [
       "O código inclui gestão de serviços e especialidades, consulta de horários disponíveis e criação de solicitações de agendamento. Também documenta integrações de comunicação por WhatsApp e email, que dependem de serviços externos configurados.",
     outcome:
       "Este rascunho está anonimizado. A contribuição específica, o estado operacional das integrações e a autorização para divulgar cliente, marca ou telas ainda precisam ser confirmados; nenhuma informação de paciente ou saúde deve aparecer na demonstração.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -248,7 +289,6 @@ export const projects: Project[] = [
       "O protótipo reúne treino do dia, edição de rotinas, registro de carga e repetições, cronômetro de descanso, histórico e gráficos de evolução. Os dados ficam no armazenamento local do navegador.",
     outcome:
       "É um protótipo individual, não um SaaS multiusuário: não há sincronização remota no app de origem. Existe outro protótipo chamado Forte, mas a relação entre os dois e qual será a base de uma possível evolução ainda estão em avaliação.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -267,7 +307,6 @@ export const projects: Project[] = [
       "O código observado reúne registro de treino, recordes pessoais, objetivos, métricas, gamificação e módulos de coach/nutrição. O produto web usa serviços compartilhados do Platform Core; o cliente Flutter inclui áreas de treino, histórico e coach.",
     outcome:
       "Este case permanece anonimizado e identificado como laboratório. Minha participação e autorização para divulgar a marca, o código ou telas precisam ser confirmadas; IA real, visão por imagem, billing e release mobile dependem de configuração e validação próprias.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -286,7 +325,6 @@ export const projects: Project[] = [
       "O projeto concentra tema, horários, SEO e ordem das seções em configuração por site; inclui páginas públicas, agendamento e backoffice para serviços, agenda e contatos, com acesso administrativo e billing documentados.",
     outcome:
       "A relação entre produto próprio e trabalho para cliente ainda precisa ser esclarecida. O case está anonimizado, sem link de repositório, marca ou credenciais seed; booking, cobrança e isolamento por organização devem ser validados antes de falar em operação real.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -305,7 +343,6 @@ export const projects: Project[] = [
       "O checkout atual contém navegação e rotas de listagem/detalhe para personagens, mapas e armas, mas as páginas revisadas ainda exibem apenas títulos. O próximo trabalho é decidir a fonte de dados e construir conteúdo e navegação reais.",
     outcome:
       "Projeto em estágio inicial, ainda sem uma demonstração funcional de wiki. Esta página registra a intenção e o estado observado; qualquer conteúdo, imagem ou identidade visual deve respeitar as fontes e políticas aplicáveis, sem sugerir vínculo oficial com a Riot Games.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/valorant-wiki" }],
@@ -325,7 +362,6 @@ export const projects: Project[] = [
       "O backend contém domínios separados para eventos, clientes, itens, atribuições, manutenção e pagamentos. A aplicação web tem telas para eventos e pagamentos, mas a documentação e a experiência ainda não formam um fluxo de produto coerente.",
     outcome:
       "Case em revisão para distinguir Parties do Festas. O checkout está em detached HEAD; a página inicial web e o README mobile ainda parecem scaffolds, e os fluxos entre inventário, evento e pagamento precisam ser validados antes de apresentar o produto como funcional.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/parties" }],
@@ -345,7 +381,6 @@ export const projects: Project[] = [
       "A ferramenta normaliza um briefing, gera candidatos com um completador configurável, associa domínios conforme TLDs escolhidos, classifica resultados e consulta DNS/RDAP em pipeline concorrente com armazenamento local.",
     outcome:
       "O repositório tem testes para nomes, ranking, RDAP, CLI, servidor e persistência. O estado de domínio é apenas uma observação com validade/cache; não garante que o domínio permaneça disponível para registro. O projeto ainda não tem remoto Git configurado.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -364,7 +399,6 @@ export const projects: Project[] = [
       "A ferramenta recebe uma imagem existente ou uma geração opcional, processa transparência e recorte, e exporta masters, PNG/WebP, favicon, ícone Apple e tamanhos PWA. Manifestos YAML permitem fluxos em lote e cópia configurável dos resultados.",
     outcome:
       "É um utilitário local, não um serviço hospedado. Prompts e manifestos atuais contêm referências de marcas/produtos específicos; o case público fica genérico e sem capturas ou assets identificáveis até confirmar permissões para cada material.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -383,7 +417,6 @@ export const projects: Project[] = [
       "O código organiza coleta via integração Twitter e função de scraping Reddit, pré-processamento em inglês, estimativas TextBlob/VADER, agregação de tendências e geração de visualizações e relatórios. O fluxo principal usa Twitter; os dados não estão versionados no repositório.",
     outcome:
       "O repositório contém uma estrutura inicial do pipeline, mas não comprova a alegação de 10 mil publicações do README: não há dataset nem resultados publicados no checkout. A qualidade, idioma, permissões da coleta e utilidade das conclusões ainda precisam ser validados; o case é um projeto em construção.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/social-media-sentiment-analysis" }],
@@ -403,7 +436,6 @@ export const projects: Project[] = [
       "O repositório separa CPU, registradores/memória, carregamento de ROM, framebuffer e integração SDL2. A implementação atual cobre apenas um subconjunto inicial e ainda contém regras incompletas; a chamada de renderização está comentada no loop principal.",
     outcome:
       "O estado revisado é de laboratório, não de emulador compatível: não foi confirmado um jogo funcional, a GPU usa premissas fixas e a integração de janela/renderização ainda não está conectada ao ciclo principal. A demonstração futura deve usar homebrew ou ROM com uso permitido, sem redistribuir jogos comerciais.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/gameboy-emulator" }],
@@ -423,7 +455,6 @@ export const projects: Project[] = [
       "O catálogo pessoal descreve um WIP com catálogo de dados, montagem de times, jobs assíncronos e ingestão da PokéAPI. Não foi possível acessar o repositório remoto nesta revisão, então esses pontos ainda não foram confirmados no código.",
     outcome:
       "Este rascunho registra somente a intenção anotada no catálogo. A composição do monorepo, aplicações existentes, stack, contribuição e fluxos funcionais permanecem por verificar. O projeto deve ser identificado como trabalho de fã, sem sugerir vínculo oficial; imagens e outros assets precisam de autorização/licença apropriada.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -442,7 +473,6 @@ export const projects: Project[] = [
       "O repositório desenha um mapa textual em tiles e contém módulos de jogador e câmera com movimento e gravidade iniciais. No loop principal revisado, a atualização do jogador, a câmera e o desenho do personagem estão comentados; por isso, a cena executada ainda não demonstra o jogo completo.",
     outcome:
       "O checkout não inclui README e a execução observada é essencialmente uma visualização estática do mapa. O case é apresentado como experimento em andamento, não como jogo finalizado. Antes de divulgar, também é necessário rever os assets e evitar redistribuir material protegido ou sugerir vínculo oficial com a Nintendo.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/mario" }],
@@ -462,7 +492,6 @@ export const projects: Project[] = [
       "O código busca cotações via yfinance, calcula retornos e indicadores técnicos, produz correlações e estatísticas e compara modelos classificadores com uma divisão sequencial entre treino e teste. Os arquivos de dados e os resultados gerados não estão versionados no checkout revisado.",
     outcome:
       "O README afirma 72% de acurácia, mas esse resultado não pôde ser reproduzido porque o repositório não contém dataset, artefatos ou relatório de execução. A métrica, o desenho de validação e o comportamento fora da amostra precisam de auditoria antes de qualquer alegação de desempenho. Ferramenta educacional; não fornece aconselhamento financeiro.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/financial-market-trend-analyzer" }],
@@ -482,7 +511,6 @@ export const projects: Project[] = [
       "Até agora, o nome sugere um chat de IA relacionado a anime. O submódulo local não está inicializado e não foi possível confirmar código, público, fluxo, modelo ou funcionalidades existentes.",
     outcome:
       "Esta página registra uma ideia em descoberta, não um produto implementado. O próximo passo é escolher um caso de uso e decidir como usar personagens, histórias e materiais originais ou autorizados sem sugerir associação oficial com obras existentes.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -501,7 +529,6 @@ export const projects: Project[] = [
       "O material disponível descreve apenas uma ideia ampla para ensinar várias artes marciais, com assinatura como possibilidade. O repositório local contém somente um README placeholder, sem aplicação ou fluxo demonstrável.",
     outcome:
       "O case permanece um conceito. Antes de planejar funcionalidades, será necessário definir se o produto atende alunos, academias ou instrutores, escolher uma modalidade piloto e garantir permissão para vídeos e materiais didáticos.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -520,7 +547,6 @@ export const projects: Project[] = [
       "O workspace agrupa cinco ferramentas: anime-list, pictures, media-search, music-download e trends-search. Os READMEs descrevem scripts para consultar fontes e guardar resultados localmente; módulos e dependências variam entre cada ferramenta.",
     outcome:
       "É uma toolbox de pesquisa pessoal, não um dashboard ou produto hospedado. A cobertura de fontes e a execução atual de cada submódulo ainda precisam ser verificadas; resultados de mídia ficam locais e não devem ser redistribuídos sem direitos apropriados.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/search" }],
@@ -540,7 +566,6 @@ export const projects: Project[] = [
       "A ficha local identifica um repositório Pokémon Wiki separado do Pokémon Center, mas o acesso ao remoto exige autenticação nesta revisão. Não foi possível verificar tecnologias, conteúdo, arquitetura ou funcionalidades.",
     outcome:
       "O case permanece provisório e sem link público. Antes de descrevê-lo como wiki funcional, é preciso recuperar acesso, entender sua relação com Pokémon Center e validar direitos de uso de dados e imagens. É um projeto independente de fã, sem afiliação oficial.",
-    featured: false,
     selected: true,
     published: false,
   },
@@ -559,7 +584,6 @@ export const projects: Project[] = [
       "O README descreve upload e análise de PDF, geração assistida por Gemini, modo de estudo, exportação JSON e tratamento de limites de provedores com retentativas e fallback.",
     outcome:
       "O estudo de caso deve ficar distinto do ENEM Study: Testmaster é o fluxo de PDF e flashcards; ENEM Study é a plataforma mais ampla. Os detalhes de modelo, limites e fallback ainda precisam ser conferidos na versão demonstrada.",
-    featured: false,
     selected: true,
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/testmaster" }],
@@ -681,7 +705,23 @@ export const skills = [
   { label: "Web", items: ["JavaScript", "TypeScript", "Next.js", "React"] },
 ];
 
+export type ProjectCuration = {
+  homeHero: string[];
+  homeProjects: string[];
+  projectsPage: string[];
+};
+
+export function projectsFromCuration(slugs: string[]): Project[] {
+  return slugs
+    .map((slug) => projects.find((project) => project.slug === slug && project.selected))
+    .filter((project): project is Project => Boolean(project));
+}
+
 export const selectedProjects = projects.filter((project) => project.selected);
+export const homeHeroProjects = projectsFromCuration(projectCuration.homeHero)
+  .filter((project) => Boolean(project.media?.homeFeature));
+export const homeProjects = projectsFromCuration(projectCuration.homeProjects);
+export const projectsPageProjects = projectsFromCuration(projectCuration.projectsPage);
 export const selectedArticles = articles.filter((article) => article.selected);
 export const publishedProjects = projects.filter((project) => project.published);
 export const publishedArticles = articles.filter((article) => article.published);

@@ -4,10 +4,11 @@ import { EmptyState } from "@/components/empty-state";
 import { ProjectCard } from "@/components/project-card";
 import { SectionHeading } from "@/components/section-heading";
 import { FileOrganizerSpotlight } from "@/components/file-organizer-spotlight";
-import { experience, selectedArticles, selectedProjects, site, skills } from "@/content/site";
+import { HomeProjectCarousel } from "@/components/home-project-carousel";
+import { experience, homeHeroProjects, homeProjects, selectedArticles, site, skills } from "@/content/site";
 
 export default function HomePage() {
-  const projectItems = selectedProjects.slice(0, 3);
+  const projectItems = homeProjects;
   const articleItems = selectedArticles.slice(0, 3);
 
   return (
@@ -22,8 +23,8 @@ export default function HomePage() {
             <a className="text-link" href={site.links[0].href} target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
           </div>
         </div>
-        <div className="hero-art" aria-label="Composição gráfica abstrata">
-          <div className="hero-art__frame"><span className="hero-art__cross">✳</span><span className="hero-art__orbit hero-art__orbit--one" /><span className="hero-art__orbit hero-art__orbit--two" /><span className="hero-art__core">J<span>.</span></span><span className="hero-art__caption">IDEIAS → SISTEMAS<br />SISTEMAS → IMPACTO</span><span className="hero-art__number">01—04</span></div>
+        <div className="hero-art" aria-label={homeHeroProjects.length ? "Projetos em destaque" : "Composição gráfica abstrata"}>
+          {homeHeroProjects.length ? <HomeProjectCarousel projects={homeHeroProjects} /> : <div className="hero-art__frame"><span className="hero-art__cross">✳</span><span className="hero-art__orbit hero-art__orbit--one" /><span className="hero-art__orbit hero-art__orbit--two" /><span className="hero-art__core">J<span>.</span></span><span className="hero-art__caption">IDEIAS → SISTEMAS<br />SISTEMAS → IMPACTO</span><span className="hero-art__number">01—04</span></div>}
         </div>
         <div className="hero__index"><span>PORTFÓLIO 2025—26</span><span>01 / 04</span></div>
       </section>
@@ -59,7 +60,7 @@ export default function HomePage() {
         {articleItems.length ? <div className="article-list">{articleItems.map((article, index) => <ArticleCard key={article.slug} article={article} index={index} />)}</div> : <EmptyState title="Uma ideia de cada vez.">Artigos técnicos, estudos de caso e notas pessoais aparecem aqui quando publicados.</EmptyState>}
       </section>
 
-      <section className="contact-section" id="contato"><div className="page-shell contact-inner"><p className="eyebrow">06 / Contato</p><h2>Vamos construir<br /><em>algo relevante.</em></h2><a className="contact-email" href={site.links[0].href} target="_blank" rel="noreferrer">github.com/woragis<span aria-hidden="true">↗</span></a><div className="contact-links">{site.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div></div></section>
+      <section className="contact-section" id="contato"><div className="page-shell contact-inner"><p className="eyebrow">06 / Contato</p><h2>Vamos construir<br /><em>algo relevante.</em></h2><a className="contact-email" href={site.links[0].href} target="_blank" rel="noreferrer">github.com/woragis<span aria-hidden="true">↗</span></a><div className="contact-links">{site.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noreferrer">{link.label} ↗</a>)}{process.env.NODE_ENV === "development" && <Link href="/admin/projetos">Admin de projetos ↗</Link>}</div></div></section>
     </>
   );
 }
