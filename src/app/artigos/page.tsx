@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArticleCard } from "@/components/article-card";
 import { EmptyState } from "@/components/empty-state";
-import { projects, selectedArticles, type Project } from "@/content/site";
+import { projects, publishedArticles, selectedArticles, type Project } from "@/content/site";
 import { pageMetadata } from "@/lib/seo";
 
 type Props = { searchParams: Promise<{ projeto?: string | string[] }> };
@@ -23,12 +23,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 export default async function ArticlesPage({ searchParams }: Props) {
   const params = await searchParams;
   const requestedSlug = Array.isArray(params.projeto) ? params.projeto[0] : params.projeto;
-  const relatedProjectSlugs = [...new Set(selectedArticles.flatMap((article) => article.projectSlugs ?? []))];
+  const articlesForPage = process.env.NODE_ENV === "development" ? selectedArticles : publishedArticles;
+  const relatedProjectSlugs = [...new Set(articlesForPage.flatMap((article) => article.projectSlugs ?? []))];
   const filterProjects = relatedProjectSlugs.map((slug) => projects.find((item) => item.slug === slug)).filter((project): project is Project => Boolean(project?.selected));
   const activeProject = filterProjects.find((project) => project.slug === requestedSlug);
   const visibleArticles = activeProject
-    ? selectedArticles.filter((article) => article.projectSlugs?.includes(activeProject.slug))
-    : selectedArticles;
+    ? articlesForPage.filter((article) => article.projectSlugs?.includes(activeProject.slug))
+    : articlesForPage;
 
   return <div className="page-shell collection-page articles-collection">
     <header className="collection-header"><p className="eyebrow"><span>02</span> Caderno de engenharia</p><h1>Pensar também<br /><em>é construir.</em></h1><p>Notas técnicas, estudos de caso e aprendizados que valem compartilhar.</p></header>

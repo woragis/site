@@ -5,11 +5,11 @@ import { ProjectCard } from "@/components/project-card";
 import { SectionHeading } from "@/components/section-heading";
 import { FileOrganizerSpotlight } from "@/components/file-organizer-spotlight";
 import { HomeProjectCarousel } from "@/components/home-project-carousel";
-import { experience, homeHeroProjects, homeProjects, selectedArticles, site, skills } from "@/content/site";
+import { experience, homeHeroProjects, homeProjects, publishedArticles, site, skills } from "@/content/site";
 
 export default function HomePage() {
   const projectItems = homeProjects;
-  const articleItems = selectedArticles.slice(0, 3);
+  const articleItems = publishedArticles.slice(0, 3);
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function HomePage() {
       </section>
 
       <section className="section page-shell articles-section" id="artigos">
-        <SectionHeading index="05" label="Caderno" title="Ideias em construção." href="/artigos" />
+        <SectionHeading index="05" label="Caderno" title="Notas de arquitetura e produto." href="/artigos" />
         {articleItems.length ? <div className="article-list">{articleItems.map((article, index) => <ArticleCard key={article.slug} article={article} index={index} />)}</div> : <EmptyState title="Uma ideia de cada vez.">Artigos técnicos, estudos de caso e notas pessoais aparecem aqui quando publicados.</EmptyState>}
       </section>
 
