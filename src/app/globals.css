@@ -1396,7 +1396,7 @@ html[data-theme="index"] .project-card__visual--enem-study::before, html[data-th
 .article-filter-status { margin: -1rem 0 1.2rem; color: var(--color-muted); font-size: var(--text-sm); }
 .article-filter-status strong { color: var(--color-ink); }
 .article-filter-status a { color: var(--color-accent); }
-.article-card__cover { grid-column: 1; grid-row: 1 / span 3; display: block; align-self: stretch; overflow: hidden; aspect-ratio: 4 / 3; border-radius: var(--media-frame-radius); background: var(--color-paper); }
+.article-card__cover { grid-column: 1; grid-row: 1 / span 3; display: block; align-self: stretch; overflow: hidden; aspect-ratio: 1.7; border-radius: var(--media-frame-radius); background: var(--color-paper); }
 .article-card__cover-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--media-focal-x, 50%) var(--media-focal-y, 50%); }
 .article-card:has(.article-card__cover) { grid-template-columns: minmax(8rem, 14rem) 2rem minmax(0, 1fr) auto; align-items: center; }
 .article-card__projects { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .85rem; }

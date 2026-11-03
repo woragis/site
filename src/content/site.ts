@@ -618,6 +618,78 @@ export type ArticleStoryBlock =
 
 export const articles: Article[] = [
   {
+    slug: "monolito-modular-limites-claros",
+    title: "Monólito modular: uma aplicação, limites claros",
+    category: "Arquitetura de software",
+    summary:
+      "Monólito descreve como uma aplicação é implantada; modularidade descreve como ela organiza responsabilidades e dependências. As duas ideias podem coexistir.",
+    publishedAt: "2026-11-03",
+    readingTime: "5 min",
+    content: [],
+    linkedinUrl: "https://lnkd.in/p/dwv8X46y",
+    cover: { src: "/articles/monolito-modular/cover.svg", alt: "Ilustração de uma aplicação contendo três módulos com limites claros, ao lado do título Monólito modular.", width: 1200, height: 630, caption: "Uma aplicação pode ser implantada como uma unidade e ainda preservar limites entre módulos." },
+    galleries: [
+      {
+        id: "monolito-modular-linkedin-carousel",
+        title: "Monólito modular em seis diagramas",
+        description: "Carrossel publicado no LinkedIn, reapresentado aqui como apoio visual ao artigo.",
+        device: "mixed",
+        presentation: "editorial-grid",
+        items: [
+          { image: { src: "/articles/monolito-modular/01-capa.webp", alt: "Capa do carrossel: Monólito modular — uma aplicação, limites claros. Um diagrama abstrato mostra módulos dentro de uma aplicação.", width: 1200, height: 1607 }, title: "Uma aplicação. Limites claros.", caption: "Capa do carrossel original." },
+          { image: { src: "/articles/monolito-modular/02-aplicacao-modular.webp", alt: "Diagrama de uma aplicação implantada como uma unidade, com três módulos separados no interior.", width: 1200, height: 1607 }, title: "Aplicação modular", caption: "Uma unidade de implantação pode conter módulos separados." },
+          { image: { src: "/articles/monolito-modular/03-contrato-publico.webp", alt: "O módulo Pedidos consulta o contrato público de Estoque sem acessar seus detalhes internos.", width: 1200, height: 1607 }, title: "Dependência explícita", caption: "Pedidos depende do contrato público de Estoque." },
+          { image: { src: "/articles/monolito-modular/04-acoplamento.webp", alt: "Uma seta cruza a fronteira do módulo Estoque e acessa diretamente seus dados internos.", width: 1200, height: 1607 }, title: "Acesso direto cria acoplamento", caption: "Acesso a dados internos enfraquece a fronteira entre módulos." },
+          { image: { src: "/articles/monolito-modular/05-fronteiras-uteis.webp", alt: "Quatro sinais de fronteiras úteis: responsabilidades coesas, dependências explícitas, ownership claro e testes de arquitetura.", width: 1200, height: 1607 }, title: "Sinais de fronteiras úteis", caption: "Responsabilidades, dependências, ownership e testes." },
+          { image: { src: "/articles/monolito-modular/06-fechamento.webp", alt: "Diagrama de módulos dentro de uma aplicação e a pergunta: que sinal mostra que um módulo atravessa a fronteira de outro?", width: 1200, height: 1607 }, title: "Modularidade exige disciplina", caption: "A implantação pode ser simples; preservar os limites é uma decisão contínua." },
+        ],
+      },
+    ],
+    story: [
+      {
+        type: "paragraphs",
+        id: "abertura",
+        paragraphs: [
+          "Monólito costuma ser usado como sinônimo de um sistema em que tudo está misturado. Mas a palavra também descreve uma escolha de execução: a aplicação é empacotada e implantada como uma unidade. Isso não determina, por si só, como o código precisa ser organizado.",
+          "Modularidade trata de outra dimensão. Ela pergunta onde ficam as responsabilidades, quem é dono de cada dado e por quais contratos uma parte do sistema pode colaborar com outra. Um único deploy pode conter módulos bem definidos — e vários serviços ainda podem continuar fortemente acoplados.",
+        ],
+      },
+      { type: "heading", id: "exemplo", title: "Um limite concreto: Pedidos e Estoque" },
+      {
+        type: "paragraphs",
+        id: "contrato",
+        paragraphs: [
+          "Imagine dois módulos: `Pedidos` e `Estoque`. Para verificar se um item pode ser vendido, Pedidos precisa consultar disponibilidade. Uma fronteira útil faz essa necessidade passar por uma operação ou contrato público de Estoque. Pedidos conhece o que pode pedir e o formato da resposta; não precisa conhecer as tabelas, estruturas internas ou regras privadas que produzem essa resposta.",
+          "O contrato torna a dependência visível. Estoque pode reorganizar sua implementação preservando a interface acordada. Se Pedidos consulta diretamente as tabelas internas, uma mudança de esquema ou de regra passa a afetar consumidores que não deveriam depender daquele detalhe.",
+        ],
+      },
+      { type: "gallery", id: "carrossel-linkedin", galleryId: "monolito-modular-linkedin-carousel", layout: "full" },
+      { type: "heading", id: "preservar-limites", title: "A fronteira precisa existir no código" },
+      {
+        type: "paragraphs",
+        id: "praticas",
+        paragraphs: [
+          "Separar arquivos ou criar pastas chamadas `pedidos` e `estoque` ajuda a comunicar intenção, mas não impede uma dependência indevida. O limite precisa ser sustentado por escolhas de código: interfaces públicas pequenas, ownership dos dados, dependências numa direção compreensível e restrições a imports ou acessos internos.",
+          "Testes de arquitetura podem transformar algumas dessas regras em verificações repetíveis. Revisões de código também ajudam a notar quando uma conveniência local começa a atravessar a fronteira. As ferramentas variam conforme a linguagem e o desenho; o objetivo é tornar a regra explícita, não adicionar uma camada de processo sem necessidade.",
+        ],
+      },
+      { type: "heading", id: "tradeoffs", title: "O que se ganha — e o que continua exigindo cuidado" },
+      {
+        type: "paragraphs",
+        id: "tradeoffs-texto",
+        paragraphs: [
+          "Manter uma aplicação como unidade pode reduzir o custo operacional de distribuir mudanças entre vários serviços: há menos processos, redes e versões independentes para coordenar. Isso não elimina a complexidade do domínio, nem garante que uma mudança seja pequena ou segura. Um monólito sem limites claros ainda pode se tornar difícil de alterar.",
+          "A modularidade também tem um custo contínuo. Contratos precisam ser escolhidos e mantidos; responsabilidades podem mudar; atalhos podem transformar detalhes internos em dependências permanentes. Por isso, bons sinais não são apenas a estrutura do repositório: são responsabilidades coesas, dependências explícitas, ownership entendido e testes que protegem as fronteiras importantes.",
+          "A implantação pode ser simples. Preservar limites úteis continua sendo uma decisão de engenharia feita ao longo do tempo.",
+        ],
+      },
+      { type: "callout", id: "pergunta-final", title: "Uma pergunta para revisar a arquitetura", body: "Que sinal costuma mostrar que um módulo está atravessando a fronteira de outro?", tone: "result" },
+    ],
+    selected: true,
+    published: true,
+    sourceLabel: "Adaptado do carrossel ARQ-001 publicado no LinkedIn em 3 de novembro de 2026",
+  },
+  {
     slug: "dinheiro-em-centavos",
     title: "Por que armazenar dinheiro em centavos",
     category: "Backend · Prateleira",

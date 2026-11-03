@@ -42,7 +42,7 @@ export default async function ArticleDetailPage({ params }: Props) {
     {article.published && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData)} />}
     <Link className="back-link" href="/artigos">← Todos os artigos</Link>
     {article.cover && <figure className="article-cover"><ProjectMediaImage image={article.cover} className="article-cover__image" sizes="(max-width: 720px) 92vw, 88vw" />{article.cover.caption && <figcaption>{article.cover.caption}</figcaption>}</figure>}
-    <header className="detail-header"><p className="eyebrow">{article.category} · {article.readingTime} · {article.publishedAt?.slice(0, 4) ?? "Rascunho"}</p><h1>{article.title}</h1><p className="detail-lede">{article.summary}</p></header>
+    <header className="detail-header"><p className="eyebrow">{article.category} · {article.readingTime} · {article.publishedAt ? <time dateTime={article.publishedAt}>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${article.publishedAt}T12:00:00Z`))}</time> : "Rascunho"}</p><h1>{article.title}</h1><p className="detail-lede">{article.summary}</p></header>
     <ArticleContent article={article} />
     {!article.published && <p className="article-source">{article.sourceLabel}. Texto de trabalho, aguardando revisão antes da publicação.</p>}
     {relatedProjects.length > 0 && <nav className="article-related-projects" aria-label="Projetos relacionados a este artigo"><p className="eyebrow">PROJETOS RELACIONADOS</p><div>{relatedProjects.map((project) => <Link key={project.slug} href={`/projetos/${project.slug}`}>{project.title} ↗</Link>)}</div></nav>}
