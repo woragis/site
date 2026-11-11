@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#F7F1E7"/>
+  <rect x="28" y="28" width="1144" height="574" rx="24" stroke="#10263B" stroke-width="2"/>
+  <circle cx="54" cy="54" r="7" fill="#F7F1E7" stroke="#10263B" stroke-width="2"/>
+  <circle cx="1146" cy="54" r="7" fill="#F7F1E7" stroke="#10263B" stroke-width="2"/>
+  <circle cx="54" cy="576" r="7" fill="#F7F1E7" stroke="#10263B" stroke-width="2"/>
+  <circle cx="1146" cy="576" r="7" fill="#F7F1E7" stroke="#10263B" stroke-width="2"/>
+
+  <rect x="76" y="112" width="492" height="406" rx="24" stroke="#10263B" stroke-width="4"/>
+  <rect x="98" y="134" width="448" height="362" rx="18" stroke="#10263B" stroke-opacity=".32" stroke-width="2" stroke-dasharray="7 8"/>
+  <rect x="132" y="208" width="176" height="112" rx="14" fill="#E4F1EC" stroke="#187E78" stroke-width="4"/>
+  <rect x="336" y="208" width="176" height="112" rx="14" fill="#FFFDF8" stroke="#10263B" stroke-width="4"/>
+  <rect x="234" y="370" width="176" height="88" rx="14" fill="#FFFDF8" stroke="#10263B" stroke-width="4"/>
+  <path d="M308 264H336M424 320V344C424 358 414 370 400 370M220 320V344C220 358 230 370 244 370" stroke="#187E78" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="322" cy="264" r="6" fill="#187E78"/>
+  <rect x="156" y="234" width="126" height="8" rx="4" fill="#10263B" fill-opacity=".8"/>
+  <rect x="156" y="254" width="96" height="8" rx="4" fill="#10263B" fill-opacity=".42"/>
+  <rect x="156" y="274" width="112" height="8" rx="4" fill="#10263B" fill-opacity=".42"/>
+  <rect x="360" y="234" width="126" height="8" rx="4" fill="#10263B" fill-opacity=".8"/>
+  <rect x="360" y="254" width="96" height="8" rx="4" fill="#10263B" fill-opacity=".42"/>
+  <rect x="258" y="396" width="126" height="8" rx="4" fill="#10263B" fill-opacity=".8"/>
+  <rect x="258" y="416" width="96" height="8" rx="4" fill="#10263B" fill-opacity=".42"/>
+  <text x="322" y="172" text-anchor="middle" fill="#10263B" font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="2">UMA APLICAÇÃO</text>
+  <text x="220" y="346" text-anchor="middle" fill="#187E78" font-family="Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="1">MÓDULO A</text>
+  <text x="424" y="346" text-anchor="middle" fill="#10263B" font-family="Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="1">MÓDULO B</text>
+  <text x="322" y="482" text-anchor="middle" fill="#10263B" font-family="Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="1">MÓDULO C</text>
+
+  <text x="630" y="196" fill="#187E78" font-family="Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="3">ARQUITETURA DE SOFTWARE</text>
+  <text x="630" y="292" fill="#10263B" font-family="Arial, sans-serif" font-size="70" font-weight="700" letter-spacing="-3">Monólito</text>
+  <text x="630" y="370" fill="#10263B" font-family="Arial, sans-serif" font-size="70" font-weight="700" letter-spacing="-3">modular</text>
+  <path d="M632 408H1094" stroke="#E26D5A" stroke-width="4" stroke-linecap="round"/>
+  <text x="630" y="462" fill="#24384B" font-family="Arial, sans-serif" font-size="25">Uma aplicação. Limites claros.</text>
+</svg>

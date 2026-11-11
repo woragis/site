@@ -1,0 +1,38 @@
+{
+  "homeHero": [],
+  "homeProjects": [
+    "weatherly",
+    "file-organizer",
+    "prateleira"
+  ],
+  "projectsPage": [
+    "weatherly",
+    "file-organizer",
+    "dotfiles-arch-linux",
+    "prateleira",
+    "enem-study",
+    "festas",
+    "lingo",
+    "praxis",
+    "gaudivo",
+    "scholar",
+    "consultorio-nutricional",
+    "treino-pessoal",
+    "fitness-progress",
+    "nutritionist-saas",
+    "valorant-wiki",
+    "parties",
+    "domains-finder",
+    "logo-generator",
+    "social-media-sentiment-analysis",
+    "gameboy-emulator",
+    "pokemon-center",
+    "mario",
+    "financial-market-trend-analyzer",
+    "anime-ai-chat",
+    "fighting-teacher",
+    "search",
+    "pokemon-wiki",
+    "testmaster"
+  ]
+}
