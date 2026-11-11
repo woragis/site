@@ -20,6 +20,12 @@ function renderBlock(block: ArticleStoryBlock, galleries: Map<string, ProjectGal
   if (block.type === "paragraphs") {
     return <div className="article-prose" key={block.id}>{block.paragraphs.map((paragraph, index) => <p key={`${block.id}-${index}`}>{paragraph}</p>)}</div>;
   }
+  if (block.type === "code") {
+    return <figure className="article-story__code" key={block.id}>
+      <figcaption><span>{block.language}</span>{block.caption && <span>{block.caption}</span>}</figcaption>
+      <pre><code>{block.code}</code></pre>
+    </figure>;
+  }
   if (block.type === "image") {
     return <figure className={`article-story__media article-story__media--${block.layout ?? "inset"}`} key={block.id}>
       <ProjectMediaImage image={block.image} className="article-story__image" />

@@ -1416,7 +1416,17 @@ html[data-theme="index"] .project-card__visual--enem-study::before, html[data-th
 .article-story__callout .eyebrow { color: var(--color-accent); font: var(--text-xs)/1.4 var(--font-mono); }
 .article-story__callout h2 { margin: 0 0 .7rem; font: 600 clamp(1.5rem, 3vw, 2.3rem)/1.1 var(--font-display); }
 .article-story__callout > p:last-child { margin-bottom: 0; color: var(--color-muted); line-height: 1.7; }
+.article-story__code { width: min(100%, 850px); margin: 0 auto; overflow: hidden; border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-paper-strong); }
+.article-story__code figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; border-bottom: 1px solid var(--color-line); padding: .75rem 1rem; color: var(--color-muted); font: var(--text-xs)/1.4 var(--font-mono); }
+.article-story__code figcaption span:first-child { color: var(--color-accent); text-transform: uppercase; }
+.article-story__code pre { max-width: 100%; margin: 0; overflow-x: auto; padding: 1.2rem 1rem; color: var(--color-ink); font: .88rem/1.7 var(--font-mono); tab-size: 2; }
+.article-story__code code { font: inherit; white-space: pre; }
 .article-source { width: min(100%, 690px); margin: 3rem auto 0; border-top: 1px solid var(--color-line); padding-top: 1rem; color: var(--color-muted); font: .7rem/1.7 var(--font-mono); }
+.article-references { width: min(100%, 690px); margin: 3rem auto 0; border-top: 1px solid var(--color-line); padding-top: 1.3rem; }
+.article-references > .eyebrow { color: var(--color-muted); font: var(--text-xs)/1.4 var(--font-mono); }
+.article-references h2 { margin: .4rem 0 .8rem; font: 600 clamp(1.35rem, 2.5vw, 1.8rem)/1.2 var(--font-display); }
+.article-references ul { display: grid; gap: .6rem; margin: 0; padding-left: 1.2rem; color: var(--color-muted); }
+.article-references a { color: var(--color-accent); text-underline-offset: .2em; }
 .article-related-projects { width: min(100%, 690px); margin: 3rem auto 0; border-top: 1px solid var(--color-line); padding-top: 1.3rem; }
 .article-related-projects > .eyebrow { color: var(--color-muted); font: var(--text-xs)/1.4 var(--font-mono); }
 .article-related-projects > div { display: flex; flex-wrap: wrap; gap: .5rem; }

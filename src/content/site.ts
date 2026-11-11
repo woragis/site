@@ -637,6 +637,7 @@ export type Article = {
   cover?: ProjectImage;
   galleries?: ProjectGallery[];
   story?: ArticleStoryBlock[];
+  references?: { label: string; href: string }[];
   selected: boolean;
   published: boolean;
   sourceLabel: string;
@@ -645,6 +646,7 @@ export type Article = {
 export type ArticleStoryBlock =
   | { type: "heading"; id: string; title: string; level?: 2 | 3 }
   | { type: "paragraphs"; id: string; paragraphs: string[] }
+  | { type: "code"; id: string; language: string; code: string; caption?: string }
   | { type: "image"; id: string; image: ProjectImage; layout?: "inset" | "full" }
   | { type: "video"; id: string; video: ProjectVideo; layout?: "inset" | "full" }
   | { type: "gallery"; id: string; galleryId: string; layout?: "inset" | "full" }
@@ -875,6 +877,549 @@ export const articles: Article[] = [
     selected: true,
     published: false,
     sourceLabel: "Artigo original sobre o projeto pessoal de dotfiles",
+  },,
+  {
+    slug: "monolito-e-microsservicos-custo-de-separar",
+    title: "Monólito ou microsserviços: o que custa separar?",
+    category: "Arquitetura de software",
+    summary: "Separar um módulo muda chamadas, dados, deploy e operação. A decisão vale quando resolve um limite concreto que a equipe não consegue sustentar dentro de uma aplicação modular.",
+    publishedAt: "2026-11-03",
+    readingTime: "7 min",
+    content: [],
+    story: [
+  {
+    "type": "paragraphs",
+    "id": "abertura",
+    "paragraphs": [
+      "A pergunta útil não é se microsserviços são mais modernos. É: qual problema concreto passa a ser mais barato depois que uma fronteira atravessa a rede? Uma chamada entre módulos pode ser uma função local hoje; em serviços separados, ela passa a depender de disponibilidade, latência, protocolo e operação de dois processos."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-1",
+    "title": "A fronteira muda o tipo de falha"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-1",
+    "paragraphs": [
+      "Dentro da mesma aplicação, uma chamada pode falhar por uma exceção ou regra de negócio. Entre serviços, entram timeout, indisponibilidade parcial, respostas duplicadas e incompatibilidade entre versões. A rede não é apenas um detalhe de transporte: ela altera o comportamento que o produto precisa tratar.",
+      "Isso não torna a extração errada. Significa que o serviço novo precisa ter contrato, política de timeout, tratamento para falhas e observabilidade. Uma extração que só move uma função para outro processo, sem autonomia real, pode comprar esses custos sem obter o benefício esperado."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-2",
+    "title": "Autonomia é uma capacidade, não um checkbox"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-2",
+    "paragraphs": [
+      "Deploy independente existe quando uma equipe consegue mudar e lançar o serviço sem coordenar cada versão com os consumidores. Isso depende de contratos compatíveis, automação, ownership e capacidade de operar falhas. Separar repositórios ou containers, sozinho, não garante essa autonomia.",
+      "Escala independente também depende do workload e da plataforma. Um monólito pode ter várias réplicas; microsserviços podem ser implantados separadamente, mas ainda precisarem escalar juntos por causa de acoplamento ou recursos compartilhados."
+    ]
+  },
+  {
+    "type": "code",
+    "id": "exemplo",
+    "language": "TypeScript",
+    "code": "type Inventory = {\n  available(sku: string): Promise<number>;\n};\n\nasync function createOrder(\n  inventory: Inventory,\n  sku: string,\n  quantity: number,\n) {\n  const available = await inventory.available(sku);\n  if (available < quantity) throw new Error(\"out of stock\");\n  return { sku, quantity, status: \"accepted\" };\n}",
+    "caption": "O caso de uso expressa a dependência. Um adapter local ou remoto pode implementá-la, mas o remoto ainda precisa de timeout, erros e compatibilidade."
+  },
+  {
+    "type": "heading",
+    "id": "sec-3",
+    "title": "Dados e transações ganham fronteiras"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-3",
+    "paragraphs": [
+      "Em um módulo único, uma transação de banco pode atualizar mais de uma tabela na mesma unidade de consistência. Depois da separação, uma transação local não cobre automaticamente os bancos de dois serviços. O fluxo pode precisar de eventos, compensações e estados intermediários visíveis para o usuário.",
+      "Ownership de dados ajuda a impedir dependências diretas no esquema de outro serviço. Porém, relatórios e consultas que atravessam domínios passam a precisar de APIs, projeções ou pipelines de dados. Essas soluções têm custo de atualização e consistência que precisa ser aceito explicitamente."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-4",
+    "title": "Um critério antes de extrair"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-4",
+    "paragraphs": [
+      "Procure sinais observáveis: mudanças de um domínio bloqueiam releases de outro; requisitos de escala ou isolamento são diferentes; ownership entre equipes está claro; ou a operação já consegue detectar e responder a falhas distribuídas. São motivos para avaliar uma extração, não uma receita automática.",
+      "Uma etapa reversível é definir o limite como módulo e observar dependências reais por um período. Se a fronteira interna for instável, separar processos tende a tornar a instabilidade mais cara. Se ela estiver clara e houver um ganho operacional mensurável, a extração pode ser planejada como mudança de contrato e de operação."
+    ]
+  },
+  {
+    "type": "callout",
+    "id": "ideia-central",
+    "title": "Ideia para levar",
+    "body": "Separe um serviço quando o limite e a capacidade operacional justificarem a rede, os dados distribuídos e o trabalho de manter contratos.",
+    "tone": "result"
+  }
+],
+    references: [
+  {
+    "label": "Microservice Trade-Offs — Martin Fowler",
+    "href": "https://martinfowler.com/articles/microservice-trade-offs.html"
+  }
+],
+    selected: true,
+    published: true,
+    sourceLabel: "Artigo ARQ-002 da série Arquitetura de software",
+  },,
+  {
+    slug: "camadas-e-fatias-verticais-organizar-por-mudanca",
+    title: "Camadas ou fatias verticais: como organizar uma funcionalidade?",
+    category: "Arquitetura de software",
+    summary: "Camadas agrupam responsabilidades técnicas; fatias verticais agrupam o caminho de uma funcionalidade. Os dois eixos podem coexistir, e a escolha deve acompanhar o padrão de mudança.",
+    publishedAt: "2026-11-05",
+    readingTime: "7 min",
+    content: [],
+    story: [
+  {
+    "type": "paragraphs",
+    "id": "abertura",
+    "paragraphs": [
+      "Uma organização de pastas influencia onde uma pessoa começa a investigar uma mudança. Imagine alterar o fluxo de criar pedido: o controller valida entrada, uma regra calcula o total, o repositório grava os dados e um evento é emitido. A pergunta é se a estrutura ajuda a percorrer esse caminho ou o espalha sem necessidade."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-1",
+    "title": "Organizar por camadas"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-1",
+    "paragraphs": [
+      "Uma estrutura por camadas aproxima código com o mesmo papel técnico: controllers, serviços, repositórios e modelos. Isso pode facilitar encontrar políticas transversais e manter convenções comuns. Em contrapartida, uma funcionalidade pode estar distribuída em vários diretórios, exigindo que a pessoa conheça o mapa inteiro antes de alterar o fluxo.",
+      "Camadas não definem automaticamente a direção das dependências. Se o domínio começa a importar detalhes de HTTP ou de um ORM, a árvore de pastas pode parecer organizada enquanto o acoplamento continua invertido. A estrutura precisa refletir limites reais, não apenas nomes familiares."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-2",
+    "title": "Organizar por fatias"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-2",
+    "paragraphs": [
+      "Uma fatia vertical agrupa o que participa de um caso de uso: entrada, validação, regra e persistência relacionados a criar pedido ficam próximos. A pessoa que implementa uma mudança pode localizar o fluxo sem percorrer todos os diretórios técnicos do sistema.",
+      "O risco é cada fatia recriar lógica transversal ou manter regras comuns de maneiras diferentes. Uma organização por funcionalidade ainda pode ter separações internas; a ideia não exige colocar tudo em um arquivo nem duplicar infraestrutura compartilhada."
+    ]
+  },
+  {
+    "type": "code",
+    "id": "exemplo",
+    "language": "text",
+    "code": "src/\n├── orders/\n│   ├── create/\n│   │   ├── handler.ts\n│   │   ├── use-case.ts\n│   │   └── repository.ts\n│   └── shared/\n│       └── order.ts\n└── platform/\n    └── database.ts",
+    "caption": "Exemplo ilustrativo: organização por domínio e caso de uso. Os nomes e limites devem acompanhar o sistema real."
+  },
+  {
+    "type": "heading",
+    "id": "sec-3",
+    "title": "Os eixos podem se combinar"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-3",
+    "paragraphs": [
+      "É possível separar módulos por domínio e, dentro de cada módulo, organizar casos de uso por fatias. Também é possível manter camadas bem delimitadas para regras compartilhadas. A pergunta não é qual desenho vence para sempre, mas qual torna as mudanças frequentes localizáveis e preserva dependências compreensíveis.",
+      "Uma comparação concreta ajuda mais que uma discussão abstrata. Escolha um caso de uso que muda com frequência, trace os arquivos tocados por uma alteração e observe quanto contexto não relacionado precisa ser lido. Repita a avaliação em outro fluxo antes de reorganizar todo o repositório."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-4",
+    "title": "Estrutura como hipótese"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-4",
+    "paragraphs": [
+      "Diretórios são uma convenção; ferramentas de arquitetura, imports e testes podem tornar algumas regras verificáveis. Se a estrutura desejada depende de uma regra como “a interface não importa infraestrutura”, vale codificar essa restrição onde for possível.",
+      "Reorganizar só para combinar com um diagrama pode aumentar custo sem melhorar o trabalho cotidiano. Use sintomas de mudança — arquivos sempre alterados juntos, dependências circulares ou onboarding confuso — para formular a hipótese e avalie a estrutura depois de aplicá-la a um fluxo real."
+    ]
+  },
+  {
+    "type": "callout",
+    "id": "ideia-central",
+    "title": "Ideia para levar",
+    "body": "Escolha a estrutura observando onde as mudanças acontecem e mantenha explícitas as dependências que importam.",
+    "tone": "result"
+  }
+],
+    references: [
+  {
+    "label": "Vertical Slice Architecture — Jimmy Bogard",
+    "href": "https://www.jimmybogard.com/vertical-slice-architecture/"
+  }
+],
+    selected: true,
+    published: true,
+    sourceLabel: "Artigo ARQ-003 da série Arquitetura de software",
+  },,
+  {
+    slug: "ports-and-adapters-isolar-o-que-muda",
+    title: "Ports and adapters: o que vale a pena isolar?",
+    category: "Arquitetura de software",
+    summary: "Ports and adapters separa conversas que a aplicação precisa ter dos detalhes de tecnologia que as implementam. O hexágono é uma metáfora; o contrato e a direção das dependências são o que importam.",
+    publishedAt: "2026-11-06",
+    readingTime: "7 min",
+    content: [],
+    story: [
+  {
+    "type": "paragraphs",
+    "id": "abertura",
+    "paragraphs": [
+      "Uma regra de negócio não deveria precisar conhecer se uma requisição veio de HTTP, de um job ou de um teste. Tampouco deveria depender diretamente de um driver específico de banco só para gravar o resultado. Ports and adapters organiza o sistema em torno das conversas necessárias entre a aplicação e o mundo exterior."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-1",
+    "title": "Porta descreve uma conversa"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-1",
+    "paragraphs": [
+      "Uma porta é um contrato definido pela necessidade da aplicação. “Salvar pedido”, “consultar disponibilidade” ou “receber comando para criar pedido” são exemplos de conversas. A porta não é simplesmente qualquer interface; ela representa um papel que algum consumidor ou provedor precisa cumprir.",
+      "O lado de entrada recebe uma intenção e conduz um caso de uso. O lado de saída permite que o caso de uso peça algo externo, como persistir ou publicar. O mesmo conceito pode ser expresso em linguagens e frameworks diferentes."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-2",
+    "title": "Adapter traduz tecnologia"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-2",
+    "paragraphs": [
+      "Um adapter transforma um formato externo no contrato da aplicação ou transforma uma solicitação da aplicação em uma operação tecnológica. Um handler HTTP converte parâmetros e autenticação em um comando; um adapter de banco converte uma chamada de persistência em SQL ou em operações de ORM.",
+      "Vários adapters podem atender a mesma porta. Um armazenamento real pode coexistir com um fake em memória para testes. Isso torna substituição e isolamento possíveis, mas não significa que se deva criar uma interface para toda função ou envolver cada biblioteca em mais abstrações."
+    ]
+  },
+  {
+    "type": "code",
+    "id": "exemplo",
+    "language": "TypeScript",
+    "code": "// Porta definida pela aplicação\ninterface OrderStore {\n  save(order: Order): Promise<void>;\n}\n\n// Caso de uso depende do contrato\nclass PlaceOrder {\n  constructor(private store: OrderStore) {}\n  async execute(order: Order) {\n    await this.store.save(order);\n  }\n}",
+    "caption": "A porta exprime a necessidade da aplicação. Um adapter SQL ou um fake de teste pode cumprir o mesmo contrato."
+  },
+  {
+    "type": "heading",
+    "id": "sec-3",
+    "title": "Direção de dependência"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-3",
+    "paragraphs": [
+      "O código interno define o contrato; a implementação externa depende dele. Assim, mudanças na biblioteca de persistência não precisam se espalhar pelo caso de uso. O fluxo de execução pode entrar e sair por adapters, enquanto as dependências de código apontam para os contratos mais estáveis do domínio.",
+      "A arquitetura perde o propósito se a porta apenas espelha cada método do framework ou se o domínio conhece tipos de request e response externos. Uma interface útil descreve a necessidade do consumidor e mantém o vocabulário do problema."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-4",
+    "title": "Isolar por motivo de mudança"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-4",
+    "paragraphs": [
+      "Uma boa primeira pergunta é: que parte muda por motivos diferentes? Regras, protocolo HTTP, persistência, fila e provedor externo costumam evoluir em ritmos distintos. A fronteira ajuda quando protege uma decisão importante ou permite testar uma colaboração relevante.",
+      "O custo também é real: mais tipos, wiring e navegação. Comece com uma porta onde existe uma necessidade de substituição, teste ou independência. Se a abstração não protege nada nem melhora entendimento, ela pode ser removida sem prejuízo."
+    ]
+  },
+  {
+    "type": "callout",
+    "id": "ideia-central",
+    "title": "Ideia para levar",
+    "body": "A abstração deve proteger uma conversa importante; não é uma meta medir quantas interfaces existem.",
+    "tone": "result"
+  }
+],
+    references: [
+  {
+    "label": "Hexagonal Architecture — Alistair Cockburn",
+    "href": "https://alistair.cockburn.us/hexagonal-architecture"
+  }
+],
+    selected: true,
+    published: true,
+    sourceLabel: "Artigo ARQ-004 da série Arquitetura de software",
+  },,
+  {
+    slug: "ddd-tatico-entidades-valores-agregados",
+    title: "DDD tático: entidades, valores e invariantes",
+    category: "Arquitetura de software",
+    summary: "Entidades, objetos de valor e agregados são ferramentas para expressar regras do domínio. Usá-los com propósito ajuda a proteger invariantes; transformar cada substantivo em classe só cria cerimônia.",
+    publishedAt: "2026-11-07",
+    readingTime: "7 min",
+    content: [],
+    story: [
+  {
+    "type": "paragraphs",
+    "id": "abertura",
+    "paragraphs": [
+      "Uma modelagem de domínio fica útil quando torna regras importantes difíceis de violar por acidente. DDD tático oferece padrões para nomear identidade, igualdade por valor e limites de consistência. O ponto de partida continua sendo entender a linguagem e as regras do domínio com as pessoas que conhecem o problema."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-1",
+    "title": "Identidade versus valor"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-1",
+    "paragraphs": [
+      "Uma entidade continua sendo a mesma ao longo do tempo mesmo que alguns atributos mudem. Um pedido com status diferente ainda é o mesmo pedido, identificado por um ID. Um objeto de valor, por outro lado, é definido pelos atributos que carrega: dois valores de dinheiro com a mesma moeda e quantia podem ser equivalentes.",
+      "Objetos de valor são bons lugares para validações e operações que pertencem àquele conceito. Um tipo Dinheiro pode impedir soma entre moedas incompatíveis; um IntervaloDeReserva pode validar começo e fim. A regra fica próxima dos dados que a tornam significativa."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-2",
+    "title": "Agregado como limite de consistência"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-2",
+    "paragraphs": [
+      "Um agregado delimita invariantes que precisam ser mantidos juntos em uma operação. A raiz é a entrada para as mudanças desse agregado; consumidores não deveriam alterar filhos diretamente ignorando as regras da raiz. Isso não significa que toda relação de banco precise virar um agregado.",
+      "Agregados muito grandes criam contenção e atualizações caras. Agregados pequenos demais podem deixar uma regra central sem lugar claro. Delimite pelo que precisa ser consistente na transação, não pelo diagrama completo do negócio."
+    ]
+  },
+  {
+    "type": "code",
+    "id": "exemplo",
+    "language": "TypeScript",
+    "code": "class ReservationPeriod {\n  constructor(\n    readonly startsAt: Date,\n    readonly endsAt: Date,\n  ) {\n    if (endsAt <= startsAt) {\n      throw new Error(\"invalid reservation period\");\n    }\n  }\n}",
+    "caption": "Objeto de valor simplificado: a validade do intervalo faz parte do próprio conceito. Regras reais de fuso e precisão precisam ser definidas pelo domínio."
+  },
+  {
+    "type": "heading",
+    "id": "sec-3",
+    "title": "Exemplo: reserva de sala"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-3",
+    "paragraphs": [
+      "Uma reserva pode ser uma entidade porque tem identidade, ciclo de vida e histórico. O intervalo de tempo pode ser um objeto de valor: início e fim precisam formar um período válido. Uma regra do domínio impede que a reserva termine antes de começar.",
+      "O agregado pode coordenar as mudanças de estado da reserva, como solicitada, confirmada ou cancelada. A política de não permitir sobreposição talvez envolva outras reservas e exija uma operação de domínio ou controle transacional no banco; não convém esconder essa complexidade dentro de um objeto sem contexto."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-4",
+    "title": "Modelar quando a regra pede"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-4",
+    "paragraphs": [
+      "DDD não exige que cada tabela vire uma entidade rica nem que toda validação more em um objeto de domínio. Um CRUD simples pode ter modelo mais direto. O padrão vale quando dá nome, fronteira ou proteção a uma regra que já importa.",
+      "Use exemplos e linguagem do domínio para avaliar o modelo. Se a equipe não consegue explicar por que um objeto tem identidade, que invariantes o agregado protege ou qual regra um value object carrega, a abstração talvez esteja adiantada em relação ao entendimento."
+    ]
+  },
+  {
+    "type": "callout",
+    "id": "ideia-central",
+    "title": "Ideia para levar",
+    "body": "Escolha padrões táticos para expressar identidade, igualdade e invariantes reais; o modelo é ferramenta, não coleção de classes.",
+    "tone": "result"
+  }
+],
+    references: [
+  {
+      "label": "Tactical Domain-Driven Design — Microsoft Learn",
+      "href": "https://learn.microsoft.com/en-us/azure/architecture/microservices/model/tactical-domain-driven-design"
+  }
+],
+    selected: true,
+    published: true,
+    sourceLabel: "Artigo ARQ-005 da série Arquitetura de software",
+  },,
+  {
+    slug: "eventos-filas-idempotencia-duplicatas",
+    title: "Eventos e filas: e se a mesma mensagem chegar duas vezes?",
+    category: "Arquitetura de software",
+    summary: "Consumidores devem tolerar repetição quando o transporte pode redeliver mensagens. Idempotência exige uma chave estável e uma fronteira transacional coerente com o efeito produzido.",
+    publishedAt: "2026-11-10",
+    readingTime: "7 min",
+    content: [],
+    story: [
+  {
+    "type": "paragraphs",
+    "id": "abertura",
+    "paragraphs": [
+      "Uma mensagem pode ser processada e a confirmação se perder antes de chegar ao broker. O consumidor concluiu o trabalho, mas o broker não sabe disso e pode entregar a mensagem de novo. Esse cenário mostra por que uma fila não elimina a necessidade de lidar com repetição."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-1",
+    "title": "O que significa processar uma vez?"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-1",
+    "paragraphs": [
+      "“Uma vez” pode significar que o broker entregou uma mensagem uma vez, que o handler foi chamado uma vez ou que o efeito de negócio foi aplicado uma vez. Essas garantias são diferentes. Mesmo que a entrega seja repetida, o sistema pode garantir um único efeito observável se a operação for idempotente.",
+      "Também não se deve presumir que todo broker tem as mesmas semânticas. Configuração, janela de visibilidade, confirmação e armazenamento variam. O contrato do consumidor deve começar pela possibilidade de retry e pelo que acontece quando o resultado do trabalho é ambíguo."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-2",
+    "title": "Chave estável e deduplicação"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-2",
+    "paragraphs": [
+      "A mensagem deve carregar um identificador de evento ou uma chave de idempotência com significado no domínio. O consumidor registra esse identificador de forma durável e verifica se já aplicou o efeito. Uma chave gerada novamente a cada retry não ajuda a reconhecer a mesma operação.",
+      "O registro da chave e a alteração de negócio precisam compartilhar uma transação ou uma estratégia equivalente. Se o consumidor marca a chave antes do efeito e falha, pode perder trabalho; se grava o efeito antes da chave e falha, pode duplicá-lo. A fronteira de atomicidade define o desenho."
+    ]
+  },
+  {
+    "type": "code",
+    "id": "exemplo",
+    "language": "SQL",
+    "code": "BEGIN;\n\nINSERT INTO processed_messages (message_id)\nVALUES (:message_id)\nON CONFLICT DO NOTHING;\n\n-- Se nenhuma linha foi inserida, já foi processada.\n-- Caso contrário, aplique a alteração de negócio\n-- na mesma transação.\n\nCOMMIT;",
+    "caption": "Esboço do padrão inbox. A sintaxe e o tratamento do retorno variam por banco; efeitos externos exigem uma estratégia adicional."
+  },
+  {
+    "type": "heading",
+    "id": "sec-3",
+    "title": "Efeitos externos são mais difíceis"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-3",
+    "paragraphs": [
+      "Enviar um pagamento, disparar um e-mail ou chamar uma API externa pode ficar fora da transação local. Outbox, APIs idempotentes do provedor e estados de reconciliação ajudam, mas cada abordagem tem custos. Um e-mail, por exemplo, pode ser enviado e o processo cair antes de guardar a confirmação.",
+      "Retries também precisam de política: atraso, limite, classificação de erro, fila de mensagens mortas e procedimento de redrive. Reexecutar infinitamente uma mensagem inválida pode ocupar recursos e ocultar que intervenção é necessária."
+    ]
+  },
+  {
+    "type": "heading",
+    "id": "sec-4",
+    "title": "Desenhe o efeito, não o rótulo"
+  },
+  {
+    "type": "paragraphs",
+    "id": "texto-4",
+    "paragraphs": [
+      "Escreva o que deve permanecer verdadeiro após uma mensagem duplicada. Para uma cobrança, pode ser “uma cobrança bem-sucedida por pedido”, não “o handler roda uma vez”. Teste a repetição antes e depois de cada ponto em que o processo pode cair.",
+      "Não prometa exactly-once sem definir o escopo e os mecanismos envolvidos. Em muitos sistemas, entrega repetida com consumidor idempotente é uma expectativa operacional mais clara do que tentar eliminar qualquer duplicação em uma fronteira distribuída."
+    ]
+  },
+  {
+    "type": "callout",
+    "id": "ideia-central",
+    "title": "Ideia para levar",
+    "body": "Defina a propriedade de negócio contra duplicatas e alinhe deduplicação, efeito e confirmação com uma fronteira de falha real.",
+    "tone": "result"
+  }
+],
+    references: [
+  {
+    "label": "Amazon SQS: at-least-once delivery",
+    "href": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues-at-least-once-delivery.html"
+  }
+],
+    selected: true,
+    published: true,
+    sourceLabel: "Artigo ARQ-006 da série Arquitetura de software",
+  },,
+  {
+    slug: "python-argumentos-default-mutaveis",
+    title: "A lista de compras que não zera sozinha",
+    category: "Linguagens · Python",
+    summary:
+      "Por que uma lista usada como argumento padrão pode guardar itens entre chamadas e como usar `None` para criar um valor novo quando necessário.",
+    publishedAt: "2026-11-09",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      {
+        type: "paragraphs",
+        id: "abertura",
+        paragraphs: [
+          "Imagine uma função que adiciona produtos a uma lista de compras. Você chama a função para adicionar café e depois a chama outra vez para adicionar pão, esperando começar um carrinho novo. Se a lista estiver no valor padrão do parâmetro, a segunda chamada pode devolver café e pão juntos.",
+          "Isso acontece porque valores padrão são avaliados quando a função é definida. Se o valor for um objeto mutável, como uma lista ou um dicionário, as chamadas que omitem aquele argumento reutilizam o mesmo objeto.",
+        ],
+      },
+      { type: "heading", id: "surpresa", title: "O objeto padrão continua vivo entre chamadas" },
+      {
+        type: "code",
+        id: "exemplo-mutavel",
+        language: "python",
+        code: `def adicionar(item, carrinho=[]):
+    carrinho.append(item)
+    return carrinho
+
+print(adicionar("café"))  # ['café']
+print(adicionar("pão"))   # ['café', 'pão']`,
+        caption: "A lista criada na definição da função é reutilizada quando a chamada não informa `carrinho`.",
+      },
+      {
+        type: "paragraphs",
+        id: "por-que",
+        paragraphs: [
+          "O comportamento pode ser útil quando a persistência é intencional, mas costuma surpreender em funções que deveriam iniciar cada operação com estado independente. O problema não é a lista ser mutável por si só; é compartilhar sem perceber o mesmo objeto entre chamadas.",
+          "O mesmo cuidado vale para outros valores mutáveis, como dicionários e conjuntos. Argumentos explícitos continuam sendo usados normalmente: quando alguém passa seu próprio carrinho, a função pode modificá-lo conforme o contrato escolhido.",
+        ],
+      },
+      { type: "heading", id: "solucao", title: "Use `None` quando cada chamada precisa de uma lista nova" },
+      {
+        type: "code",
+        id: "exemplo-seguro",
+        language: "python",
+        code: `def adicionar(item, carrinho=None):
+    if carrinho is None:
+        carrinho = []
+    carrinho.append(item)
+    return carrinho
+
+print(adicionar("café"))  # ['café']
+print(adicionar("pão"))   # ['pão']`,
+        caption: "`None` funciona como sentinela; a lista é criada dentro da chamada que precisa de um carrinho novo.",
+      },
+      {
+        type: "paragraphs",
+        id: "decisao",
+        paragraphs: [
+          "A condição usa `is None` para testar exatamente a sentinela. Assim, uma lista vazia passada explicitamente não é confundida com ausência de argumento e continua sendo a lista que a pessoa forneceu.",
+          "A regra prática é evitar listas e dicionários como valores padrão quando a intenção for um objeto novo por chamada. Use `None` e crie o objeto dentro da função. Se compartilhar estado for intencional, torne esse contrato explícito e documente quem controla o ciclo de vida do valor.",
+        ],
+      },
+      {
+        type: "callout",
+        id: "ideia-central",
+        title: "Ideia para levar",
+        body: "Valores padrão mutáveis são compartilhados entre chamadas que omitem o argumento. Para estado novo por chamada, use `None` como sentinela e crie a lista dentro da função.",
+        tone: "result",
+      },
+    ],
+    references: [
+      { label: "Python FAQ — Why are default values shared between objects?", href: "https://docs.python.org/3/faq/programming.html#why-are-default-values-shared-between-objects" },
+      { label: "Python Tutorial — Default Argument Values", href: "https://docs.python.org/3/tutorial/controlflow.html#default-argument-values" },
+    ],
+    selected: true,
+    published: true,
+    sourceLabel: "Adaptado do post PY-001 publicado no LinkedIn em 9 de novembro de 2026",
   },
 ];
 
