@@ -733,6 +733,78 @@ export const articles: Article[] = [
     publishedAt: "2026-11-03",
     linkedinUrl: "https://lnkd.in/p/d97CPsft",
     readingTime: "7 min",
+    cover: {
+      src: "/articles/monolito-e-microsservicos-custo-de-separar/slide-01.webp",
+      alt: "Capa do carrossel do LinkedIn ARQ-002 · Monólito ou microsserviços, em formato de infográfico editorial técnico.",
+      width: 1792,
+      height: 2400,
+      caption: "Capa do carrossel publicado no LinkedIn. Slide 1 de 7.",
+    },
+    galleries: [
+      {
+        id: "arq-002-linkedin",
+        title: "ARQ-002 · Monólito ou microsserviços · slides 2 a 7",
+        description: "Continuação do carrossel publicado no LinkedIn. A capa acima é o slide 1; esta sequência mantém a numeração e a ordem originais.",
+        device: "mixed",
+        presentation: "editorial-grid",
+        items: [
+          {
+            image: {
+              src: "/articles/monolito-e-microsservicos-custo-de-separar/slide-02.webp",
+              alt: "Diagrama compara uma aplicação com módulos internos a serviços separados que se comunicam pela rede.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 2 · A fronteira passa pela rede",
+          },
+          {
+            image: {
+              src: "/articles/monolito-e-microsservicos-custo-de-separar/slide-03.webp",
+              alt: "Três ganhos possíveis de microsserviços: deploy independente, escala direcionada e ownership mais claro, condicionados a limites e operação.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 3 · Autonomia, quando existe necessidade",
+          },
+          {
+            image: {
+              src: "/articles/monolito-e-microsservicos-custo-de-separar/slide-04.webp",
+              alt: "Diagrama de chamada entre Serviço A e Serviço B com timeout e retry limitado.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 4 · A rede falha",
+          },
+          {
+            image: {
+              src: "/articles/monolito-e-microsservicos-custo-de-separar/slide-05.webp",
+              alt: "Dois serviços com seus próprios bancos; consultas e transações entre eles exigem coordenação.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 5 · Dados separados mudam as regras",
+          },
+          {
+            image: {
+              src: "/articles/monolito-e-microsservicos-custo-de-separar/slide-06.webp",
+              alt: "Sinais para investigar separação: releases coordenadas, demandas de escala distintas e equipes bloqueadas por ownership.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 6 · Existe uma necessidade concreta?",
+          },
+          {
+            image: {
+              src: "/articles/monolito-e-microsservicos-custo-de-separar/slide-07.webp",
+              alt: "Fechamento sobre deploy automatizado, observabilidade, resposta a incidentes e a necessidade concreta para separar.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 7 · Separar também é assumir operação",
+          },
+        ],
+      },
+    ],
     content: [],
     story: [
   {
@@ -742,6 +814,7 @@ export const articles: Article[] = [
       "A pergunta útil não é se microsserviços são mais modernos. É: qual problema concreto passa a ser mais barato depois que uma fronteira atravessa a rede? Uma chamada entre módulos pode ser uma função local hoje; em serviços separados, ela passa a depender de disponibilidade, latência, protocolo e operação de dois processos."
     ]
   },
+      { type: "gallery", id: "linkedin-carousel", galleryId: "arq-002-linkedin", layout: "full" },
   {
     "type": "heading",
     "id": "sec-1",
@@ -827,6 +900,69 @@ export const articles: Article[] = [
     publishedAt: "2026-11-05",
     linkedinUrl: "https://lnkd.in/p/dv6RVeg4",
     readingTime: "7 min",
+    cover: {
+      src: "/articles/camadas-e-fatias-verticais-organizar-por-mudanca/slide-01.webp",
+      alt: "Capa do carrossel do LinkedIn ARQ-003 · Camadas e fatias verticais, em formato de infográfico editorial técnico.",
+      width: 1792,
+      height: 2400,
+      caption: "Capa do carrossel publicado no LinkedIn. Slide 1 de 6.",
+    },
+    galleries: [
+      {
+        id: "arq-003-linkedin",
+        title: "ARQ-003 · Camadas e fatias verticais · slides 2 a 6",
+        description: "Continuação do carrossel publicado no LinkedIn. A capa acima é o slide 1; esta sequência mantém a numeração e a ordem originais.",
+        device: "mixed",
+        presentation: "editorial-grid",
+        items: [
+          {
+            image: {
+              src: "/articles/camadas-e-fatias-verticais-organizar-por-mudanca/slide-02.webp",
+              alt: "O fluxo CriarPedido atravessa apresentação, serviços e dados; cada camada agrupa uma responsabilidade técnica.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 2 · Organizar por camadas",
+          },
+          {
+            image: {
+              src: "/articles/camadas-e-fatias-verticais-organizar-por-mudanca/slide-03.webp",
+              alt: "A fatia CriarPedido mantém próximos os elementos que participam daquele caso de uso.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 3 · Organizar por funcionalidade",
+          },
+          {
+            image: {
+              src: "/articles/camadas-e-fatias-verticais-organizar-por-mudanca/slide-04.webp",
+              alt: "Políticas técnicas compartilhadas ficam fáceis de encontrar, com o trade-off de um fluxo atravessar diretórios.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 4 · Quando camadas ajudam",
+          },
+          {
+            image: {
+              src: "/articles/camadas-e-fatias-verticais-organizar-por-mudanca/slide-05.webp",
+              alt: "Uma mudança pode ficar localizada; comportamento comum duplicado é mostrado como risco.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 5 · Quando fatias ajudam",
+          },
+          {
+            image: {
+              src: "/articles/camadas-e-fatias-verticais-organizar-por-mudanca/slide-06.webp",
+              alt: "Síntese visual mostra que camadas e fatias podem coexistir e pergunta se o código do fluxo está fácil de localizar.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 6 · Escolha pelo padrão de mudança",
+          },
+        ],
+      },
+    ],
     content: [],
     story: [
   {
@@ -836,6 +972,7 @@ export const articles: Article[] = [
       "Uma organização de pastas influencia onde uma pessoa começa a investigar uma mudança. Imagine alterar o fluxo de criar pedido: o controller valida entrada, uma regra calcula o total, o repositório grava os dados e um evento é emitido. A pergunta é se a estrutura ajuda a percorrer esse caminho ou o espalha sem necessidade."
     ]
   },
+      { type: "gallery", id: "linkedin-carousel", galleryId: "arq-003-linkedin", layout: "full" },
   {
     "type": "heading",
     "id": "sec-1",
@@ -921,6 +1058,69 @@ export const articles: Article[] = [
     publishedAt: "2026-11-06",
     linkedinUrl: "https://lnkd.in/p/dh8eUNaS",
     readingTime: "7 min",
+    cover: {
+      src: "/articles/ports-and-adapters-isolar-o-que-muda/slide-01.webp",
+      alt: "Capa do carrossel do LinkedIn ARQ-004 · Ports and adapters, em formato de infográfico editorial técnico.",
+      width: 1792,
+      height: 2400,
+      caption: "Capa do carrossel publicado no LinkedIn. Slide 1 de 6.",
+    },
+    galleries: [
+      {
+        id: "arq-004-linkedin",
+        title: "ARQ-004 · Ports and adapters · slides 2 a 6",
+        description: "Continuação do carrossel publicado no LinkedIn. A capa acima é o slide 1; esta sequência mantém a numeração e a ordem originais.",
+        device: "mixed",
+        presentation: "editorial-grid",
+        items: [
+          {
+            image: {
+              src: "/articles/ports-and-adapters-isolar-o-que-muda/slide-02.webp",
+              alt: "Núcleo da aplicação expressa uma regra sem depender diretamente da interface ou do banco.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 2 · A regra precisa conhecer HTTP?",
+          },
+          {
+            image: {
+              src: "/articles/ports-and-adapters-isolar-o-que-muda/slide-03.webp",
+              alt: "Adapters HTTP e CLI traduzem entradas externas para uma operação oferecida pela aplicação.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 3 · A porta de entrada",
+          },
+          {
+            image: {
+              src: "/articles/ports-and-adapters-isolar-o-que-muda/slide-04.webp",
+              alt: "O núcleo declara uma necessidade e um adapter concreto a conecta à tecnologia externa.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 4 · A porta de saída",
+          },
+          {
+            image: {
+              src: "/articles/ports-and-adapters-isolar-o-que-muda/slide-05.webp",
+              alt: "Diagrama acompanha a entrada HTTP até o caso de uso e a persistência SQL por uma porta.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 5 · Um fluxo de ponta a ponta",
+          },
+          {
+            image: {
+              src: "/articles/ports-and-adapters-isolar-o-que-muda/slide-06.webp",
+              alt: "Síntese de fronteiras entre aplicação e tecnologias com a pergunta sobre qual detalhe externo vale isolar.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 6 · Isole fronteiras que importam",
+          },
+        ],
+      },
+    ],
     content: [],
     story: [
   {
@@ -930,6 +1130,7 @@ export const articles: Article[] = [
       "Uma regra de negócio não deveria precisar conhecer se uma requisição veio de HTTP, de um job ou de um teste. Tampouco deveria depender diretamente de um driver específico de banco só para gravar o resultado. Ports and adapters organiza o sistema em torno das conversas necessárias entre a aplicação e o mundo exterior."
     ]
   },
+      { type: "gallery", id: "linkedin-carousel", galleryId: "arq-004-linkedin", layout: "full" },
   {
     "type": "heading",
     "id": "sec-1",
@@ -1015,6 +1216,69 @@ export const articles: Article[] = [
     publishedAt: "2026-11-07",
     linkedinUrl: "https://lnkd.in/p/dat52ehr",
     readingTime: "7 min",
+    cover: {
+      src: "/articles/ddd-tatico-entidades-valores-agregados/slide-01.webp",
+      alt: "Capa do carrossel do LinkedIn ARQ-005 · DDD tático, em formato de infográfico editorial técnico.",
+      width: 1792,
+      height: 2400,
+      caption: "Capa do carrossel publicado no LinkedIn. Slide 1 de 6.",
+    },
+    galleries: [
+      {
+        id: "arq-005-linkedin",
+        title: "ARQ-005 · DDD tático · slides 2 a 6",
+        description: "Continuação do carrossel publicado no LinkedIn. A capa acima é o slide 1; esta sequência mantém a numeração e a ordem originais.",
+        device: "mixed",
+        presentation: "editorial-grid",
+        items: [
+          {
+            image: {
+              src: "/articles/ddd-tatico-entidades-valores-agregados/slide-02.webp",
+              alt: "Pedidos com identificador persistem como a mesma entidade enquanto seus dados e estados mudam.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 2 · Pedido é uma entidade",
+          },
+          {
+            image: {
+              src: "/articles/ddd-tatico-entidades-valores-agregados/slide-03.webp",
+              alt: "Dois valores monetários iguais são comparados por quantia e moeda, sem identificador próprio.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 3 · Dinheiro é um objeto de valor",
+          },
+          {
+            image: {
+              src: "/articles/ddd-tatico-entidades-valores-agregados/slide-04.webp",
+              alt: "Pedido raiz e itens ficam dentro de uma fronteira de consistência protegida pela raiz.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 4 · Agregado define uma fronteira",
+          },
+          {
+            image: {
+              src: "/articles/ddd-tatico-entidades-valores-agregados/slide-05.webp",
+              alt: "Um Pedido confirmado rejeita a operação de adicionar item.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 5 · A raiz protege a invariante",
+          },
+          {
+            image: {
+              src: "/articles/ddd-tatico-entidades-valores-agregados/slide-06.webp",
+              alt: "Síntese de entidade, objeto de valor e agregado, com pergunta sobre uma regra explícita do domínio.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 6 · Modele a regra que importa",
+          },
+        ],
+      },
+    ],
     content: [],
     story: [
   {
@@ -1024,6 +1288,7 @@ export const articles: Article[] = [
       "Uma modelagem de domínio fica útil quando torna regras importantes difíceis de violar por acidente. DDD tático oferece padrões para nomear identidade, igualdade por valor e limites de consistência. O ponto de partida continua sendo entender a linguagem e as regras do domínio com as pessoas que conhecem o problema."
     ]
   },
+      { type: "gallery", id: "linkedin-carousel", galleryId: "arq-005-linkedin", layout: "full" },
   {
     "type": "heading",
     "id": "sec-1",
@@ -1109,6 +1374,78 @@ export const articles: Article[] = [
     publishedAt: "2026-11-10",
     linkedinUrl: "https://lnkd.in/p/dT8Sx-SC",
     readingTime: "7 min",
+    cover: {
+      src: "/articles/eventos-filas-idempotencia-duplicatas/slide-01.webp",
+      alt: "Capa do carrossel do LinkedIn ARQ-006 · Eventos, filas e idempotência, em formato de infográfico editorial técnico.",
+      width: 1792,
+      height: 2400,
+      caption: "Capa do carrossel publicado no LinkedIn. Slide 1 de 7.",
+    },
+    galleries: [
+      {
+        id: "arq-006-linkedin",
+        title: "ARQ-006 · Eventos, filas e idempotência · slides 2 a 7",
+        description: "Continuação do carrossel publicado no LinkedIn. A capa acima é o slide 1; esta sequência mantém a numeração e a ordem originais.",
+        device: "mixed",
+        presentation: "editorial-grid",
+        items: [
+          {
+            image: {
+              src: "/articles/eventos-filas-idempotencia-duplicatas/slide-02.webp",
+              alt: "Sequência mostra o consumidor terminar o efeito, cair antes do ack e o broker entregar a mensagem novamente.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 2 · O ack se perdeu",
+          },
+          {
+            image: {
+              src: "/articles/eventos-filas-idempotencia-duplicatas/slide-03.webp",
+              alt: "Uma mesma mensagem repetida num consumidor sem proteção pode criar efeitos de negócio duplicados.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 3 · Entrega repetida pode duplicar efeitos",
+          },
+          {
+            image: {
+              src: "/articles/eventos-filas-idempotencia-duplicatas/slide-04.webp",
+              alt: "A mesma operação chega duas vezes, mas um consumidor idempotente aplica apenas um efeito.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 4 · Torne o processamento idempotente",
+          },
+          {
+            image: {
+              src: "/articles/eventos-filas-idempotencia-duplicatas/slide-05.webp",
+              alt: "Identificador estável permite detectar uma reentrega e ignorar a repetição do efeito.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 5 · Reconheça a mesma mensagem",
+          },
+          {
+            image: {
+              src: "/articles/eventos-filas-idempotencia-duplicatas/slide-06.webp",
+              alt: "Falhas temporárias recebem tentativas limitadas; mensagens persistentes seguem para dead-letter.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 6 · Retry precisa de limite",
+          },
+          {
+            image: {
+              src: "/articles/eventos-filas-idempotencia-duplicatas/slide-07.webp",
+              alt: "Fechamento combina ID estável, verificação de processamento, efeito e ack sem prometer exactly-once universal.",
+              width: 1792,
+              height: 2400,
+            },
+            title: "Slide 7 · Mensagens repetidas são parte do desenho",
+          },
+        ],
+      },
+    ],
     content: [],
     story: [
   {
@@ -1118,6 +1455,7 @@ export const articles: Article[] = [
       "Uma mensagem pode ser processada e a confirmação se perder antes de chegar ao broker. O consumidor concluiu o trabalho, mas o broker não sabe disso e pode entregar a mensagem de novo. Esse cenário mostra por que uma fila não elimina a necessidade de lidar com repetição."
     ]
   },
+      { type: "gallery", id: "linkedin-carousel", galleryId: "arq-006-linkedin", layout: "full" },
   {
     "type": "heading",
     "id": "sec-1",
@@ -2659,6 +2997,13 @@ export const articles: Article[] = [
     publishedAt: "2026-11-09",
     linkedinUrl: "https://lnkd.in/p/dq7en2cP",
     readingTime: "4 min",
+    cover: {
+      src: "/articles/python-argumentos-default-mutaveis/slide-01.webp",
+      alt: "Infográfico PY-001: duas chamadas compartilham uma lista padrão mutável; com None, cada chamada cria uma lista nova.",
+      width: 1792,
+      height: 2400,
+      caption: "Imagem publicada no LinkedIn para explicar argumentos padrão mutáveis em Python.",
+    },
     content: [],
     story: [
       {
