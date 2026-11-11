@@ -588,6 +588,40 @@ export const projects: Project[] = [
     published: false,
     links: [{ label: "Repositório", href: "https://github.com/woragis/testmaster" }],
   },
+  {
+    slug: "dotfiles-arch-linux",
+    title: "Dotfiles · ambiente Arch Linux",
+    eyebrow: "Ambiente de desenvolvimento · Linux",
+    summary:
+      "Configurações versionadas para um ambiente pessoal Arch Linux, reunindo compositor, barra, terminal, shell, editor e temas do sistema em repositórios separados.",
+    scope: "Configuração pessoal · Git e submódulos",
+    role: "Autor e mantenedor",
+    stack: ["Arch Linux", "Hyprland", "AGS", "Waybar", "Neovim", "Lua", "Fish", "Zsh", "Git submodules"],
+    context:
+      "Um ambiente Linux depende de várias camadas: sessão gráfica, painel, terminais, shell, editor e aparência de inicialização. Sem versionamento, acompanhar mudanças e recuperar uma configuração anterior fica mais difícil.",
+    approach:
+      "A configuração local organiza ferramentas em repositórios próprios conectados por Git submodules. O conjunto inclui scripts e configuração do Hyprland, widgets AGS em TypeScript, Waybar, Neovim em Lua, Fish, Zsh e preferências de terminais e do sistema. Cada componente pode evoluir no seu repositório.",
+    outcome:
+      "O resultado é uma coleção pública e inspecionável de configurações pessoais, não uma distribuição Linux nem um instalador pronto. A instalação limpa e a restauração em outra máquina ainda precisam ser demonstradas antes de afirmar que o ambiente é reproduzível de ponta a ponta.",
+    selected: true,
+    published: false,
+    links: [
+      { label: "AGS", href: "https://github.com/woragis/.config-ags" },
+      { label: "btop", href: "https://github.com/woragis/.config-btop" },
+      { label: "Create Next App · Node.js", href: "https://github.com/woragis/.config-create-next-app-nodejs" },
+      { label: "File Organizer", href: "https://github.com/woragis/.config-file-organizer" },
+      { label: "Fish", href: "https://github.com/woragis/.config-fish" },
+      { label: "Ghostty", href: "https://github.com/woragis/.config-ghostty" },
+      { label: "GRUB", href: "https://github.com/woragis/.config-grub" },
+      { label: "Hyprland", href: "https://github.com/woragis/.config-hypr" },
+      { label: "Kitty", href: "https://github.com/woragis/.config-kitty" },
+      { label: "Mako", href: "https://github.com/woragis/.config-mako" },
+      { label: "Neovim", href: "https://github.com/woragis/.config-nvim" },
+      { label: "Plymouth", href: "https://github.com/woragis/.config-plymouth" },
+      { label: "Waybar", href: "https://github.com/woragis/.config-waybar" },
+      { label: "Zsh", href: "https://github.com/woragis/.config-zsh" },
+    ],
+  },
 ];
 
 export type Article = {
