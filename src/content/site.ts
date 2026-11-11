@@ -795,6 +795,87 @@ export const articles: Article[] = [
     published: false,
     sourceLabel: "Rascunho adaptado da série LinkedIn Festas, post 09",
   },
+  {
+    slug: "dotfiles-modulares-ambiente-arch-linux",
+    title: "Dotfiles modulares: como organizar um ambiente Linux versionado",
+    category: "Desenvolvimento · Linux",
+    summary:
+      "Separar configurações por ferramenta ajuda a evoluir um desktop Linux em partes. O desafio é manter dependências, instalação e segredos sob controle.",
+    readingTime: "7 min",
+    projectSlugs: ["dotfiles-arch-linux"],
+    content: [],
+    story: [
+      {
+        type: "paragraphs",
+        id: "abertura",
+        paragraphs: [
+          "Um ambiente de desenvolvimento não é composto apenas pelo editor. Compositor de janelas, barra, notificações, terminal, shell, fontes e temas também afetam o trabalho diário. Quando cada ferramenta é configurada isoladamente, uma reinstalação pode virar uma coleção de passos esquecidos.",
+          "No meu ambiente Arch Linux, essas configurações ficam organizadas em repositórios públicos por componente e reunidas localmente por Git submodules. A ideia é tornar mudanças inspecionáveis e permitir que cada conjunto evolua no seu próprio histórico. Isso descreve a estrutura atual; ainda preciso validar uma instalação limpa antes de afirmar que outra máquina pode reproduzi-la sem ajustes.",
+        ],
+      },
+      { type: "heading", id: "componentes", title: "Cada ferramenta tem seu próprio contexto" },
+      {
+        type: "paragraphs",
+        id: "componentes-texto",
+        paragraphs: [
+          "O conjunto inclui configuração do Hyprland para a sessão gráfica, widgets AGS escritos em TypeScript, Waybar, Neovim em Lua, shells como Fish e Zsh, além de terminais e componentes do sistema. Esses elementos se relacionam, mas têm formatos, dependências e ciclos de mudança diferentes.",
+          "Separá-los em repositórios menores deixa mais fácil revisar uma mudança específica e reutilizar um componente. Também evita que a configuração de uma ferramenta cresça como uma pasta indistinta dentro de um único repositório. O custo é que o estado completo do desktop passa a depender de várias revisões coordenadas.",
+        ],
+      },
+      { type: "heading", id: "submodules", title: "O repositório agregador registra a composição" },
+      {
+        type: "paragraphs",
+        id: "submodules-texto",
+        paragraphs: [
+          "Git submodules permitem que um repositório registre outros repositórios em caminhos específicos e aponte para revisões determinadas. Assim, o projeto agregador descreve quais componentes formam o ambiente e em que revisão cada um deve estar. Um clone comum precisa inicializar e atualizar esses submódulos para obter a composição completa.",
+          "Essa escolha oferece rastreabilidade, mas também acrescenta uma etapa operacional. Quem clona precisa conhecer submódulos; atualizar um componente envolve registrar a nova revisão no agregador; e links quebrados, branches ausentes ou permissões diferentes podem impedir a montagem do conjunto. Um README claro e um procedimento testado fazem parte da solução, não são documentação opcional.",
+        ],
+      },
+      {
+        type: "code",
+        id: "comandos",
+        language: "bash",
+        code: "git clone --recurse-submodules <url-do-repositorio>\ncd .config\ngit submodule status",
+        caption: "Exemplo do fluxo de clone de um agregador com submódulos. A instalação real ainda precisa documentar dependências e etapas específicas de cada ferramenta.",
+      },
+      { type: "heading", id: "reproducibilidade", title: "Versionado não significa reproduzível" },
+      {
+        type: "paragraphs",
+        id: "reproducibilidade-texto",
+        paragraphs: [
+          "Guardar arquivos no Git ajuda a recuperar configurações, mas não garante que uma máquina nova terá os mesmos programas, fontes, plugins, serviços, permissões ou variáveis de ambiente. Algumas preferências dependem de pacotes do sistema; outras podem depender de caminhos locais ou de integrações que não existem fora da máquina original.",
+          "Para chamar o setup de reproduzível, é preciso começar num ambiente limpo, seguir instruções documentadas e observar o resultado. A validação deve distinguir o que é automatizado do que ainda exige decisão manual, registrar versões relevantes e explicar como voltar atrás se uma configuração impedir o login ou quebrar a sessão gráfica.",
+        ],
+      },
+      { type: "heading", id: "segredos", title: "Configuração pública exige higiene de segredos" },
+      {
+        type: "paragraphs",
+        id: "segredos-texto",
+        paragraphs: [
+          "Arquivos de configuração podem acumular tokens, senhas, identificadores pessoais, caminhos locais e histórico que não deveria ser público. Ignorar um arquivo na próxima alteração não remove o que já foi enviado: segredos publicados precisam ser revogados, removidos do estado atual e tratados também no histórico Git.",
+          "Por isso, uma revisão de segurança precisa acontecer antes de apresentar um conjunto de dotfiles como referência pública. O repositório agregador só deve apontar para componentes revisados, e capturas de tela também precisam ser examinadas: notificações, títulos de janela, comandos anteriores e nomes de usuário podem revelar informações sem que isso seja percebido durante a gravação.",
+        ],
+      },
+      { type: "heading", id: "proximos-passos", title: "O próximo passo é provar a recuperação" },
+      {
+        type: "paragraphs",
+        id: "proximos-passos-texto",
+        paragraphs: [
+          "O valor deste projeto está em tornar meu ambiente mais legível, versionado e discutível. O próximo marco não é adicionar mais temas ou scripts: é documentar a composição, revisar cada repositório e testar a recuperação num ambiente limpo. Só então será possível dizer com precisão quanto do setup pode ser reaplicado e quais partes continuam pessoais ou manuais.",
+        ],
+      },
+      {
+        type: "callout",
+        id: "ideia-central",
+        title: "Ideia para levar",
+        body: "Dotfiles versionados registram decisões e histórico. Reprodutibilidade só existe depois de validar dependências, segredos e instalação fora da máquina original.",
+        tone: "result",
+      },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Artigo original sobre o projeto pessoal de dotfiles",
+  },
 ];
 
 export const experience: { period: string; role: string; company: string; description?: string }[] = [
