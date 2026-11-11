@@ -884,6 +884,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Separar um módulo muda chamadas, dados, deploy e operação. A decisão vale quando resolve um limite concreto que a equipe não consegue sustentar dentro de uma aplicação modular.",
     publishedAt: "2026-11-03",
+    linkedinUrl: "https://lnkd.in/p/d97CPsft",
     readingTime: "7 min",
     content: [],
     story: [
@@ -977,6 +978,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Camadas agrupam responsabilidades técnicas; fatias verticais agrupam o caminho de uma funcionalidade. Os dois eixos podem coexistir, e a escolha deve acompanhar o padrão de mudança.",
     publishedAt: "2026-11-05",
+    linkedinUrl: "https://lnkd.in/p/dv6RVeg4",
     readingTime: "7 min",
     content: [],
     story: [
@@ -1070,6 +1072,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Ports and adapters separa conversas que a aplicação precisa ter dos detalhes de tecnologia que as implementam. O hexágono é uma metáfora; o contrato e a direção das dependências são o que importam.",
     publishedAt: "2026-11-06",
+    linkedinUrl: "https://lnkd.in/p/dh8eUNaS",
     readingTime: "7 min",
     content: [],
     story: [
@@ -1163,6 +1166,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Entidades, objetos de valor e agregados são ferramentas para expressar regras do domínio. Usá-los com propósito ajuda a proteger invariantes; transformar cada substantivo em classe só cria cerimônia.",
     publishedAt: "2026-11-07",
+    linkedinUrl: "https://lnkd.in/p/dat52ehr",
     readingTime: "7 min",
     content: [],
     story: [
@@ -1256,6 +1260,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Consumidores devem tolerar repetição quando o transporte pode redeliver mensagens. Idempotência exige uma chave estável e uma fronteira transacional coerente com o efeito produzido.",
     publishedAt: "2026-11-10",
+    linkedinUrl: "https://lnkd.in/p/dT8Sx-SC",
     readingTime: "7 min",
     content: [],
     story: [
@@ -1350,6 +1355,7 @@ export const articles: Article[] = [
     summary:
       "Por que uma lista usada como argumento padrão pode guardar itens entre chamadas e como usar `None` para criar um valor novo quando necessário.",
     publishedAt: "2026-11-09",
+    linkedinUrl: "https://lnkd.in/p/dq7en2cP",
     readingTime: "4 min",
     content: [],
     story: [
