@@ -1527,8 +1527,22 @@ html[data-theme="atelier"] .articles-collection .article-card__cover { width: 10
 .article-highlights__pagination button { width: .48rem; height: .48rem; border: 0; border-radius: var(--radius-pill); background: var(--color-line); padding: 0; cursor: pointer; transition: width var(--transition), background-color var(--transition); }
 .article-highlights__pagination button[aria-pressed="true"] { width: 1.35rem; background: var(--color-accent); }
 .article-highlights__pagination button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
-.article-news-card--lead, .article-news-card--compact { animation: article-highlight-in 420ms ease both; }
-@keyframes article-highlight-in { from { opacity: .68; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.article-news-card--lead { animation: article-highlight-jiggle 680ms cubic-bezier(.2, .75, .35, 1) both; }
+.article-top-stories__side > .article-news-card--compact:nth-child(1) { animation: article-highlight-jiggle-small 560ms 90ms cubic-bezier(.2, .75, .35, 1) both; }
+.article-top-stories__side > .article-news-card--compact:nth-child(2) { animation: article-highlight-jiggle-small 560ms 160ms cubic-bezier(.2, .75, .35, 1) both; }
+@keyframes article-highlight-jiggle {
+  0% { opacity: .78; transform: translateY(9px) rotate(-.45deg) scale(.99); }
+  42% { opacity: 1; transform: translateY(-2px) rotate(.32deg) scale(1.004); }
+  64% { transform: translateY(1px) rotate(-.2deg) scale(1); }
+  82% { transform: translateY(-.5px) rotate(.1deg); }
+  100% { transform: translateY(0) rotate(0) scale(1); }
+}
+@keyframes article-highlight-jiggle-small {
+  0% { opacity: .8; transform: translateX(6px) rotate(.3deg) scale(.993); }
+  45% { opacity: 1; transform: translateX(-1px) rotate(-.22deg) scale(1.003); }
+  70% { transform: translateX(1px) rotate(.12deg) scale(1); }
+  100% { transform: translateX(0) rotate(0) scale(1); }
+}
 .articles-collection { padding-top: clamp(1rem, 2.5vw, 2.25rem); }
 .articles-collection .articles-masthead { margin-top: 0; }
 .articles-masthead { align-items: end; gap: 1.5rem; margin: clamp(2rem, 4vw, 3.5rem) 0 0; border-top: 0; border-bottom: var(--border-width) solid var(--color-line); padding: 0 0 1rem; }
