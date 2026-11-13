@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { articles, projects, selectedArticles } from "@/content/site";
 import { absoluteUrl, jsonLd, pageMetadata } from "@/lib/seo";
 import { ArticleContent } from "@/components/article-content";
-import { ArticleCard } from "@/components/article-card";
 import { ProjectMediaImage } from "@/components/project-media";
 
 type Props = { params: Promise<{ slug: string }> };

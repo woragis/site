@@ -654,13 +654,785 @@ export type ArticleStoryBlock =
 
 export const articles: Article[] = [
   {
+    slug: "geolocalizacao-como-opcao-weatherly",
+    title: "GPS negado, busca disponível: localização como opção no Weatherly",
+    category: "Produto · Web APIs",
+    summary:
+      "O que acontece quando alguém não autoriza a localização? No Weatherly, a busca manual continua disponível; o código separa permissão negada, posição indisponível e falha na obtenção da posição.",
+    publishedAt: "2026-11-12",
+    readingTime: "6 min",
+    projectSlugs: ["weatherly"],
+    content: [],
+    cover: {
+      src: "/articles/geolocalizacao-weatherly/wth-009.jpg",
+      alt: "Infográfico do Weatherly sobre o fluxo após permitir ou negar a localização, com uma busca manual por cidade e uma ilustração conceitual de código.",
+      width: 1536,
+      height: 2752,
+      caption:
+        "Arte editorial do post WTH-009. O código mostrado na ilustração é conceitual; os trechos fiéis à implementação estão reproduzidos abaixo.",
+    },
+    story: [
+      {
+        type: "paragraphs",
+        id: "abertura",
+        paragraphs: [
+          "Um pedido de localização é uma decisão da pessoa, não uma etapa que o produto pode presumir. Se a permissão for negada, a experiência ainda precisa oferecer um caminho para cumprir a tarefa principal.",
+          "No Weatherly, essa tarefa é consultar o clima de um lugar. O GPS ajuda a descobrir esse lugar, mas a busca manual por cidade também pode fornecer a localização necessária para carregar a previsão.",
+        ],
+      },
+      {
+        type: "heading",
+        id: "estados",
+        title: "Permissão negada não é o mesmo que posição indisponível",
+      },
+      {
+        type: "paragraphs",
+        id: "estados-texto",
+        paragraphs: [
+          "O hook de geolocalização não guarda apenas coordenadas. Ele também representa estados como `pending`, `granted`, `denied`, `unavailable` e `error`. Isso permite que a interface reaja ao motivo pelo qual ainda não tem uma posição.",
+          "No callback de erro, o Weatherly trata explicitamente a permissão negada e a posição indisponível. Os demais erros recebem um estado genérico e uma mensagem de tempo esgotado. A diferença importa: negar acesso pede uma alternativa; uma falha temporária pode permitir tentar novamente.",
+        ],
+      },
+      {
+        type: "code",
+        id: "codigo-erros",
+        language: "TypeScript",
+        caption: "Trecho real de `src/hooks/use-geolocation.ts`",
+        code: `if (error.code === error.PERMISSION_DENIED) {
+  onFail(
+    "denied",
+    "Permissão de localização negada. Busque uma cidade abaixo."
+  );
+} else if (error.code === error.POSITION_UNAVAILABLE) {
+  onFail("unavailable", "Não foi possível obter sua posição.");
+} else {
+  onFail("error", "Tempo esgotado ao obter localização.");
+}`,
+      },
+      {
+        type: "heading",
+        id: "alternativa",
+        title: "A alternativa precisa continuar à vista",
+      },
+      {
+        type: "paragraphs",
+        id: "alternativa-texto",
+        paragraphs: [
+          "A mensagem de permissão negada orienta a pessoa a buscar uma cidade. No `WeatherShell`, o componente `CitySearch` permanece montado acima dos estados de carregamento e erro. Assim, o formulário de busca não desaparece quando o GPS falha.",
+          "Quando a pessoa escolhe uma cidade, o estado manual tem precedência sobre as coordenadas vindas do GPS. Essa prioridade evita que uma posição automática substitua a escolha explícita da pessoa.",
+        ],
+      },
+      {
+        type: "code",
+        id: "codigo-prioridade",
+        language: "TypeScript",
+        caption: "A cidade escolhida manualmente tem prioridade em `src/components/weather-shell.tsx`",
+        code: `const place = manualPlace ?? geoPlace;`,
+      },
+      {
+        type: "heading",
+        id: "pedido-de-permissao",
+        title: "Há uma nuance: hoje o GPS é solicitado ao abrir a página",
+      },
+      {
+        type: "paragraphs",
+        id: "pedido-de-permissao-texto",
+        paragraphs: [
+          "A busca continuar disponível não significa que o Weatherly espere uma ação explícita antes de pedir localização. Sem uma cidade inicial, o `WeatherShell` cria o hook com `useGeolocation(!initialPlace)`, que solicita a posição automaticamente ao montar.",
+          "Isso revela duas decisões diferentes: a pessoa pode negar a permissão sem perder a busca, mas o momento do pedido ainda pode ser refinado. Uma evolução possível seria explicar o benefício e pedir GPS somente depois de a pessoa tocar em uma ação como “usar minha localização”. Isso reduz a surpresa do prompt, com o custo de um toque extra para quem quer a previsão local imediatamente.",
+        ],
+      },
+      {
+        type: "heading",
+        id: "opcoes",
+        title: "Tempo de espera e posição em cache também são escolhas",
+      },
+      {
+        type: "paragraphs",
+        id: "opcoes-texto",
+        paragraphs: [
+          "A chamada define `enableHighAccuracy: false`, um timeout de 12 segundos e `maximumAge: 300_000`. Em outras palavras, o app não pede alta precisão, limita quanto tempo espera e aceita uma posição em cache com até cinco minutos, conforme as opções oferecidas pela Geolocation API.",
+          "Esses parâmetros não garantem um tempo de resposta ou uma precisão específica: navegador e dispositivo controlam a obtenção da posição. Eles deixam explícito, porém, o que o produto aceita como suficiente. Para consultar o clima, uma posição recente pode ser mais útil do que deixar a tela esperando indefinidamente.",
+        ],
+      },
+      {
+        type: "callout",
+        id: "ideia-central",
+        title: "A ideia para levar",
+        body: "Uma permissão pode enriquecer o caminho padrão sem bloquear a tarefa quando a pessoa escolhe não concedê-la. No Weatherly, GPS e busca manual são duas formas de chegar ao lugar cuja previsão será consultada.",
+        tone: "result",
+      },
+    ],
+    references: [
+      {
+        label: "Weatherly — implementação de geolocalização",
+        href: "https://github.com/woragis/saas-weatherly/blob/main/src/hooks/use-geolocation.ts",
+      },
+      {
+        label: "Weatherly — fluxo de busca e previsão",
+        href: "https://github.com/woragis/saas-weatherly/blob/main/src/components/weather-shell.tsx",
+      },
+      {
+        label: "MDN — Using the Geolocation API",
+        href: "https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API/Using_the_Geolocation_API",
+      },
+    ],
+    selected: true,
+    published: true,
+    sourceLabel: "Versão aprofundada do WTH-009 publicado no LinkedIn em 11 de novembro de 2026",
+  },
+  {
+    slug: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat",
+    title: "Antes do modelo, vem a razão para abrir o chat",
+    category: "Projeto · Engenharia de software",
+    summary: "Um nome de produto não responde por que alguém usaria o produto. Anime AI Chat ainda é um conceito. Antes de escolher modelo ou framework, preciso…",
+    readingTime: "2 min",
+    projectSlugs: ["anime-ai-chat"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-opening", paragraphs: ["Um nome de produto não responde por que alguém usaria o produto. Anime AI Chat ainda é um conceito. Antes de escolher modelo ou framework, preciso definir público e uma tarefa que um chat genérico não resolve."] },
+      { type: "heading", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Anime AI Chat: anime AI Chat ainda é um conceito. Antes de escolher modelo ou framework, preciso definir público e uma tarefa que um chat genérico não resolve. Uma hipótese pequena poderia ser testar uma conversa sobre histórias originais com um público específico."] },
+      { type: "heading", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Nenhum arquivo de produto para capturar; os apps são scaffolds. Apresentar como descoberta, não como demo. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Uma hipótese pequena poderia ser testar uma conversa sobre histórias originais com um público específico."] },
+      { type: "heading", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "aac-001-antes-do-modelo-vem-a-razao-para-abrir-o-chat-p7", paragraphs: ["O que ainda não devemos concluir: Isso é uma hipótese para validar; o repositório ainda contém apenas scaffolds padrão. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial AAC-001; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "aac-002-o-que-torna-uma-conversa-tematica-util",
+    title: "O que torna uma conversa temática útil?",
+    category: "Projeto · Engenharia de software",
+    summary: "Colocar um tema de anime sobre um chatbot ainda não cria uma experiência diferente. Uma experiência temática precisa de objetivo, tom, limites e…",
+    readingTime: "2 min",
+    projectSlugs: ["anime-ai-chat"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "aac-002-o-que-torna-uma-conversa-tematica-util-opening", paragraphs: ["Colocar um tema de anime sobre um chatbot ainda não cria uma experiência diferente. Uma experiência temática precisa de objetivo, tom, limites e conteúdo próprio. Sem isso, o tema é só decoração em volta de respostas genéricas."] },
+      { type: "heading", id: "aac-002-o-que-torna-uma-conversa-tematica-util-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "aac-002-o-que-torna-uma-conversa-tematica-util-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Anime AI Chat: uma experiência temática precisa de objetivo, tom, limites e conteúdo próprio. Sem isso, o tema é só decoração em volta de respostas genéricas. Uma conversa pode ajudar a explorar uma história original, mas a utilidade precisa ser observada com pessoas reais."] },
+      { type: "heading", id: "aac-002-o-que-torna-uma-conversa-tematica-util-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "aac-002-o-que-torna-uma-conversa-tematica-util-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Não existe fluxo de conversa implementado para capturar. Usar gráfico conceitual, sem balões de chat que pareçam interface existente. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "aac-002-o-que-torna-uma-conversa-tematica-util-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "aac-002-o-que-torna-uma-conversa-tematica-util-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Uma conversa pode ajudar a explorar uma história original, mas a utilidade precisa ser observada com pessoas reais."] },
+      { type: "heading", id: "aac-002-o-que-torna-uma-conversa-tematica-util-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "aac-002-o-que-torna-uma-conversa-tematica-util-p7", paragraphs: ["O que ainda não devemos concluir: Exemplo hipotético; nenhuma jornada conversacional foi implementada. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial AAC-002; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "aac-003-personagens-proprios-mudam-o-ponto-de-partida",
+    title: "Personagens próprios mudam o ponto de partida",
+    category: "Projeto · Engenharia de software",
+    summary: "Um chatbot com personagens conhecidos também levanta uma pergunta de autoria. Uma direção possível é criar personagens e universo originais, para que…",
+    readingTime: "2 min",
+    projectSlugs: ["anime-ai-chat"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-opening", paragraphs: ["Um chatbot com personagens conhecidos também levanta uma pergunta de autoria. Uma direção possível é criar personagens e universo originais, para que identidade e conteúdo tenham origem clara desde o primeiro protótipo."] },
+      { type: "heading", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Anime AI Chat: uma direção possível é criar personagens e universo originais, para que identidade e conteúdo tenham origem clara desde o primeiro protótipo. Começar com um personagem e uma cena curta é mais testável do que prometer um universo inteiro."] },
+      { type: "heading", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Use somente a ilustração conceitual gerada; não use assets de obras existentes. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Começar com um personagem e uma cena curta é mais testável do que prometer um universo inteiro."] },
+      { type: "heading", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "aac-003-personagens-proprios-mudam-o-ponto-de-partida-p7", paragraphs: ["O que ainda não devemos concluir: Não afirmar autorização ou usar personagem, nome, voz ou imagem de franquia sem permissão. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial AAC-003; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores",
+    title: "Um protótipo pequeno pode responder perguntas maiores",
+    category: "Projeto · Engenharia de software",
+    summary: "Antes de construir um SaaS, uma conversa curta pode revelar se a ideia tem valor. O próximo passo para Anime AI Chat é testar um recorte pequeno: um…",
+    readingTime: "2 min",
+    projectSlugs: ["anime-ai-chat"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-opening", paragraphs: ["Antes de construir um SaaS, uma conversa curta pode revelar se a ideia tem valor. O próximo passo para Anime AI Chat é testar um recorte pequeno: um público, uma tarefa e critérios para avaliar se a resposta ajudou."] },
+      { type: "heading", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Anime AI Chat: o próximo passo para Anime AI Chat é testar um recorte pequeno: um público, uma tarefa e critérios para avaliar se a resposta ajudou. Avaliar clareza, consistência com o personagem e quando o modelo deveria admitir que não sabe."] },
+      { type: "heading", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: O app ainda é scaffold; publicar apenas como reflexão sobre descoberta, sem dizer que houve teste com usuários. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Avaliar clareza, consistência com o personagem e quando o modelo deveria admitir que não sabe."] },
+      { type: "heading", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "aac-004-um-prototipo-pequeno-pode-responder-perguntas-maiores-p7", paragraphs: ["O que ainda não devemos concluir: Esse roteiro ainda é planejamento; não há protótipo funcional nem resultados de avaliação. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial AAC-004; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez",
+    title: "Um emulador começa com uma instrução por vez",
+    category: "Projeto · Engenharia de software",
+    summary: "A CPU não precisa nascer com todos os opcodes para começar a ensinar algo. No protótipo, `execute_opcode` usa um `switch` para implementar um…",
+    readingTime: "2 min",
+    projectSlugs: ["gameboy-emulator"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-opening", paragraphs: ["A CPU não precisa nascer com todos os opcodes para começar a ensinar algo. No protótipo, `execute_opcode` usa um `switch` para implementar um subconjunto de instruções. Isso permite estudar fetch, decode e mudança de estado de forma incremental."] },
+      { type: "heading", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Game Boy Emulator: no protótipo, `execute_opcode` usa um `switch` para implementar um subconjunto de instruções. Isso permite estudar fetch, decode e mudança de estado de forma incremental. Um `LD A, d8` lê o byte seguinte ao opcode e o coloca no registrador A."] },
+      { type: "heading", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/cpu.zig`, funções `run` e `execute_opcode`; enquadrar poucos casos do switch. Não sugerir compatibilidade. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Um `LD A, d8` lê o byte seguinte ao opcode e o coloca no registrador A."] },
+      { type: "heading", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "gbe-001-um-emulador-comeca-com-uma-instrucao-por-vez-p7", paragraphs: ["O que ainda não devemos concluir: A implementação é parcial; não representa uma CPU compatível com o Game Boy. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial GBE-001; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao",
+    title: "Flags são parte do resultado de uma instrução",
+    category: "Projeto · Engenharia de software",
+    summary: "Dois registradores podem terminar iguais e ainda deixar a CPU em estados diferentes. O módulo `Registers` separa bits de zero, negativo, half-carry e…",
+    readingTime: "2 min",
+    projectSlugs: ["gameboy-emulator"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-opening", paragraphs: ["Dois registradores podem terminar iguais e ainda deixar a CPU em estados diferentes. O módulo `Registers` separa bits de zero, negativo, half-carry e carry, com funções para ler e atualizar cada flag."] },
+      { type: "heading", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Game Boy Emulator: o módulo `Registers` separa bits de zero, negativo, half-carry e carry, com funções para ler e atualizar cada flag. Uma operação aritmética precisa atualizar o resultado e as flags conforme as regras da instrução."] },
+      { type: "heading", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/memory.zig`, máscaras e métodos `set_*_flag`/`get_*_flag`; conferir legibilidade. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Uma operação aritmética precisa atualizar o resultado e as flags conforme as regras da instrução."] },
+      { type: "heading", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "gbe-002-flags-sao-parte-do-resultado-de-uma-instrucao-p7", paragraphs: ["O que ainda não devemos concluir: Nem todas as flags/opcodes estão implementadas corretamente ou cobertas por testes neste protótipo. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial GBE-002; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console",
+    title: "Uma matriz de 64 KB ainda não é o mapa de memória do console",
+    category: "Projeto · Engenharia de software",
+    summary: "Ter um array do tamanho esperado não significa que todos os endereços já tenham comportamento correto. O protótipo guarda 64 KB em `Cpu.memory` e lê…",
+    readingTime: "2 min",
+    projectSlugs: ["gameboy-emulator"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-opening", paragraphs: ["Ter um array do tamanho esperado não significa que todos os endereços já tenham comportamento correto. O protótipo guarda 64 KB em `Cpu.memory` e lê endereços diretamente. A evolução é modelar regiões com regras e dispositivos distintos."] },
+      { type: "heading", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Game Boy Emulator: o protótipo guarda 64 KB em `Cpu.memory` e lê endereços diretamente. A evolução é modelar regiões com regras e dispositivos distintos. Uma leitura pode representar RAM, registrador de hardware ou uma área mapeada do cartucho."] },
+      { type: "heading", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/cpu.zig`, campo `memory` e `read_memory`. Acompanhar com o diagrama conceitual; não alegar mapa implementado. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Uma leitura pode representar RAM, registrador de hardware ou uma área mapeada do cartucho."] },
+      { type: "heading", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "gbe-003-uma-matriz-de-64-kb-ainda-nao-e-o-mapa-de-memoria-do-console-p7", paragraphs: ["O que ainda não devemos concluir: Esse mapa por regiões é uma direção de evolução; o código atual usa acesso direto ao array. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial GBE-003; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo",
+    title: "Framebuffer, GPU e janela precisam fechar o mesmo ciclo",
+    category: "Projeto · Engenharia de software",
+    summary: "Ter módulo gráfico não significa que a imagem já chega à tela. O repositório tem GPU que escreve pixels em framebuffer e integração SDL2; no…",
+    readingTime: "2 min",
+    projectSlugs: ["gameboy-emulator"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-opening", paragraphs: ["Ter módulo gráfico não significa que a imagem já chega à tela. O repositório tem GPU que escreve pixels em framebuffer e integração SDL2; no `main.zig`, as chamadas de renderização e desenho estão comentadas."] },
+      { type: "heading", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Game Boy Emulator: o repositório tem GPU que escreve pixels em framebuffer e integração SDL2; no `main.zig`, as chamadas de renderização e desenho estão comentadas. CPU atualiza estado → GPU monta quadro → SDL apresenta quadro é o ciclo que precisa ser conectado."] },
+      { type: "heading", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Capturar `src/main.zig` com as chamadas comentadas junto do diagrama; identificar o estado como protótipo. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. CPU atualiza estado → GPU monta quadro → SDL apresenta quadro é o ciclo que precisa ser conectado."] },
+      { type: "heading", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "gbe-004-framebuffer-gpu-e-janela-precisam-fechar-o-mesmo-ciclo-p7", paragraphs: ["O que ainda não devemos concluir: O loop visual está incompleto; não existe jogo demonstrado nesta revisão. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial GBE-004; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo",
+    title: "Carregar uma ROM é mais do que abrir um arquivo",
+    category: "Projeto · Engenharia de software",
+    summary: "Um arquivo abrir sem erro não prova que é um cartucho válido ou seguro para a implementação. O repositório contém um `ROMLoader` que tenta validar…",
+    readingTime: "2 min",
+    projectSlugs: ["gameboy-emulator"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-opening", paragraphs: ["Um arquivo abrir sem erro não prova que é um cartucho válido ou seguro para a implementação. O repositório contém um `ROMLoader` que tenta validar alguns campos, enquanto o caminho principal lê o arquivo e copia dados diretamente para a memória."] },
+      { type: "heading", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Game Boy Emulator: o repositório contém um `ROMLoader` que tenta validar alguns campos, enquanto o caminho principal lê o arquivo e copia dados diretamente para a memória. Verificar tamanho, cabeçalho e limites antes de copiar evita tratar bytes arbitrários como estado válido."] },
+      { type: "heading", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Capturar `src/rom_loader.zig` e `src/main.zig`; não usar ROM comercial nem incluir arquivos de jogo na imagem. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Verificar tamanho, cabeçalho e limites antes de copiar evita tratar bytes arbitrários como estado válido."] },
+      { type: "heading", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "gbe-005-carregar-uma-rom-e-mais-do-que-abrir-um-arquivo-p7", paragraphs: ["O que ainda não devemos concluir: O fluxo principal ainda precisa de revisão; não descrever a validação do loader como proteção completa. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial GBE-005; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida",
+    title: "Compatibilidade precisa de uma ROM de teste permitida",
+    category: "Projeto · Engenharia de software",
+    summary: "“Roda um jogo” exige uma evidência reproduzível, não só um loop infinito. O protótipo ainda não confirma execução compatível; o próximo marco deve usar…",
+    readingTime: "2 min",
+    projectSlugs: ["gameboy-emulator"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-opening", paragraphs: ["“Roda um jogo” exige uma evidência reproduzível, não só um loop infinito. O protótipo ainda não confirma execução compatível; o próximo marco deve usar um teste pequeno com origem e licença adequadas."] },
+      { type: "heading", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Game Boy Emulator: o protótipo ainda não confirma execução compatível; o próximo marco deve usar um teste pequeno com origem e licença adequadas. Uma ROM homebrew permitida pode servir para investigar um subsistema sem redistribuir jogos comerciais."] },
+      { type: "heading", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Não anexar ROM. Captura deve mostrar código/test fixture própria e explicar o que foi validado, quando houver. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Uma ROM homebrew permitida pode servir para investigar um subsistema sem redistribuir jogos comerciais."] },
+      { type: "heading", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "gbe-006-compatibilidade-precisa-de-uma-rom-de-teste-permitida-p7", paragraphs: ["O que ainda não devemos concluir: Não afirmar suporte a jogos, cobertura de instruções ou resultado de testes inexistentes. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial GBE-006; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "mar-001-uma-fase-pode-comecar-como-texto",
+    title: "Uma fase pode começar como texto",
+    category: "Projeto · Engenharia de software",
+    summary: "Um mapa de jogo não precisa começar num editor visual. O experimento lê linhas de um arquivo e transforma caracteres em tiles coloridos. Isso torna a…",
+    readingTime: "2 min",
+    projectSlugs: ["mario"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "mar-001-uma-fase-pode-comecar-como-texto-opening", paragraphs: ["Um mapa de jogo não precisa começar num editor visual. O experimento lê linhas de um arquivo e transforma caracteres em tiles coloridos. Isso torna a composição da fase fácil de inspecionar e editar."] },
+      { type: "heading", id: "mar-001-uma-fase-pode-comecar-como-texto-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "mar-001-uma-fase-pode-comecar-como-texto-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Mario em Pygame: o experimento lê linhas de um arquivo e transforma caracteres em tiles coloridos. Isso torna a composição da fase fácil de inspecionar e editar. Um caractere da grade representa um tipo de tile, como chão ou nuvem."] },
+      { type: "heading", id: "mar-001-uma-fase-pode-comecar-como-texto-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "mar-001-uma-fase-pode-comecar-como-texto-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/maps/map-1.txt` ao lado de `src/map.py`/`src/main.py`; recortar caminho pessoal e nomes protegidos. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "mar-001-uma-fase-pode-comecar-como-texto-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "mar-001-uma-fase-pode-comecar-como-texto-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Um caractere da grade representa um tipo de tile, como chão ou nuvem."] },
+      { type: "heading", id: "mar-001-uma-fase-pode-comecar-como-texto-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "mar-001-uma-fase-pode-comecar-como-texto-p7", paragraphs: ["O que ainda não devemos concluir: O mapa atual é simples e estático; não é um editor nem um sistema de fases completo. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial MAR-001; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo",
+    title: "O loop principal é onde os módulos viram jogo",
+    category: "Projeto · Engenharia de software",
+    summary: "Ter uma classe de jogador não basta se o loop nunca a atualiza. `main.py` processa eventos e desenha o mapa; chamadas para ler teclas, atualizar…",
+    readingTime: "2 min",
+    projectSlugs: ["mario"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-opening", paragraphs: ["Ter uma classe de jogador não basta se o loop nunca a atualiza. `main.py` processa eventos e desenha o mapa; chamadas para ler teclas, atualizar jogador e câmera e desenhar o sprite estão comentadas."] },
+      { type: "heading", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Mario em Pygame: `main.py` processa eventos e desenha o mapa; chamadas para ler teclas, atualizar jogador e câmera e desenhar o sprite estão comentadas. Eventos → atualizar mundo → desenhar quadro é o ciclo que precisa conectar esses módulos."] },
+      { type: "heading", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/main.py`; mostrar a renderização do mapa e as linhas de atualização comentadas. Não criar screenshot falso. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Eventos → atualizar mundo → desenhar quadro é o ciclo que precisa conectar esses módulos."] },
+      { type: "heading", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "mar-002-o-loop-principal-e-onde-os-modulos-viram-jogo-p7", paragraphs: ["O que ainda não devemos concluir: O estado atual observado é uma cena estática, não uma fase jogável. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial MAR-002; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo",
+    title: "Gravidade sem integração ainda é só um módulo",
+    category: "Projeto · Engenharia de software",
+    summary: "A física precisa ser observada na cena completa para provar o comportamento. A classe do jogador acumula velocidade vertical, limita velocidade…",
+    readingTime: "2 min",
+    projectSlugs: ["mario"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-opening", paragraphs: ["A física precisa ser observada na cena completa para provar o comportamento. A classe do jogador acumula velocidade vertical, limita velocidade terminal e tenta resolver colisão com plataformas. Esse código ainda não está conectado ao loop executado."] },
+      { type: "heading", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Mario em Pygame: a classe do jogador acumula velocidade vertical, limita velocidade terminal e tenta resolver colisão com plataformas. Esse código ainda não está conectado ao loop executado. Velocidade vertical → posição → colisão é uma ordem que precisa ser validada em movimento."] },
+      { type: "heading", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/player.py`, método `update`; enquadrar a gravidade e a colisão como código existente, não demo funcional. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Velocidade vertical → posição → colisão é uma ordem que precisa ser validada em movimento."] },
+      { type: "heading", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "mar-003-gravidade-sem-integracao-ainda-e-so-um-modulo-p7", paragraphs: ["O que ainda não devemos concluir: Não afirmar que salto, colisão ou física estão funcionando na aplicação atual. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial MAR-003; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao",
+    title: "Uma câmera suave é uma decisão de atualização",
+    category: "Projeto · Engenharia de software",
+    summary: "Seguir o jogador instantaneamente e suavizar o movimento produzem sensações diferentes. O módulo Camera aproxima seu deslocamento gradualmente do alvo…",
+    readingTime: "2 min",
+    projectSlugs: ["mario"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-opening", paragraphs: ["Seguir o jogador instantaneamente e suavizar o movimento produzem sensações diferentes. O módulo Camera aproxima seu deslocamento gradualmente do alvo usando um fator de interpolação. No `main.py`, essa atualização está desligada."] },
+      { type: "heading", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Mario em Pygame: o módulo Camera aproxima seu deslocamento gradualmente do alvo usando um fator de interpolação. No `main.py`, essa atualização está desligada. `offset += (target - offset) * 0.1` descreve a suavização presente no módulo."] },
+      { type: "heading", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/camera.py`, método `update`; adicionar uma nota de que o método não é chamado na cena atual. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. `offset += (target - offset) * 0.1` descreve a suavização presente no módulo."] },
+      { type: "heading", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "mar-004-uma-camera-suave-e-uma-decisao-de-atualizacao-p7", paragraphs: ["O que ainda não devemos concluir: A câmera não participa do loop atual; o valor não foi calibrado por playtest. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial MAR-004; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes",
+    title: "Tiles facilitam o mapa, mas não resolvem colisões",
+    category: "Projeto · Engenharia de software",
+    summary: "Desenhar a grade e usar a grade como colisão são problemas relacionados, mas diferentes. O projeto pinta tiles por caractere, enquanto o jogador…",
+    readingTime: "2 min",
+    projectSlugs: ["mario"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-opening", paragraphs: ["Desenhar a grade e usar a grade como colisão são problemas relacionados, mas diferentes. O projeto pinta tiles por caractere, enquanto o jogador procura um grupo de plataformas que não está conectado no loop atual."] },
+      { type: "heading", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Mario em Pygame: o projeto pinta tiles por caractere, enquanto o jogador procura um grupo de plataformas que não está conectado no loop atual. A regra de colisão precisa derivar da mesma representação de mundo usada para desenhar a fase."] },
+      { type: "heading", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Ilustração explicativa; se mostrar código, capturar `src/map.py` e `src/player.py`, não uma interface inventada. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. A regra de colisão precisa derivar da mesma representação de mundo usada para desenhar a fase."] },
+      { type: "heading", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "mar-005-tiles-facilitam-o-mapa-mas-nao-resolvem-colisoes-p7", paragraphs: ["O que ainda não devemos concluir: Não há demonstração de colisão de ponta a ponta no estado revisado. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial MAR-005; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar",
+    title: "Chamar o projeto de jogo antes da interação é exagerar",
+    category: "Projeto · Engenharia de software",
+    summary: "Uma cena que desenha o cenário ainda não demonstra uma experiência jogável. A revisão do código encontrou renderização do mapa, mas a entrada e a…",
+    readingTime: "2 min",
+    projectSlugs: ["mario"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-opening", paragraphs: ["Uma cena que desenha o cenário ainda não demonstra uma experiência jogável. A revisão do código encontrou renderização do mapa, mas a entrada e a atualização do personagem estão comentadas. O próximo marco é ligar uma única sequência de interação."] },
+      { type: "heading", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Mario em Pygame: a revisão do código encontrou renderização do mapa, mas a entrada e a atualização do personagem estão comentadas. O próximo marco é ligar uma única sequência de interação. Movimentar, saltar, colidir e acompanhar com a câmera são partes de um fluxo completo."] },
+      { type: "heading", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Sem vídeo de gameplay até conectar controles, movimento e colisão; evite sprites e música protegidos. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Movimentar, saltar, colidir e acompanhar com a câmera são partes de um fluxo completo."] },
+      { type: "heading", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "mar-006-chamar-o-projeto-de-jogo-antes-da-interacao-e-exagerar-p7", paragraphs: ["O que ainda não devemos concluir: Este post descreve o estado do checkout revisado; verificar novamente antes de publicar. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial MAR-006; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto",
+    title: "Um ecossistema precisa de um primeiro produto",
+    category: "Projeto · Engenharia de software",
+    summary: "Monorepo pode abrigar várias ideias; isso não quer dizer que todas precisam nascer juntas. A documentação prioriza Poke-Chief antes de Poke-Friend. O…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-center"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-opening", paragraphs: ["Monorepo pode abrigar várias ideias; isso não quer dizer que todas precisam nascer juntas. A documentação prioriza Poke-Chief antes de Poke-Friend. O MVP do Poke-Chief concentra-se em montar times e entender fraquezas, enquanto Poke-Friend ainda parece scaffold."] },
+      { type: "heading", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Center: a documentação prioriza Poke-Chief antes de Poke-Friend. O MVP do Poke-Chief concentra-se em montar times e entender fraquezas, enquanto Poke-Friend ainda parece scaffold. Escolher um fluxo principal reduz quantas partes precisam funcionar para a primeira demo."] },
+      { type: "heading", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `apps/POKE_CHIEF_MVP_SCOPE.md` e estrutura de `apps/`; diferenciar planos de implementação. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Escolher um fluxo principal reduz quantas partes precisam funcionar para a primeira demo."] },
+      { type: "heading", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkc-001-um-ecossistema-precisa-de-um-primeiro-produto-p7", paragraphs: ["O que ainda não devemos concluir: Não descrever todos os apps do monorepo como produtos prontos. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKC-001; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio",
+    title: "Um builder de times precisa validar o próprio domínio",
+    category: "Projeto · Engenharia de software",
+    summary: "Seis slots e quatro moves por Pokémon são regras de domínio, não apenas componentes visuais. O README do frontend Poke-Chief descreve montagem de…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-center"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-opening", paragraphs: ["Seis slots e quatro moves por Pokémon são regras de domínio, não apenas componentes visuais. O README do frontend Poke-Chief descreve montagem de equipes com até seis membros e quatro movimentos por membro. O código inclui funções de validação de slots."] },
+      { type: "heading", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Center: o README do frontend Poke-Chief descreve montagem de equipes com até seis membros e quatro movimentos por membro. O código inclui funções de validação de slots. Validação explícita pode impedir estados impossíveis antes de enviar o time para análise."] },
+      { type: "heading", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `apps/poke-chief/src/lib/slot-validation.ts` e testes existentes como arquivos — não afirmar que foram executados. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Validação explícita pode impedir estados impossíveis antes de enviar o time para análise."] },
+      { type: "heading", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkc-002-um-builder-de-times-precisa-validar-o-proprio-dominio-p7", paragraphs: ["O que ainda não devemos concluir: README e frontend não comprovam backend ativo nem jornada integrada no ambiente atual. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKC-002; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia",
+    title: "Paginação também é uma decisão de experiência",
+    category: "Projeto · Engenharia de software",
+    summary: "Buscar um catálogo grande de uma vez pode custar mais do que a tela precisa. O frontend monta parâmetros de paginação e busca para o catálogo…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-center"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-opening", paragraphs: ["Buscar um catálogo grande de uma vez pode custar mais do que a tela precisa. O frontend monta parâmetros de paginação e busca para o catálogo, incluindo IDs já carregados em `excludeIds`."] },
+      { type: "heading", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Center: o frontend monta parâmetros de paginação e busca para o catálogo, incluindo IDs já carregados em `excludeIds`. A consulta pede uma página e evita solicitar novamente itens que a interface já tem."] },
+      { type: "heading", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `apps/poke-chief/src/lib/api/catalog-query.ts` e `catalog.ts`; sinalizar que é contrato do frontend. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. A consulta pede uma página e evita solicitar novamente itens que a interface já tem."] },
+      { type: "heading", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkc-003-paginacao-tambem-e-uma-decisao-de-experiencia-p7", paragraphs: ["O que ainda não devemos concluir: Contrato de API e consumo no frontend estão no código; comportamento do backend ainda depende de integração validada. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKC-003; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes",
+    title: "Análise rápida e análise assíncrona têm custos diferentes",
+    category: "Projeto · Engenharia de software",
+    summary: "Nem toda análise precisa bloquear a tela enquanto o processamento acontece. O frontend separa chamada de análise síncrona e criação de job para equipes…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-center"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-opening", paragraphs: ["Nem toda análise precisa bloquear a tela enquanto o processamento acontece. O frontend separa chamada de análise síncrona e criação de job para equipes salvas, com polling de estado."] },
+      { type: "heading", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Center: o frontend separa chamada de análise síncrona e criação de job para equipes salvas, com polling de estado. Uma análise imediata e uma tarefa em fila pedem estados de interface diferentes."] },
+      { type: "heading", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/lib/api/analysis.ts` e `src/hooks/use-analysis-poll.ts` no subprojeto Poke-Chief. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Uma análise imediata e uma tarefa em fila pedem estados de interface diferentes."] },
+      { type: "heading", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkc-004-analise-rapida-e-analise-assincrona-tem-custos-diferentes-p7", paragraphs: ["O que ainda não devemos concluir: A existência dos clientes de API não prova que worker e backend estejam acessíveis; confirmar antes de mostrar resultado real. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKC-004; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkc-005-relatorio-de-analise-precisa-mostrar-limites",
+    title: "Relatório de análise precisa mostrar limites",
+    category: "Projeto · Engenharia de software",
+    summary: "Uma recomendação sem explicar sua cobertura pode parecer mais precisa do que é. O frontend tem componentes para cobertura, recomendações e limitações…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-center"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-opening", paragraphs: ["Uma recomendação sem explicar sua cobertura pode parecer mais precisa do que é. O frontend tem componentes para cobertura, recomendações e limitações do relatório. A qualidade depende dos dados e das regras que chegam da API."] },
+      { type: "heading", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Center: o frontend tem componentes para cobertura, recomendações e limitações do relatório. A qualidade depende dos dados e das regras que chegam da API. Mostrar a origem e as limitações da análise ajuda a pessoa a interpretar o resultado."] },
+      { type: "heading", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Use código real da pasta `components/analysis/`; capturas de tela só após a API e os dados estarem validados. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Mostrar a origem e as limitações da análise ajuda a pessoa a interpretar o resultado."] },
+      { type: "heading", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkc-005-relatorio-de-analise-precisa-mostrar-limites-p7", paragraphs: ["O que ainda não devemos concluir: Não afirmar precisão competitiva nem resultado de batalha sem avaliação reproduzível. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKC-005; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos",
+    title: "Monorepo é tão reproduzível quanto seus submódulos",
+    category: "Projeto · Engenharia de software",
+    summary: "Um README pode descrever um backend; o checkout ainda precisa saber como obtê-lo. Na revisão do clone, os três submódulos de apps têm URLs; há também…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-center"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-opening", paragraphs: ["Um README pode descrever um backend; o checkout ainda precisa saber como obtê-lo. Na revisão do clone, os três submódulos de apps têm URLs; há também um gitlink `backend` sem entrada correspondente no `.gitmodules`, o que impede inicializar o backend pelo fluxo normal."] },
+      { type: "heading", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Center: na revisão do clone, os três submódulos de apps têm URLs; há também um gitlink `backend` sem entrada correspondente no `.gitmodules`, o que impede inicializar o backend pelo fluxo normal. Documentar origem e versão de cada submódulo faz parte de tornar o monorepo reproduzível."] },
+      { type: "heading", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `.gitmodules` e `git submodule status` somente depois de revalidar; não mostrar informações privadas. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Documentar origem e versão de cada submódulo faz parte de tornar o monorepo reproduzível."] },
+      { type: "heading", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkc-006-monorepo-e-tao-reproduzivel-quanto-seus-submodulos-p7", paragraphs: ["O que ainda não devemos concluir: É um achado do checkout revisado; confirmar no branch atual antes de divulgar como problema ativo. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKC-006; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta",
+    title: "Uma wiki organiza conhecimento por caminhos de consulta",
+    category: "Projeto · Engenharia de software",
+    summary: "Uma lista de entidades não vira uma wiki até que alguém consiga navegar entre elas. O frontend define rotas para Pokédex, jogos, guias e emuladores…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-wiki"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-opening", paragraphs: ["Uma lista de entidades não vira uma wiki até que alguém consiga navegar entre elas. O frontend define rotas para Pokédex, jogos, guias e emuladores, além de páginas de detalhe. Isso mostra uma estrutura de informação pretendida no código."] },
+      { type: "heading", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Wiki: o frontend define rotas para Pokédex, jogos, guias e emuladores, além de páginas de detalhe. Isso mostra uma estrutura de informação pretendida no código. A página inicial leva a categorias; cada categoria pode abrir um detalhe relacionado."] },
+      { type: "heading", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/pages/pagesData.tsx`, `src/pages/router.tsx` e a home. Não usar assets de franquias no diagrama. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. A página inicial leva a categorias; cada categoria pode abrir um detalhe relacionado."] },
+      { type: "heading", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkw-001-uma-wiki-organiza-conhecimento-por-caminhos-de-consulta-p7", paragraphs: ["O que ainda não devemos concluir: A presença das rotas não significa que todo conteúdo e detalhe esteja completo. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKW-001; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham",
+    title: "Redux pode centralizar dados que várias páginas compartilham",
+    category: "Projeto · Engenharia de software",
+    summary: "Quando várias rotas dependem do mesmo catálogo, estado compartilhado pode evitar cópias divergentes. O app inicializa Redux e define dados tipados para…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-wiki"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-opening", paragraphs: ["Quando várias rotas dependem do mesmo catálogo, estado compartilhado pode evitar cópias divergentes. O app inicializa Redux e define dados tipados para Pokédex e jogos, que páginas consultam via selectors."] },
+      { type: "heading", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Wiki: o app inicializa Redux e define dados tipados para Pokédex e jogos, que páginas consultam via selectors. Uma categoria pode ler o mesmo catálogo que a página inicial usa para montar links."] },
+      { type: "heading", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/redux/store.ts` e `src/redux/pokemon_games.ts`; esconder assets e dados que não têm origem validada. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Uma categoria pode ler o mesmo catálogo que a página inicial usa para montar links."] },
+      { type: "heading", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkw-002-redux-pode-centralizar-dados-que-varias-paginas-compartilham-p7", paragraphs: ["O que ainda não devemos concluir: A arquitetura Redux existe no frontend; atualização, persistência e backend precisam ser revisados separadamente. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKW-002; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo",
+    title: "Tipos ajudam a detectar lacunas no catálogo",
+    category: "Projeto · Engenharia de software",
+    summary: "Um tipo explícito pode deixar inconsistências de dados visíveis antes da renderização. O estado da Pokédex declara um conjunto de tipos e campos como…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-wiki"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-opening", paragraphs: ["Um tipo explícito pode deixar inconsistências de dados visíveis antes da renderização. O estado da Pokédex declara um conjunto de tipos e campos como nome, sprite e descrição. Isso documenta o formato esperado pelo frontend."] },
+      { type: "heading", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Wiki: o estado da Pokédex declara um conjunto de tipos e campos como nome, sprite e descrição. Isso documenta o formato esperado pelo frontend. Uma espécie com tipo duplo precisa caber no modelo sem inventar um segundo tipo para todas."] },
+      { type: "heading", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: tipos/interface em `src/redux/pokedex/pokedex.ts`; não capturar sprites de origem não verificada. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Uma espécie com tipo duplo precisa caber no modelo sem inventar um segundo tipo para todas."] },
+      { type: "heading", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkw-003-tipos-ajudam-a-detectar-lacunas-no-catalogo-p7", paragraphs: ["O que ainda não devemos concluir: O modelo do frontend não valida a origem/licença nem garante catálogo completo. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKW-003; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta",
+    title: "Uma rota criada pode revelar o próximo componente que falta",
+    category: "Projeto · Engenharia de software",
+    summary: "Ter uma rota de detalhe não garante que a tela de detalhe esteja pronta. No remoto revisado, há rota `/pokedex/pokemon/:id`, mas `PokedexComponent`…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-wiki"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-opening", paragraphs: ["Ter uma rota de detalhe não garante que a tela de detalhe esteja pronta. No remoto revisado, há rota `/pokedex/pokemon/:id`, mas `PokedexComponent` está vazio. Esse contraste identifica uma lacuna concreta entre navegação e conteúdo."] },
+      { type: "heading", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Wiki: no remoto revisado, há rota `/pokedex/pokemon/:id`, mas `PokedexComponent` está vazio. Esse contraste identifica uma lacuna concreta entre navegação e conteúdo. A rota aceita uma URL; o componente ainda precisa buscar/selecionar e renderizar dados reais."] },
+      { type: "heading", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real: `src/pages/pagesData.tsx` e `src/components/Pokedex/index.tsx` para mostrar rota versus componente. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. A rota aceita uma URL; o componente ainda precisa buscar/selecionar e renderizar dados reais."] },
+      { type: "heading", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkw-004-uma-rota-criada-pode-revelar-o-proximo-componente-que-falta-p7", paragraphs: ["O que ainda não devemos concluir: Não apresentar a Pokédex como experiência completa; conferir novamente antes de publicar. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKW-004; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkw-005-catalogo-e-midia-tem-fontes-diferentes",
+    title: "Catálogo e mídia têm fontes diferentes",
+    category: "Projeto · Engenharia de software",
+    summary: "Dados estruturados, imagens e descrições podem ter permissões e origens distintas. O frontend referencia sprites hospedados por terceiros e possui…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-wiki"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-opening", paragraphs: ["Dados estruturados, imagens e descrições podem ter permissões e origens distintas. O frontend referencia sprites hospedados por terceiros e possui arquivos de fonte/imagem locais; a procedência precisa ser documentada antes da divulgação."] },
+      { type: "heading", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Wiki: o frontend referencia sprites hospedados por terceiros e possui arquivos de fonte/imagem locais; a procedência precisa ser documentada antes da divulgação. Um catálogo pode carregar nomes e tipos de uma fonte, mas exibir imagem de outra."] },
+      { type: "heading", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Na mídia pública, usar apenas gráficos próprios ou assets cuja licença esteja confirmada. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Um catálogo pode carregar nomes e tipos de uma fonte, mas exibir imagem de outra."] },
+      { type: "heading", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkw-005-catalogo-e-midia-tem-fontes-diferentes-p7", paragraphs: ["O que ainda não devemos concluir: Não redistribuir sprites, logos, fontes ou capturas sem verificar direitos e condições de uso. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKW-005; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
+    slug: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes",
+    title: "Pokémon Wiki e Pokémon Center têm histórias diferentes",
+    category: "Projeto · Engenharia de software",
+    summary: "Uma Pokédex de navegação e uma ferramenta de análise de times não precisam virar o mesmo produto. A Wiki concentra páginas de consulta; Pokémon…",
+    readingTime: "2 min",
+    projectSlugs: ["pokemon-wiki"],
+    content: [],
+    story: [
+      { type: "paragraphs", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-opening", paragraphs: ["Uma Pokédex de navegação e uma ferramenta de análise de times não precisam virar o mesmo produto. A Wiki concentra páginas de consulta; Pokémon Center/Poke-Chief se orienta a montar e analisar equipes. Mantê-los separados deixa cada narrativa mais clara."] },
+      { type: "heading", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-h1", title: "A decisão por trás do exemplo" },
+      { type: "paragraphs", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-p1", paragraphs: ["O ponto técnico aqui não é apresentar uma solução universal. É observar uma decisão concreta dentro de Pokémon Wiki: a Wiki concentra páginas de consulta; Pokémon Center/Poke-Chief se orienta a montar e analisar equipes. Mantê-los separados deixa cada narrativa mais clara. Consulta de informação e decisão sobre um time são tarefas relacionadas, mas diferentes."] },
+      { type: "heading", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-h3", title: "Onde isso aparece no projeto" },
+      { type: "paragraphs", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-p3", paragraphs: ["No material atual do projeto, a evidência indicada é: Captura real opcional de rotas dos dois frontends depois de revisar conteúdo e assets; não alegar integração entre eles. Isso delimita o que podemos afirmar e também dá ao leitor um caminho para conferir a implementação, em vez de depender apenas da descrição."] },
+      { type: "heading", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-h5", title: "O que observar ao aplicar" },
+      { type: "paragraphs", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-p5", paragraphs: ["A aplicação prática depende do contexto. Vale olhar para a responsabilidade envolvida, para as entradas e saídas, e para o custo de manter essa decisão conforme o projeto cresce. Consulta de informação e decisão sobre um time são tarefas relacionadas, mas diferentes."] },
+      { type: "heading", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-h7", title: "Limites e próximo passo" },
+      { type: "paragraphs", id: "pkw-006-pokemon-wiki-e-pokemon-center-tem-historias-diferentes-p7", paragraphs: ["O que ainda não devemos concluir: Não afirmar integração ou compartilhamento de dados entre os repositórios sem verificar. O próximo passo é validar o comportamento no código atual e, se necessário, registrar um exemplo executável ou uma demonstração antes de tratar esta ideia como resultado final."] },
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PKW-006; validar conteúdo, código e evidências antes de publicar",
+  },
+  {
     slug: "monolito-modular-limites-claros",
     title: "Monólito modular: uma aplicação, limites claros",
     category: "Arquitetura de software",
     summary:
       "Monólito descreve como uma aplicação é implantada; modularidade descreve como ela organiza responsabilidades e dependências. As duas ideias podem coexistir.",
     publishedAt: "2026-11-03",
-    readingTime: "5 min",
+    readingTime: "7 min",
     content: [],
     linkedinUrl: "https://lnkd.in/p/dwv8X46y",
     cover: { src: "/articles/monolito-modular/cover.svg", alt: "Ilustração de uma aplicação contendo três módulos com limites claros, ao lado do título Monólito modular.", width: 1200, height: 630, caption: "Uma aplicação pode ser implantada como uma unidade e ainda preservar limites entre módulos." },
@@ -719,6 +1491,16 @@ export const articles: Article[] = [
           "A implantação pode ser simples. Preservar limites úteis continua sendo uma decisão de engenharia feita ao longo do tempo.",
         ],
       },
+      { type: "heading", id: "arq-001-explicacao-1", title: "Como tornar a fronteira verificável" },
+      { type: "paragraphs", id: "arq-001-explicacao-1-texto", paragraphs: [
+        "Uma fronteira de módulo precisa ter uma regra observável. Por exemplo: Pedidos pode chamar uma operação pública de Estoque, mas não importar seu repositório SQL nem escrever diretamente em suas tabelas. Essa regra pode ser expressa por dependências unidirecionais, interfaces públicas pequenas e testes que falham quando um módulo acessa o interior de outro.",
+        "Comece pelas dependências que mais mudam ou causam retrabalho. Tentar encapsular cada função cria uma arquitetura cerimonial. Uma fronteira é útil quando protege uma regra de negócio, mantém ownership claro ou reduz o número de lugares que precisam mudar juntos."
+      ] },
+      { type: "heading", id: "arq-001-explicacao-2", title: "Quando um monólito modular começa a doer" },
+      { type: "paragraphs", id: "arq-001-explicacao-2-texto", paragraphs: [
+        "Um deploy único ainda exige disciplina operacional: uma migração pode afetar a aplicação inteira e um erro de inicialização pode impedir todos os módulos de subir. Por outro lado, um deploy único facilita transações locais, debugging e releases coordenados. A escolha deve considerar os custos que o time realmente sente.",
+        "Um sinal para reavaliar não é “o repositório cresceu”, sozinho. Investigue acoplamento de release, conflitos de ownership, requisitos de escala muito diferentes e limites que já podem ser medidos. Mesmo assim, extrair um módulo só ajuda se sua fronteira interna estiver estável; caso contrário, a rede apenas torna as chamadas acopladas mais lentas e frágeis."
+      ] },
       { type: "callout", id: "pergunta-final", title: "Uma pergunta para revisar a arquitetura", body: "Que sinal costuma mostrar que um módulo está atravessando a fronteira de outro?", tone: "result" },
     ],
     selected: true,
@@ -732,7 +1514,7 @@ export const articles: Article[] = [
     summary: "Separar um módulo muda chamadas, dados, deploy e operação. A decisão vale quando resolve um limite concreto que a equipe não consegue sustentar dentro de uma aplicação modular.",
     publishedAt: "2026-11-03",
     linkedinUrl: "https://lnkd.in/p/d97CPsft",
-    readingTime: "7 min",
+    readingTime: "9 min",
     cover: {
       src: "/articles/monolito-e-microsservicos-custo-de-separar/slide-01.webp",
       alt: "Capa do carrossel do LinkedIn ARQ-002 · Monólito ou microsserviços, em formato de infográfico editorial técnico.",
@@ -874,13 +1656,23 @@ export const articles: Article[] = [
       "Uma etapa reversível é definir o limite como módulo e observar dependências reais por um período. Se a fronteira interna for instável, separar processos tende a tornar a instabilidade mais cara. Se ela estiver clara e houver um ganho operacional mensurável, a extração pode ser planejada como mudança de contrato e de operação."
     ]
   },
-  {
-    "type": "callout",
-    "id": "ideia-central",
-    "title": "Ideia para levar",
-    "body": "Separe um serviço quando o limite e a capacidade operacional justificarem a rede, os dados distribuídos e o trabalho de manter contratos.",
-    "tone": "result"
-  }
+      { type: "heading", id: "arq-002-explicacao-1", title: "A fronteira não remove o trabalho: ela muda onde ele acontece" },
+      { type: "paragraphs", id: "arq-002-explicacao-1-texto", paragraphs: [
+        "Em uma aplicação única, uma transação de banco pode gravar pedido e reserva de estoque com uma garantia local. Depois de separar serviços, cada banco confirma sua própria transação. Uma falha no meio deixa um estado intermediário que precisa ser representado, observado e eventualmente corrigido.",
+        "Isso não torna microsserviços errados. Torna necessário justificar o preço: autonomia de deploy, escala independente, isolamento de falhas ou ownership organizacional podem compensar filas, contratos, tracing distribuído e operação de mais componentes. O benefício precisa ser concreto o suficiente para pagar a nova complexidade."
+      ] },
+      { type: "heading", id: "arq-002-explicacao-2", title: "Extraia uma capacidade, não uma pasta" },
+      { type: "paragraphs", id: "arq-002-explicacao-2-texto", paragraphs: [
+        "Antes de mover código, identifique quem é dono dos dados, quais consumidores existem, como mudanças serão versionadas e o que acontece quando o novo serviço está indisponível. Uma extração incremental pode começar com uma interface interna e um adapter, mantendo a chamada local até a fronteira estar entendida.",
+        "Compare a situação atual com uma hipótese mensurável: releases independentes mais frequentes, limites de escala diferentes ou redução de contenção entre equipes. Se não houver um indicador de sucesso, “separar para escalar” pode apenas transformar uma dificuldade visível em várias dificuldades distribuídas."
+      ] },
+      {
+        type: "callout",
+        id: "ideia-central",
+        title: "Ideia para levar",
+        body: "Separe um serviço quando o limite e a capacidade operacional justificarem a rede, os dados distribuídos e o trabalho de manter contratos.",
+        tone: "result",
+      },
 ],
     references: [
   {
@@ -899,7 +1691,7 @@ export const articles: Article[] = [
     summary: "Camadas agrupam responsabilidades técnicas; fatias verticais agrupam o caminho de uma funcionalidade. Os dois eixos podem coexistir, e a escolha deve acompanhar o padrão de mudança.",
     publishedAt: "2026-11-05",
     linkedinUrl: "https://lnkd.in/p/dv6RVeg4",
-    readingTime: "7 min",
+    readingTime: "9 min",
     cover: {
       src: "/articles/camadas-e-fatias-verticais-organizar-por-mudanca/slide-01.webp",
       alt: "Capa do carrossel do LinkedIn ARQ-003 · Camadas e fatias verticais, em formato de infográfico editorial técnico.",
@@ -1032,13 +1824,23 @@ export const articles: Article[] = [
       "Reorganizar só para combinar com um diagrama pode aumentar custo sem melhorar o trabalho cotidiano. Use sintomas de mudança — arquivos sempre alterados juntos, dependências circulares ou onboarding confuso — para formular a hipótese e avalie a estrutura depois de aplicá-la a um fluxo real."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-003-explicacao-1", title: "Organizar por responsabilidade ou por caminho de mudança" },
+      { type: "paragraphs", id: "arq-003-explicacao-1-texto", paragraphs: [
+        "Uma estrutura em camadas agrupa detalhes técnicos: controllers, serviços, repositórios. Uma fatia vertical agrupa os elementos que realizam um caso de uso: entrada, regra, persistência e saída. Nenhum eixo substitui o outro; a questão é qual torna mais fácil localizar e modificar a funcionalidade sem espalhar a mudança por toda a aplicação.",
+        "Imagine uma busca de pedidos. Em camadas, a busca pode estar dividida em arquivos compartilhados com muitas operações; em fatias, o fluxo de busca fica próximo de outros componentes desse caso de uso. Uma equipe pode manter camadas internas dentro de cada fatia, desde que isso simplifique o entendimento em vez de duplicar abstrações."
+      ] },
+      { type: "heading", id: "arq-003-explicacao-2", title: "Como escolher sem transformar organização em dogma" },
+      { type: "paragraphs", id: "arq-003-explicacao-2-texto", paragraphs: [
+        "Observe o histórico de mudanças: quais arquivos costumam mudar juntos? Onde uma tarefa simples obriga a editar muitas áreas? Quais módulos têm razões distintas para mudar? Esses dados ajudam a decidir a estrutura a partir do fluxo real de trabalho, em vez de adotar uma árvore de diretórios por preferência estética.",
+        "Um projeto pequeno pode começar com uma organização simples e mover uma funcionalidade quando surgirem sinais de dispersão ou acoplamento. A migração deve preservar contratos e testes, e pode ocorrer gradualmente. Não é necessário reescrever tudo para trocar o eixo de organização de um módulo."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Escolha a estrutura observando onde as mudanças acontecem e mantenha explícitas as dependências que importam.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -1057,7 +1859,7 @@ export const articles: Article[] = [
     summary: "Ports and adapters separa conversas que a aplicação precisa ter dos detalhes de tecnologia que as implementam. O hexágono é uma metáfora; o contrato e a direção das dependências são o que importam.",
     publishedAt: "2026-11-06",
     linkedinUrl: "https://lnkd.in/p/dh8eUNaS",
-    readingTime: "7 min",
+    readingTime: "9 min",
     cover: {
       src: "/articles/ports-and-adapters-isolar-o-que-muda/slide-01.webp",
       alt: "Capa do carrossel do LinkedIn ARQ-004 · Ports and adapters, em formato de infográfico editorial técnico.",
@@ -1190,13 +1992,23 @@ export const articles: Article[] = [
       "O custo também é real: mais tipos, wiring e navegação. Comece com uma porta onde existe uma necessidade de substituição, teste ou independência. Se a abstração não protege nada nem melhora entendimento, ela pode ser removida sem prejuízo."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-004-explicacao-1", title: "O que merece uma porta" },
+      { type: "paragraphs", id: "arq-004-explicacao-1-texto", paragraphs: [
+        "Uma porta descreve uma necessidade do domínio ou do caso de uso; um adapter traduz essa necessidade para uma tecnologia concreta. “Carregar previsão por cidade” pode ser uma porta útil quando existem provedores alternativos ou quando testes precisam substituir a rede. Uma interface que só repete cada método de uma biblioteca, sem proteger regra nem permitir uma decisão, pode ser uma camada a mais sem ganho claro.",
+        "A direção da dependência importa: a regra de aplicação define a interface que precisa, e o adapter externo a implementa. Assim, o domínio não precisa conhecer tipos de SDK, formatos HTTP ou detalhes do banco. Porém, a fronteira precisa traduzir erros, timeouts e semântica; esconder a tecnologia não elimina suas falhas."
+      ] },
+      { type: "heading", id: "arq-004-explicacao-2", title: "Testabilidade sem fingir que tudo é local" },
+      { type: "paragraphs", id: "arq-004-explicacao-2-texto", paragraphs: [
+        "Um fake em teste unitário ajuda a verificar a regra sem rede, mas não prova que o adapter real funciona com a API, banco ou fila. Mantenha testes de contrato ou integração para conferir serialização, autenticação, consultas e tratamento de falhas na borda real.",
+        "Use a porta onde a troca de implementação, o isolamento de efeito externo ou a clareza do caso de uso compensem o custo. Evite interfaces criadas apenas para cada struct ter uma abstração correspondente. A arquitetura deve tornar explícita uma decisão que importa, não obrigar o código a atravessar cerimônias."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "A abstração deve proteger uma conversa importante; não é uma meta medir quantas interfaces existem.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -1215,7 +2027,7 @@ export const articles: Article[] = [
     summary: "Entidades, objetos de valor e agregados são ferramentas para expressar regras do domínio. Usá-los com propósito ajuda a proteger invariantes; transformar cada substantivo em classe só cria cerimônia.",
     publishedAt: "2026-11-07",
     linkedinUrl: "https://lnkd.in/p/dat52ehr",
-    readingTime: "7 min",
+    readingTime: "9 min",
     cover: {
       src: "/articles/ddd-tatico-entidades-valores-agregados/slide-01.webp",
       alt: "Capa do carrossel do LinkedIn ARQ-005 · DDD tático, em formato de infográfico editorial técnico.",
@@ -1348,13 +2160,23 @@ export const articles: Article[] = [
       "Use exemplos e linguagem do domínio para avaliar o modelo. Se a equipe não consegue explicar por que um objeto tem identidade, que invariantes o agregado protege ou qual regra um value object carrega, a abstração talvez esteja adiantada em relação ao entendimento."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-005-explicacao-1", title: "Agregados protegem invariantes" },
+      { type: "paragraphs", id: "arq-005-explicacao-1-texto", paragraphs: [
+        "Um agregado é uma fronteira de consistência para um conjunto de objetos que precisa preservar regras em conjunto. Se uma reserva não pode ultrapassar o estoque disponível, a operação que cria a reserva precisa controlar a invariável. O agregado não é simplesmente uma classe com objetos filhos: é uma decisão sobre quais alterações devem ser atômicas e quem tem autoridade para realizá-las.",
+        "Um agregado muito grande concentra contenção e torna mudanças lentas. Um agregado muito pequeno pode deixar invariantes importantes espalhadas por transações e chamadas. Modele a partir das regras que precisam ser verdadeiras ao confirmar uma operação, e não de um diagrama que espelha todas as tabelas."
+      ] },
+      { type: "heading", id: "arq-005-explicacao-2", title: "Entidades, value objects e linguagem do domínio" },
+      { type: "paragraphs", id: "arq-005-explicacao-2-texto", paragraphs: [
+        "Uma entidade tem identidade que persiste apesar de mudanças em seus atributos. Um value object representa um valor definido por seus componentes e costuma ser imutável, como intervalo de datas ou quantidade com unidade. Essa distinção ajuda a expressar regras e comparar conceitos sem criar identidade artificial para todo dado.",
+        "Os nomes do modelo devem corresponder ao vocabulário que produto e engenharia usam para discutir comportamento. DDD tático não é uma licença para criar fábricas, repositórios e eventos para qualquer operação. Use esses padrões quando ajudam a manter invariantes, limites de consistência e contratos compreensíveis."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Escolha padrões táticos para expressar identidade, igualdade e invariantes reais; o modelo é ferramenta, não coleção de classes.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -1373,7 +2195,7 @@ export const articles: Article[] = [
     summary: "Consumidores devem tolerar repetição quando o transporte pode redeliver mensagens. Idempotência exige uma chave estável e uma fronteira transacional coerente com o efeito produzido.",
     publishedAt: "2026-11-10",
     linkedinUrl: "https://lnkd.in/p/dT8Sx-SC",
-    readingTime: "7 min",
+    readingTime: "9 min",
     cover: {
       src: "/articles/eventos-filas-idempotencia-duplicatas/slide-01.webp",
       alt: "Capa do carrossel do LinkedIn ARQ-006 · Eventos, filas e idempotência, em formato de infográfico editorial técnico.",
@@ -1515,13 +2337,23 @@ export const articles: Article[] = [
       "Não prometa exactly-once sem definir o escopo e os mecanismos envolvidos. Em muitos sistemas, entrega repetida com consumidor idempotente é uma expectativa operacional mais clara do que tentar eliminar qualquer duplicação em uma fronteira distribuída."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-006-explicacao-1", title: "O efeito idempotente depende da fronteira de persistência" },
+      { type: "paragraphs", id: "arq-006-explicacao-1-texto", paragraphs: [
+        "Uma chave de idempotência identifica a mesma operação lógica em tentativas diferentes. O consumidor pode registrar o identificador do evento numa tabela inbox com uma restrição única e aplicar a mudança de negócio na mesma transação local. Se a aplicação cair antes do commit, ambas podem ser repetidas; se o commit ocorreu mas o ack se perdeu, a duplicata encontra o registro e não repete o efeito.",
+        "Quando o efeito ocorre em outro sistema, a transação local não o protege automaticamente. Uma chamada de pagamento pode ser aceita e a resposta se perder. Nesse caso, reutilize uma chave idempotente suportada pelo destino, guarde o estado da operação e reconcilie resultados desconhecidos em vez de assumir sucesso ou falha."
+      ] },
+      { type: "heading", id: "arq-006-explicacao-2", title: "Outbox, ordenação e limites do “exactly once”" },
+      { type: "paragraphs", id: "arq-006-explicacao-2-texto", paragraphs: [
+        "O transactional outbox grava a mudança de negócio e a intenção de publicar um evento na mesma transação do banco. Um processo separado envia o evento e pode enviá-lo novamente caso não consiga registrar a confirmação. Por isso, outbox e consumidor idempotente trabalham juntos: a publicação ainda pode se repetir.",
+        "“Exactly once” só é significativo quando se define o escopo: uma entrega no broker, um processamento lógico ou um efeito externo? Diferentes tecnologias e configurações oferecem garantias diferentes. Descreva a garantia observável pelo negócio e teste falhas nas janelas entre persistir, publicar, processar e confirmar."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Defina a propriedade de negócio contra duplicatas e alinhe deduplicação, efeito e confirmação com uma fronteira de falha real.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -1539,7 +2371,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Uma escrita aceita e uma projeção de leitura podem divergir temporariamente. O fluxo precisa mostrar esse estado, definir como propaga mudanças e explicar quando ocorre reconciliação.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -1608,13 +2440,23 @@ export const articles: Article[] = [
       "Antes de separar modelos, identifique a necessidade: volume de leitura, isolamento de carga, integração assíncrona ou formato de consulta diferente. Depois, desenhe o comportamento visível durante atraso e falha, em vez de esconder a janela de inconsistência do usuário."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-007-explicacao-1", title: "O atraso é parte do contrato de leitura" },
+      { type: "paragraphs", id: "arq-007-explicacao-1-texto", paragraphs: [
+        "Considere um pedido que acabou de ser confirmado, enquanto a tela consulta uma projeção atualizada por eventos. A gravação pode estar concluída e a busca ainda retornar o estado anterior. Se a interface não explicar isso, a pessoa interpreta um atraso esperado como perda da operação.",
+        "Uma opção é devolver a versão ou o identificador da alteração e deixar a leitura aguardar até alcançar aquele ponto. Outra é mostrar estado “atualizando” e atualizar a projeção depois. Essas estratégias oferecem graus diferentes de read-your-writes e têm custos de latência e complexidade."
+      ] },
+      { type: "heading", id: "arq-007-explicacao-2", title: "Reconciliação, monotonicidade e limites" },
+      { type: "paragraphs", id: "arq-007-explicacao-2-texto", paragraphs: [
+        "Uma projeção eventual precisa de observabilidade sobre atraso, eventos pendentes, falhas e reconstrução. Reprocessar eventos pode corrigir uma projeção, mas exige handlers determinísticos ou mecanismos para evitar duplicar efeitos. Um número médio de atraso pode esconder uma cauda de partições travadas; acompanhe distribuição e idade do item mais antigo.",
+        "Nem toda leitura pode tolerar dados atrasados. Saldo, limite de crédito ou autorização podem exigir uma fonte transacional mais forte. Defina por caso de uso o atraso máximo aceitável e o comportamento durante a defasagem. Consistência eventual é um trade-off explícito, não uma propriedade que deve ser imposta a todo o sistema."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Consistência eventual é um contrato sobre estados temporários e convergência, não uma promessa vaga de que tudo se corrigirá sozinho.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -1632,7 +2474,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Um ADR curto preserva o contexto, a escolha e as consequências de uma decisão significativa. Ele ajuda quem chega depois sem transformar cada detalhe técnico em processo de aprovação.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -1701,13 +2543,23 @@ export const articles: Article[] = [
       "A qualidade aparece quando as pessoas realmente consultam o histórico e atualizam decisões superadas. Se cada mudança trivial exige um formulário extenso, o processo vira trabalho de preenchimento e os registros deixam de refletir as decisões importantes."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-008-explicacao-1", title: "Um ADR registra contexto, não apenas a conclusão" },
+      { type: "paragraphs", id: "arq-008-explicacao-1-texto", paragraphs: [
+        "Uma decisão sem contexto envelhece mal: “usaremos fila” não conta qual problema existia, quais alternativas foram consideradas ou qual custo foi aceito. Um ADR útil registra situação, forças envolvidas, opção escolhida e consequências, incluindo aquilo que será mais difícil depois.",
+        "Mantenha o documento pequeno e próximo do código. A decisão precisa poder ser lida sem reunião ou contexto oral. Link para RFCs, incidentes ou métricas quando esses materiais são necessários, mas não transforme o ADR num arquivo de transcrição de debate."
+      ] },
+      { type: "heading", id: "arq-008-explicacao-2", title: "Estados e revisão das decisões" },
+      { type: "paragraphs", id: "arq-008-explicacao-2-texto", paragraphs: [
+        "ADRs são registros cronológicos, não uma enciclopédia que deve sempre conter apenas a decisão atual. Se uma decisão for substituída, crie um novo registro apontando para o anterior e marque seu estado como superseded. Assim, quem investiga o histórico entende o que era verdade em cada momento.",
+        "Revisite uma decisão quando suas premissas mudarem: volume, equipe, requisitos regulatórios, custo de operação ou tecnologia. Evite reabrir escolhas sem um sinal novo. O valor do registro está em reduzir decisões repetidas e tornar explícitas as condições que fariam uma escolha deixar de servir."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Escreva o suficiente para que outra pessoa entenda o contexto e o custo aceito; mantenha o registro perto do código.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -1725,7 +2577,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Logs, métricas e traces respondem perguntas diferentes. Correlacionados, ajudam a seguir uma operação por componentes sem transformar observabilidade em uma coleção de dashboards.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -1794,13 +2646,23 @@ export const articles: Article[] = [
       "Teste o caminho de ponta a ponta em ambiente controlado. Gere uma requisição conhecida, confirme a existência do trace e verifique se logs relacionados podem ser encontrados. Essa checagem simples ajuda a descobrir que a instrumentação foi configurada no SDK, mas não está chegando ao backend esperado."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-009-explicacao-1", title: "Logs, métricas e traces respondem perguntas diferentes" },
+      { type: "paragraphs", id: "arq-009-explicacao-1-texto", paragraphs: [
+        "Métricas resumem comportamento ao longo do tempo e ajudam a detectar mudanças como aumento de latência ou taxa de erro. Logs registram eventos com contexto; traces mostram o caminho de uma operação entre componentes e quanto tempo cada etapa consumiu. Nenhum sinal sozinho explica toda investigação.",
+        "Use um identificador de correlação para seguir uma requisição entre serviços, mas não registre dados pessoais ou tokens como atalho de contexto. A cardinalidade das dimensões também importa: um ID de usuário em label de métrica pode explodir o volume e o custo. Escolha campos para responder perguntas operacionais reais."
+      ] },
+      { type: "heading", id: "arq-009-explicacao-2", title: "Instrumentar a jornada crítica" },
+      { type: "paragraphs", id: "arq-009-explicacao-2-texto", paragraphs: [
+        "Comece pelo caminho que representa uma tarefa importante: criar pedido, processar pagamento, concluir importação. Registre início, resultado, dependência chamada e duração; transforme taxas e latências em métricas; propague contexto de trace nas chamadas. A instrumentação precisa sobreviver a erros e cancelamentos, não apenas ao caminho feliz.",
+        "Combine sinais com ownership e runbooks. Um dashboard que dispara alerta sem indicar impacto, responsável ou próximo passo aumenta ruído. Defina quais sintomas indicam degradação para a pessoa usuária, como distinguir erro interno de falha externa e como coletar contexto suficiente sem expor informação sensível."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Defina a pergunta operacional primeiro; emita sinais correlacionáveis e seguros para respondê-la.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -1818,7 +2680,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Timeout, retry, circuit breaker e bulkhead resolvem problemas diferentes. Aplicados sem limites ou conhecimento da operação, podem aumentar a carga e piorar a falha que tentavam esconder.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -1887,13 +2749,23 @@ export const articles: Article[] = [
       "Teste combinações de latência, timeout, repetição e saturação em ambiente controlado. Resiliência não é adicionar cada padrão conhecido a todo cliente HTTP; é definir falha esperada, limite e comportamento recuperável para o fluxo específico."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-010-explicacao-1", title: "Retries podem amplificar a falha" },
+      { type: "paragraphs", id: "arq-010-explicacao-1-texto", paragraphs: [
+        "Se um serviço lento recebe mais tentativas de todos os clientes, cada retry adiciona carga justamente quando ele tem menos capacidade. A política precisa ter limite, backoff com jitter e um orçamento de tentativas ligado ao tempo total que a operação pode consumir. Só repita operações que sejam seguras para repetir ou protegidas por idempotência.",
+        "Um timeout também precisa cobrir o orçamento da chamada inteira: conexão, espera por resposta e trabalho posterior. Se cada camada reiniciar um timeout completo, a latência total pode exceder muito o que o cliente aceita. Propague deadline e cancele trabalho que não terá mais utilidade."
+      ] },
+      { type: "heading", id: "arq-010-explicacao-2", title: "Circuit breaker não substitui timeout nem fila" },
+      { type: "paragraphs", id: "arq-010-explicacao-2-texto", paragraphs: [
+        "Um circuit breaker interrompe chamadas a um destino que aparenta falhar e permite sondagens de recuperação depois. Timeout limita quanto se espera por chamada; retry decide se uma tentativa pode ser feita de novo; bulkhead limita o recurso consumido por um grupo. Cada mecanismo trata um modo de falha diferente.",
+        "Parâmetros precisam refletir latência normal e impacto de abrir o circuito. Um limite agressivo pode bloquear uma dependência que está se recuperando; um limite longo pode manter threads ocupadas e espalhar saturação. Meça, simule falhas e exponha estado e contagem de tentativas para que resiliência não vire comportamento invisível."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Limite espera, carga e concorrência. Para cada política, defina qual falha ela contém e como o usuário percebe o resultado.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -1911,7 +2783,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Uma operação curta pode responder com o resultado. Uma tarefa longa pode ser aceita e acompanhada por estado, mas isso adiciona persistência, retry e uma nova experiência de produto.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -1980,13 +2852,23 @@ export const articles: Article[] = [
       "Nem todo processamento merece fila. Para tarefas rápidas, a complexidade de status, worker e recuperação pode custar mais do que o benefício. Para uma operação longa, uma resposta explícita de aceite e acompanhamento pode dar previsibilidade ao produto e separar escalabilidade do processamento."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-011-explicacao-1", title: "Aceitar trabalho assíncrono exige um recurso consultável" },
+      { type: "paragraphs", id: "arq-011-explicacao-1-texto", paragraphs: [
+        "Um endpoint pode validar a solicitação, persistir um job e responder com um identificador de operação. O cliente então consulta estado, recebe atualização por webhook ou acompanha uma stream, conforme a necessidade. “Aceito” precisa significar que o pedido foi guardado de forma durável, e não que existe apenas numa memória que pode ser perdida no próximo restart.",
+        "Defina estados observáveis como queued, running, succeeded e failed, além de expiração e política de repetição. O cliente precisa saber se pode reenviar uma solicitação após timeout; uma chave de idempotência ajuda a impedir que uma incerteza de rede crie dois jobs."
+      ] },
+      { type: "heading", id: "arq-011-explicacao-2", title: "Síncrono quando o resultado é parte do fluxo" },
+      { type: "paragraphs", id: "arq-011-explicacao-2-texto", paragraphs: [
+        "Uma resposta síncrona é adequada quando a operação termina dentro de um orçamento curto e o resultado é necessário para continuar a interação. Ela oferece um contrato simples, mas mantém recursos ocupados enquanto dependências trabalham e pode falhar por timeout de gateway mesmo que o backend continue executando.",
+        "Não escolha assíncrono apenas para mascarar lentidão. Ele adiciona estado, polling ou notificações, reprocessamento, filas e suporte a operações incompletas. Compare a duração e variabilidade reais, a experiência do cliente e o custo de recuperação. A interface deve refletir o trabalho em progresso e permitir retomar a consulta."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Responda imediatamente quando o resultado cabe no ciclo interativo; caso contrário, modele aceite, estado e conclusão como recursos distintos.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2004,7 +2886,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Expandir, migrar e contrair permite que versões antiga e nova convivam durante uma mudança incompatível de schema. A sequência reduz acoplamento entre deploy e migração, mas exige cuidado com dados e locks.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2073,13 +2955,23 @@ export const articles: Article[] = [
       "Use expand-migrate-contract quando versões diferentes realmente precisam conviver. Para mudanças aditivas simples, o processo pode ser menor; para schema grande, locks ou transformação semântica, talvez seja necessário mais etapas. A sequência reduz risco quando planejada, não elimina a necessidade de observabilidade e recuperação."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-012-explicacao-1", title: "Expand, migrate, contract em etapas" },
+      { type: "paragraphs", id: "arq-012-explicacao-1-texto", paragraphs: [
+        "Na fase expand, adicione a nova coluna ou estrutura de forma que o código antigo continue funcionando. Em seguida, publique código que escreve compativelmente no formato antigo e no novo, ou que leia com fallback enquanto migra dados. Só depois confirme que todos os leitores e escritores usam o novo formato.",
+        "A fase contract remove a coluna antiga ou o caminho de compatibilidade após verificar uso residual, métricas e versões ainda em execução. Deploys com instâncias simultâneas tornam perigoso supor que uma única versão do código controla todos os acessos."
+      ] },
+      { type: "heading", id: "arq-012-explicacao-2", title: "Migração de dados e recuperação" },
+      { type: "paragraphs", id: "arq-012-explicacao-2-texto", paragraphs: [
+        "Uma transformação grande pode precisar de lotes pequenos, checkpoints, limitação de taxa e possibilidade de retomar. Registre quantos registros foram processados, quais falharam e como detectar inconsistências entre representações. Para reversão, voltar o binário não desfaz automaticamente dados já transformados.",
+        "Planeje backup restaurável, critérios de abortar, estratégia de compensação e compatibilidade entre versões. Teste locks, duração e impacto no tráfego com volume representativo. A sequência segura depende do banco e da mudança; “zero downtime” não pode ser prometido apenas porque o comando de alteração é online."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Mantenha compatibilidade enquanto versões coexistem e só remova a forma antiga depois de verificar todos os consumidores.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2097,7 +2989,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Uma flag pode separar a publicação de código da exposição de um recurso. O ganho de rollout controlado vem com trabalho de ownership, métricas, limpeza e segurança para estados ligados e desligados.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2166,13 +3058,23 @@ export const articles: Article[] = [
       "O valor da flag deve ser observável sem expor segredos. Se a decisão é dinâmica, considere consistência de configuração, cache e comportamento quando o serviço de flags fica indisponível. A estratégia de fallback deve ser apropriada ao risco do recurso."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-013-explicacao-1", title: "Uma flag precisa de dono e ciclo de vida" },
+      { type: "paragraphs", id: "arq-013-explicacao-1-texto", paragraphs: [
+        "Uma flag de lançamento pode começar restrita à equipe, avançar para um grupo e depois ser liberada. Cada etapa deve ter critério de avanço, métrica de saúde e plano para interromper a exposição. Uma flag permanente de configuração tem outra finalidade e precisa de governança diferente de um interruptor temporário de rollout.",
+        "Flags acumuladas criam combinações que podem multiplicar caminhos de execução. Nome, responsável, data de revisão e condição de remoção ajudam a evitar que o sistema carregue branches esquecidos por anos. Remover a flag é parte da implementação, não uma tarefa administrativa opcional."
+      ] },
+      { type: "heading", id: "arq-013-explicacao-2", title: "Deploy, ativação e rollback são momentos diferentes" },
+      { type: "paragraphs", id: "arq-013-explicacao-2-texto", paragraphs: [
+        "Deploy coloca código no ambiente; ativação muda quem recebe a funcionalidade. Separar os dois permite lançar código antes de expô-lo a todo mundo, mas não protege contra incompatibilidades em banco, cache ou mensagens. O código novo precisa coexistir com o antigo durante a janela de rollout.",
+        "Uma flag avaliada no cliente pode controlar interface, mas não autorização. A decisão de acesso sensível deve ser validada no servidor. Também defina o comportamento padrão quando o serviço de flags estiver indisponível, e garanta que flags de emergência não dependam de um caminho que falha junto com a funcionalidade."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Use uma flag para controlar uma mudança explícita e gerencie seu ciclo de vida como parte da entrega.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2190,7 +3092,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Menor privilégio limita o impacto de credenciais ou componentes comprometidos. Permissões devem refletir ação e escopo de cada identidade, acompanhadas por auditoria e revisão.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2259,13 +3161,23 @@ export const articles: Article[] = [
       "Comece por mapear o fluxo de dados e as ações de cada componente. Remova permissões que não são usadas, monitore negações e teste que identidades legítimas não conseguem atravessar fronteiras. Uma matriz simples de papel, ação e recurso já revela acessos acidentais."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-014-explicacao-1", title: "Identidade, ação e recurso" },
+      { type: "paragraphs", id: "arq-014-explicacao-1-texto", paragraphs: [
+        "Menor privilégio fica mais preciso quando a permissão descreve quem pode realizar qual ação sobre qual recurso e em que contexto. Um worker que gera miniaturas pode ler objetos de entrada e gravar somente no prefixo de saída necessário; não precisa de acesso administrativo à conta ou à base inteira.",
+        "Prefira identidades distintas por serviço e credenciais de curta duração quando a plataforma permitir. Segredos compartilhados tornam difícil atribuir ações, rotacionar acesso e limitar impacto. A política precisa acompanhar dependências indiretas: um serviço pode não ler dados diretamente, mas ainda ter permissão para chamar um componente que os expõe."
+      ] },
+      { type: "heading", id: "arq-014-explicacao-2", title: "Autorizar perto do efeito protegido" },
+      { type: "paragraphs", id: "arq-014-explicacao-2-texto", paragraphs: [
+        "Esconder uma ação na interface não impede que uma requisição seja construída manualmente. A validação de autorização deve ocorrer no servidor, próxima à operação que lê ou altera o recurso, usando identidade confiável e escopo correto. Checar apenas o papel global do usuário pode deixar passar acesso entre organizações.",
+        "Audite permissões efetivas e remova grants obsoletos. Testes devem cobrir negação, não só acesso permitido, incluindo recursos de outro tenant e identidades de serviço. O objetivo é reduzir o raio de impacto de uma credencial comprometida sem quebrar rotinas legítimas; instrumentação e rollout gradual ajudam a encontrar dependências esquecidas."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Vincule identidade, ação e recurso; reduza permissões em cada fronteira e teste acessos indevidos.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2283,7 +3195,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Multi-tenancy é um espectro entre recursos compartilhados e dedicados. A escolha equilibra custo, operação, requisitos de isolamento, capacidade e risco de vazamento entre tenants.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2352,13 +3264,23 @@ export const articles: Article[] = [
       "Documente quais camadas são compartilhadas, que controles isolam tenant, como onboardar e remover recursos, e como responder a incidente. Migração entre pool e silo deve ser prevista antes que a arquitetura torne cada exceção manual."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-015-explicacao-1", title: "Isolamento é um espectro com custos operacionais" },
+      { type: "paragraphs", id: "arq-015-explicacao-1-texto", paragraphs: [
+        "Um schema compartilhado reduz duplicação de infraestrutura, mas exige que tenant_id acompanhe todas as consultas, constraints e jobs. Banco separado por cliente oferece uma fronteira mais forte, porém aumenta custo de provisionamento, migrações, backup, observabilidade e failover. Modelos híbridos podem manter clientes pequenos juntos e mover cargas específicas.",
+        "A decisão depende de risco de vazamento, requisitos de residência, limites de performance, customização e custo. “Cada cliente tem seu próprio banco” não garante isolamento se credenciais ou processos de manutenção cruzarem a fronteira. “Tabela compartilhada” não é automaticamente insegura, desde que as políticas sejam aplicadas de forma consistente e testadas."
+      ] },
+      { type: "heading", id: "arq-015-explicacao-2", title: "O tenant precisa acompanhar todo caminho de dados" },
+      { type: "paragraphs", id: "arq-015-explicacao-2-texto", paragraphs: [
+        "Extraia a identidade do tenant de um contexto confiável e propague-a por filas, tarefas agendadas, logs e caches. Nunca aceite um tenant_id fornecido pelo cliente como prova de autorização. Uma chave de cache sem tenant pode entregar a resposta correta para o cliente errado.",
+        "Inclua testes adversariais de isolamento: consultar, atualizar, exportar e processar em lote recursos pertencentes a outro tenant. Verifique políticas do banco e autorização da aplicação em conjunto. Migrações e ferramentas administrativas também precisam de limites explícitos, pois caminhos de suporte costumam contornar os fluxos normais."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Escolha o grau de isolamento pelo risco, contrato e capacidade de operar; verifique o escopo em todo o caminho dos dados.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2376,7 +3298,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Cache-aside pode reduzir leituras repetidas, mas cria uma cópia temporária com política de frescor e falha. A fonte de verdade e a estratégia de invalidação precisam estar claras.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2445,13 +3367,23 @@ export const articles: Article[] = [
       "Comece com dado que pode ser recalculado e cuja leitura repetida é realmente cara. Se o cache vira fonte de verdade ou exige sincronização mais complexa que a consulta original, volte a avaliar se a camada está resolvendo o problema certo."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-016-explicacao-1", title: "Frescor precisa ser parte do contrato" },
+      { type: "paragraphs", id: "arq-016-explicacao-1-texto", paragraphs: [
+        "Cache-aside carrega um valor da fonte quando não está no cache e o armazena por um período. Depois de uma gravação, é preciso invalidar ou atualizar a chave. Se a invalidação falhar, a pessoa pode ver um dado antigo até a expiração; se o dado não pode tolerar isso, talvez o cache não pertença ao caminho de leitura.",
+        "Defina uma janela de staleness aceitável por tipo de dado. Para catálogo, minutos podem ser aceitáveis; para autorização ou saldo, o custo de uma resposta antiga pode ser muito maior. TTL é um limite aproximado e não resolve sozinho invalidação, consistência de réplicas ou relógios diferentes."
+      ] },
+      { type: "heading", id: "arq-016-explicacao-2", title: "Stampede, chaves e falhas do cache" },
+      { type: "paragraphs", id: "arq-016-explicacao-2-texto", paragraphs: [
+        "Quando uma chave expira e muitos requests a solicitam ao mesmo tempo, todos podem consultar a fonte. Single-flight, jitter no TTL, stale-while-revalidate ou limites de concorrência ajudam, dependendo do sistema. Medir taxa de hit sem observar carga na fonte pode esconder um cache que transfere picos para o banco.",
+        "Uma chave precisa incluir as dimensões que mudam o resultado, como tenant, idioma ou versão. Ainda assim, cardinalidade excessiva pode consumir memória e reduzir hits. Decida se uma falha do cache deve degradar para a fonte ou falhar a operação; o fallback pode ser correto funcionalmente e perigoso para a capacidade."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Defina fonte de verdade, frescor aceitável e comportamento em falha antes de adicionar uma cópia cacheada.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2469,7 +3401,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Escolha o modelo de execução pelo ciclo de vida do trabalho: resposta a evento, tarefa finita ou consumo persistente. O nome da infraestrutura não substitui limites, retries e operação.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2538,13 +3470,23 @@ export const articles: Article[] = [
       "Evite escolher função, Kubernetes ou servidor porque está na moda. Compare carga operacional, custo de ociosidade, limites da plataforma, observabilidade e experiência do cliente. O modelo é bom quando representa bem o trabalho e deixa claras as políticas de execução."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-017-explicacao-1", title: "O tempo de vida muda o modelo operacional" },
+      { type: "paragraphs", id: "arq-017-explicacao-1-texto", paragraphs: [
+        "Uma função curta é fácil de escalar por invocação, mas tem limites de duração e ambiente que podem afetar conexões, arquivos temporários e inicialização. Um job tem começo e fim observáveis, costuma permitir lotes e reexecução. Um worker contínuo consome mensagens enquanto está saudável e precisa lidar com shutdown, backpressure e atualização sem perder trabalho.",
+        "Escolha a forma de execução a partir do perfil: duração, volume, latência esperada, dependências locais e necessidade de estado. Não mantenha um processo contínuo só porque parece eficiente se a carga é rara; não force uma tarefa longa numa função curta sem checkpoint ou retomada."
+      ] },
+      { type: "heading", id: "arq-017-explicacao-2", title: "Concorrência, cancelamento e encerramento" },
+      { type: "paragraphs", id: "arq-017-explicacao-2-texto", paragraphs: [
+        "Cada modelo precisa de limites de concorrência e política de retry. Mais workers podem aumentar throughput até saturar banco ou API externa. Propague cancelamento e deadline; ao receber shutdown, pare de aceitar trabalho novo, finalize ou devolva mensagens em processamento e feche recursos dentro do período permitido.",
+        "Um job reexecutável deve registrar progresso ou ser idempotente. Logs e métricas precisam distinguir tentativa, operação lógica e resultado final. A experiência de deploy também importa: drenagem, health checks e mensagens invisíveis em memória podem determinar se uma atualização perde trabalho ou apenas interrompe uma execução segura."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Escolha o ciclo de execução pelo trabalho e pela recuperação necessária, depois selecione a plataforma que o suporta.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2562,7 +3504,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Ownership, qualidade e linhagem ajudam a explicar como um indicador foi produzido e quem responde por ele. Documente primeiro transformações importantes, não cada cópia de dado.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2631,13 +3573,23 @@ export const articles: Article[] = [
       "Um número confiável precisa de definição, origem, transformação e responsável suficientes para ser explicado. Comece com um indicador de alto impacto e siga sua jornada real; a documentação que não é consultada ou atualizada vira decoração."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-018-explicacao-1", title: "Ownership inclui significado e qualidade" },
+      { type: "paragraphs", id: "arq-018-explicacao-1-texto", paragraphs: [
+        "Dizer que uma equipe é dona de uma tabela não define o que “receita”, “usuário ativo” ou “pedido concluído” significam. Ownership de dados precisa incluir semântica, regras de qualidade, classificação de sensibilidade, contrato de mudança e responsáveis por incidentes. Sem isso, consumidores recriam métricas com interpretações diferentes.",
+        "Uma linhagem útil conecta origem, transformação e consumo: qual sistema produziu o campo, quais regras o alteraram, que versão do pipeline o calculou e quais relatórios dependem dele. Esse mapa facilita avaliar impacto antes de mudar um contrato ou corrigir um dado."
+      ] },
+      { type: "heading", id: "arq-018-explicacao-2", title: "Linhagem para investigar, não só documentar" },
+      { type: "paragraphs", id: "arq-018-explicacao-2-texto", paragraphs: [
+        "Quando um número muda inesperadamente, a equipe precisa responder se a origem mudou, se um job atrasou, se um filtro foi alterado ou se a definição do indicador divergiu. Metadados de execução, versão de transformação, timestamps e checks de qualidade tornam a investigação reproduzível.",
+        "Não registre dados pessoais em metadados de lineage sem necessidade. Diferencie procedência técnica de autorização para uso: saber de onde um campo veio não significa que todo consumidor pode acessá-lo. Defina políticas, retenção e alertas junto da documentação para que a linhagem continue confiável quando os sistemas mudarem."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Siga um dado importante de sua origem até a decisão que ele informa; registre semântica, transformações e ownership.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2655,7 +3607,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Duplicação pode preservar clareza enquanto variações ainda são incertas; abstração vale quando comportamentos evoluem juntos e uma regra compartilhada reduz o custo de mudança.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2724,13 +3676,23 @@ export const articles: Article[] = [
       "DRY é um lembrete contra repetir conhecimento que deveria ter uma única fonte. Não exige que cada caractere semelhante seja compartilhado. Preserve o que muda junto; separe o que muda por razões independentes."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-019-explicacao-1", title: "O custo da abstração aparece nos consumidores" },
+      { type: "paragraphs", id: "arq-019-explicacao-1-texto", paragraphs: [
+        "Uma abstração útil remove uma variação real que aparece em mais de um contexto e oferece um vocabulário mais simples para quem a usa. Uma abstração prematura tenta prever diferenças futuras; costuma expor muitos parâmetros, criar condicionais genéricas e exigir que toda mudança passe por um mecanismo que ninguém compreende.",
+        "Duplicar algumas linhas pode ser mais barato quando duas regras parecem iguais hoje, mas mudam por motivos diferentes. O risco é a duplicação sem ownership, que permite divergência acidental. Nomeie as responsabilidades e observe mudanças conjuntas antes de extrair código comum."
+      ] },
+      { type: "heading", id: "arq-019-explicacao-2", title: "Sinais para extrair ou manter separado" },
+      { type: "paragraphs", id: "arq-019-explicacao-2-texto", paragraphs: [
+        "Extraia quando os consumidores compartilham invariantes e evoluem juntos, quando a mudança precisa ser coordenada e há um conceito comum claro. Mantenha separado quando só a forma parece igual, mas as regras, ciclo de vida ou fontes de verdade divergem. Testes de comportamento ajudam a perceber se uma abstração preserva diferenças importantes.",
+        "Uma refatoração segura pode começar copiando o comportamento para um teste, identificar o contrato comum e migrar um consumidor por vez. Se cada caller precisa de exceções, a abstração talvez esteja no nível errado. Reavalie com evidência; “não repetir código” não é objetivo suficiente para acoplar módulos."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Extraia quando houver conhecimento e mudança compartilhados; mantenha duplicação localizada quando a semelhança ainda for superficial.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2748,7 +3710,7 @@ export const articles: Article[] = [
     category: "Arquitetura de software",
     summary: "Dívida técnica descreve um trade-off e seus custos, não um rótulo moral. Priorize problemas pelo impacto observável, risco e mudanças de produto que estão próximas.",
     publishedAt: "2026-11-06",
-    readingTime: "7 min",
+    readingTime: "9 min",
     content: [],
     story: [
   {
@@ -2817,13 +3779,23 @@ export const articles: Article[] = [
       "Revisite a prioridade quando muda o roadmap, o padrão de incidentes ou a equipe. Se a dívida não afeta capacidade nem risco, talvez não seja a próxima tarefa. Se o sistema impede mudanças importantes ou gera falhas recorrentes, o custo de esperar deve ser comparado ao custo de corrigir."
     ]
   },
-  {
-    "type": "callout",
+      { type: "heading", id: "arq-020-explicacao-1", title: "Priorizar pelo risco de mudança" },
+      { type: "paragraphs", id: "arq-020-explicacao-1-texto", paragraphs: [
+        "Uma dívida merece atenção quando aumenta a chance ou o impacto de uma mudança futura. Um caminho crítico com alterações frequentes, deploy arriscado e recuperação lenta pode ser mais urgente que uma parte antiga mas estável. Combine frequência de mudança, impacto de falha, esforço de contorno e custo de oportunidade.",
+        "Descreva a dívida como um problema observável: qual mudança ela torna difícil, que incidente pode amplificar e qual seria um sinal de melhora? Isso torna possível comparar com trabalho de produto sem fingir que todo débito técnico tem o mesmo valor ou que a solução já está definida."
+      ] },
+      { type: "heading", id: "arq-020-explicacao-2", title: "Pagar em parcelas com resultado verificável" },
+      { type: "paragraphs", id: "arq-020-explicacao-2-texto", paragraphs: [
+        "Uma iniciativa estrutural pode ser dividida em passos reversíveis: adicionar uma métrica, criar um contrato, mover um fluxo de cada vez e remover o caminho antigo depois de observar uso. Cada parcela deve reduzir um risco ou custo, não só reorganizar arquivos para deixar a arquitetura mais bonita.",
+        "Evite prometer que uma reescrita elimina dívida. Ela pode trocar problemas conhecidos por riscos de migração, regressão e atraso de funcionalidade. Registre o antes e depois com tempo de ciclo, falhas, custo de suporte ou outra medida relevante, e revise a hipótese se os benefícios esperados não aparecerem."
+      ] },
+      {
+        type: "callout",
     "id": "ideia-central",
     "title": "Ideia para levar",
     "body": "Priorize o problema técnico que afeta uma mudança ou risco real; escolha a menor intervenção que reduza esse custo.",
     "tone": "result"
-  }
+      },
 ],
     references: [
   {
@@ -2996,7 +3968,7 @@ export const articles: Article[] = [
       "Por que uma lista usada como argumento padrão pode guardar itens entre chamadas e como usar `None` para criar um valor novo quando necessário.",
     publishedAt: "2026-11-09",
     linkedinUrl: "https://lnkd.in/p/dq7en2cP",
-    readingTime: "4 min",
+    readingTime: "5 min",
     cover: {
       src: "/articles/python-argumentos-default-mutaveis/slide-01.webp",
       alt: "Infográfico PY-001: duas chamadas compartilham uma lista padrão mutável; com None, cada chamada cria uma lista nova.",
@@ -3058,6 +4030,16 @@ print(adicionar("pão"))   # ['pão']`,
           "A regra prática é evitar listas e dicionários como valores padrão quando a intenção for um objeto novo por chamada. Use `None` e crie o objeto dentro da função. Se compartilhar estado for intencional, torne esse contrato explícito e documente quem controla o ciclo de vida do valor.",
         ],
       },
+      { type: "heading", id: "py-001-quando-compartilhar", title: "Quando compartilhar o default é intencional" },
+      { type: "paragraphs", id: "py-001-compartilhar-texto", paragraphs: [
+        "O comportamento não é sempre um bug. Um cache local, uma tabela de consulta ou um acumulador pode ser mantido entre chamadas de propósito. Nesse caso, o estado compartilhado precisa ter um dono e um ciclo de vida claros; uma lista default escondida costuma ser um lugar surpreendente para guardar esse estado.",
+        "O problema aparece quando a função promete uma operação independente, mas o default mutável faz chamadas futuras dependerem de chamadas anteriores. Escreva um teste com duas chamadas sem argumento e outro com uma lista fornecida explicitamente para verificar os dois contratos."
+      ] },
+      { type: "heading", id: "py-001-mutavel-versus-imutavel", title: "Por que um default imutável não acumula itens" },
+      { type: "paragraphs", id: "py-001-imutavel-texto", paragraphs: [
+        "Valores imutáveis, como uma string ou uma tupla, não podem ser alterados no lugar. Uma operação que combina uma string normalmente produz outro valor em vez de modificar o default compartilhado. Isso reduz esse tipo de surpresa, embora objetos imutáveis também possam conter referências a objetos mutáveis se forem construídos dessa forma.",
+        "A decisão deve refletir a intenção: use `None` como sentinela quando cada chamada precisa construir estado próprio; use um objeto compartilhado somente quando a persistência entre chamadas for parte explícita da API."
+      ] },
       {
         type: "callout",
         id: "ideia-central",
@@ -3073,6 +4055,357 @@ print(adicionar("pão"))   # ['pão']`,
     selected: true,
     published: true,
     sourceLabel: "Adaptado do post PY-001 publicado no LinkedIn em 9 de novembro de 2026",
+  },
+  {
+    slug: "python-copia-superficial",
+    title: "Cópia nova, surpresa antiga: listas dentro de listas",
+    category: "Linguagens · Python",
+    summary: "Uma cópia superficial cria outro contêiner, mas mantém referências para objetos aninhados. Veja quando `copy.copy` basta e quando a estrutura compartilhada continua sendo uma escolha.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-002-opening", paragraphs: ["Uma cópia superficial cria outro contêiner, mas mantém referências para objetos aninhados. Veja quando `copy.copy` basta e quando a estrutura compartilhada continua sendo uma escolha."] },
+      { type: "heading", id: "py-002-h1", title: "O que realmente é copiado" },
+      { type: "paragraphs", id: "py-002-p1", paragraphs: ["Uma lista como `[['café'], ['pão']]` contém referências para outras listas. `copy.copy` cria um novo contêiner externo e copia suas referências; por isso, adicionar um elemento à lista externa copiada não altera a original, mas editar uma lista interna aparece nas duas.", "Essa distinção importa em carrinhos, configurações e estruturas vindas de funções. O termo “cópia” sozinho não diz se os objetos internos foram recriados. Pense em níveis: qual objeto ganhou identidade nova e quais continuam compartilhados?"] },
+      { type: "heading", id: "py-002-h2", title: "Escolha a profundidade pelo contrato" },
+      { type: "paragraphs", id: "py-002-p2", paragraphs: ["`copy.deepcopy` percorre a estrutura e tenta copiar recursivamente os objetos encontrados. Isso pode ser o comportamento esperado para uma árvore simples, mas também custa memória e tempo, pode duplicar objetos que deveriam permanecer compartilhados e depende do protocolo de cópia de cada tipo.", "Uma alternativa costuma ser construir explicitamente a nova estrutura, copiando apenas os campos mutáveis que precisam ser independentes. Assim a função documenta quais dados podem mudar sem surpresa. Para estruturas grandes ou cíclicas, prefira entender o grafo e o comportamento dos tipos em vez de presumir que deep copy é sempre correto."] },
+            { type: "code", id: "py-002-example-extra", language: "Python", code: "import copy\n\noriginal = [[\"café\"], [\"pão\"]]\nshallow = copy.copy(original)\ndeep = copy.deepcopy(original)\n\nshallow[0].append(\"chá\")\nprint(original[0])  # ['café', 'chá']\nprint(deep[0])      # ['café']", caption: "PY-002 · a lista externa é nova, a lista aninhada continua compartilhada na cópia superficial." },
+{ type: "heading", id: "py-002-h3", title: "Como testar isolamento" },
+      { type: "paragraphs", id: "py-002-p3", paragraphs: ["Teste a operação que o consumidor realmente fará: altere um item interno na cópia e observe a original. Um teste que verifica apenas `copiada is not original` só prova que a lista externa tem outra identidade; não prova isolamento profundo.", "Se o contrato promete imutabilidade, considere estruturas imutáveis ou cópias direcionadas. Se o compartilhamento é intencional, deixe isso claro no nome e na documentação. O importante é que a fronteira entre cópia e referência corresponda ao ciclo de vida dos dados."] },
+    ],
+    references: [
+      { label: "Python documentation — copy module", href: "https://docs.python.org/3/library/copy.html" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-002 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-tipagem-nao-valida-json",
+    title: "Seu type hint não barra um dado errado da API",
+    category: "Linguagens · Python",
+    summary: "Type hints ajudam ferramentas e pessoas a entender o código, mas Python não valida automaticamente respostas JSON em runtime. Valide dados externos na fronteira antes de tratá-los como domínio confiável.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-003-opening", paragraphs: ["Type hints ajudam ferramentas e pessoas a entender o código, mas Python não valida automaticamente respostas JSON em runtime. Valide dados externos na fronteira antes de tratá-los como domínio confiável."] },
+      { type: "heading", id: "py-003-h1", title: "Anotação não transforma dado recebido" },
+      { type: "paragraphs", id: "py-003-p1", paragraphs: ["`json.loads` devolve valores Python a partir do conteúdo recebido. Uma anotação como `payload: User` não altera esses valores nem confirma que chegaram todos os campos esperados. Type checkers analisam o programa antes da execução; a resposta de rede continua sendo dado externo.", "Uma API pode mudar, retornar um erro HTML, enviar `null` onde se esperava número ou produzir um campo com tipo diferente. O tipo declarado descreve o que o código espera, não o que o servidor realmente entregou."] },
+      { type: "heading", id: "py-003-h2", title: "Valide em uma fronteira explícita" },
+      { type: "paragraphs", id: "py-003-p2", paragraphs: ["Uma estratégia simples é receber o valor como `object` ou `Any`, conferir a forma e converter para uma representação de domínio. A validação deve responder com erro útil, sem deixar um `KeyError` ou uma operação aritmética falhar muito depois da chamada HTTP.", "Para esquemas maiores, bibliotecas de validação podem centralizar conversão, erros por campo e regras. Ainda assim, revise coerções: aceitar automaticamente uma string numérica ou ignorar campos desconhecidos pode ser desejado num caso e perigoso em outro."] },
+      { type: "code", id: "py-003-code2", language: "Python", code: "def parse_user(payload: object) -> dict[str, object]:\n    if not isinstance(payload, dict):\n        raise ValueError(\"expected a JSON object\")\n    name = payload.get(\"name\")\n    age = payload.get(\"age\")\n    if not isinstance(name, str) or not isinstance(age, int):\n        raise ValueError(\"invalid user payload\")\n    return {\"name\": name, \"age\": age}", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-003-h3", title: "`Any`, `object` e confiança" },
+      { type: "paragraphs", id: "py-003-p3", paragraphs: ["`Any` desativa muitas verificações estáticas ao propagar-se pelo programa; `object` obriga o código a estreitar o tipo antes de usar operações específicas. Na fronteira de entrada, `object` pode tornar a validação mais visível.", "Depois da validação, converta para um tipo que represente os invariantes confiáveis. Evite espalhar casts para silenciar o checker: `cast` altera a visão estática, não verifica o valor em execução. A regra prática é validar uma vez, perto da entrada, e manter o resto do domínio com dados já interpretados."] },
+    ],
+    references: [
+      { label: "Python documentation — typing module", href: "https://docs.python.org/3/library/typing.html" },
+      { label: "Python documentation — Annotations", href: "https://docs.python.org/3/reference/compound_stmts.html#function-definitions" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-003 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-protocol-duck-typing-estatico",
+    title: "Python pode aceitar o comportamento sem exigir a classe",
+    category: "Linguagens · Python",
+    summary: "`Protocol` descreve compatibilidade estrutural para ferramentas de tipagem: um objeto pode satisfazer um contrato pelos métodos e atributos que oferece, sem herdar de uma classe-base específica.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-004-opening", paragraphs: ["`Protocol` descreve compatibilidade estrutural para ferramentas de tipagem: um objeto pode satisfazer um contrato pelos métodos e atributos que oferece, sem herdar de uma classe-base específica."] },
+      { type: "heading", id: "py-004-h1", title: "Tipagem estrutural sem herança obrigatória" },
+      { type: "paragraphs", id: "py-004-p1", paragraphs: ["Uma função que precisa apenas de `read()` não deveria necessariamente depender de uma classe concreta de arquivo. Um `Protocol` nomeia esse contrato para o type checker; qualquer tipo com a forma compatível pode ser aceito sem declarar herança explícita.", "Isso combina com duck typing, mas acrescenta uma verificação estática. O runtime do Python não passa a rejeitar automaticamente objetos incompatíveis quando recebe o valor. A ferramenta de tipos pode encontrar usos inconsistentes no código que ela analisa."] },
+      { type: "code", id: "py-004-code1", language: "Python", code: "from typing import Protocol\n\nclass Reader(Protocol):\n    def read(self, size: int = -1) -> bytes: ...\n\ndef first_byte(source: Reader) -> bytes:\n    return source.read(1)", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-004-h2", title: "Protocolo pequeno mantém substituição simples" },
+      { type: "paragraphs", id: "py-004-p2", paragraphs: ["Escreva no protocolo somente as operações que o consumidor usa. Um contrato enorme acopla implementações a detalhes que podem mudar e dificulta criar fakes. Um protocolo pequeno também deixa mais claro por que uma função precisa daquela dependência.", "A compatibilidade estrutural pode ser útil em bibliotecas, adapters e testes, mas não é motivo para criar um Protocol para toda classe. Se existe uma implementação única e nenhuma fronteira que precise ser descrita, o tipo concreto pode ser mais direto."] },
+      { type: "heading", id: "py-004-h3", title: "Limites de `runtime_checkable`" },
+      { type: "paragraphs", id: "py-004-p3", paragraphs: ["`@runtime_checkable` permite alguns testes de presença com `isinstance`, mas não transforma o protocolo em validação completa de assinatura ou de tipos. Ele não confirma que os métodos se comportarão como o contrato promete.", "Use checagem estática para compatibilidade estrutural e testes de comportamento para semântica. Se um plugin externo precisa ser validado antes de uso, cheque capacidades necessárias e lide com falhas reais; a anotação do protocolo sozinha não fornece essa garantia."] },
+    ],
+    references: [
+      { label: "Python documentation — Protocols and structural subtyping", href: "https://docs.python.org/3/library/typing.html#typing.Protocol" },
+      { label: "PEP 544 — Protocols: Structural subtyping", href: "https://peps.python.org/pep-0544/" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-004 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-threads-io-cpu-gil",
+    title: "Threads podem ajudar — dependendo do trabalho",
+    category: "Linguagens · Python",
+    summary: "Threads podem melhorar concorrência em espera de I/O, enquanto trabalho intensivo em Python pode continuar limitado pelo GIL em builds tradicionais do CPython. A resposta depende do tipo de carga, versão e build.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-005-opening", paragraphs: ["Threads podem melhorar concorrência em espera de I/O, enquanto trabalho intensivo em Python pode continuar limitado pelo GIL em builds tradicionais do CPython. A resposta depende do tipo de carga, versão e build."] },
+      { type: "heading", id: "py-005-h1", title: "Esperar e calcular são trabalhos diferentes" },
+      { type: "paragraphs", id: "py-005-p1", paragraphs: ["Num programa que busca várias páginas, grande parte do tempo pode ser espera de rede. Threads permitem iniciar outra operação enquanto uma chamada aguarda, reduzindo o tempo total sem exigir que a lógica seja reescrita como callback.", "Num loop que comprime imagens ou calcula números usando código Python, threads em builds convencionais do CPython não significam automaticamente execução paralela dos bytecodes. Mais threads podem adicionar coordenação sem acelerar a parte que consome CPU."] },
+      { type: "heading", id: "py-005-h2", title: "Escolha o modelo depois de medir" },
+      { type: "paragraphs", id: "py-005-p2", paragraphs: ["Para espera de I/O, compare threads e `asyncio` conforme o ecossistema das bibliotecas e o estilo do programa. Para CPU, processos podem executar em paralelo com custo de serialização, memória e comunicação; extensões nativas também podem liberar o GIL durante certas operações.", "Faça uma medição representativa e examine throughput, latência, uso de memória e saturação dos serviços chamados. Um benchmark minúsculo pode esconder contenção, limites de conexão ou tempo gasto empacotando dados entre processos."] },
+            { type: "code", id: "py-005-example-extra", language: "Python", code: "from concurrent.futures import ThreadPoolExecutor\n\ndef fetch_one(item_id):\n    return api.get(item_id)  # operação de I/O\n\nwith ThreadPoolExecutor(max_workers=8) as pool:\n    responses = list(pool.map(fetch_one, item_ids))", caption: "PY-005 · threads podem sobrepor espera de I/O; medir o serviço e limitar concorrência." },
+{ type: "heading", id: "py-005-h3", title: "O GIL não é uma promessa universal" },
+      { type: "paragraphs", id: "py-005-p3", paragraphs: ["O comportamento depende da implementação e do build de Python. O CPython oferece builds free-threaded opcionais em versões recentes, mas compatibilidade de extensões, desempenho e configuração precisam ser avaliados no ambiente concreto. Não se deve inferir que todo CPython é free-threaded nem que qualquer programa escala linearmente sem o GIL.", "Também não confunda ausência do GIL com ausência de sincronização. Dados compartilhados ainda podem exigir locks para preservar invariantes, e bibliotecas podem ter restrições próprias. Documente o runtime usado e meça novamente quando mudar o build ou a versão."] },
+    ],
+    references: [
+      { label: "Python documentation — threading and the GIL", href: "https://docs.python.org/3/library/threading.html#gil-and-performance-considerations" },
+      { label: "Python documentation — free-threaded Python", href: "https://docs.python.org/3/howto/free-threading-python.html" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-005 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-generator-nao-executa-ate-consumir",
+    title: "Você criou o gerador — mas ainda não leu os dados",
+    category: "Linguagens · Python",
+    summary: "Uma função geradora pode representar um fluxo de valores sem materializar tudo de uma vez. Seu corpo avança quando o iterador é consumido, o que afeta execução, erros, recursos e repetição.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-006-opening", paragraphs: ["Uma função geradora pode representar um fluxo de valores sem materializar tudo de uma vez. Seu corpo avança quando o iterador é consumido, o que afeta execução, erros, recursos e repetição."] },
+      { type: "heading", id: "py-006-h1", title: "Construir o gerador não percorre a entrada" },
+      { type: "paragraphs", id: "py-006-p1", paragraphs: ["Ao chamar uma função que contém `yield`, Python devolve um objeto gerador. O corpo começa quando uma operação como `next()` ou um `for` pede o próximo valor. Uma exceção que aparece dentro do corpo pode surgir durante a iteração, não no ponto em que o gerador foi criado.", "Isso ajuda a processar arquivos grandes ou resultados em etapas, porque cada elemento pode ser produzido sob demanda. Mas o consumidor controla o ritmo: se nunca iterar, o trabalho nunca acontece; se parar cedo, o restante do fluxo não será processado."] },
+      { type: "code", id: "py-006-code1", language: "Python", code: "def linhas_validas(path):\n    with open(path, encoding=\"utf-8\") as arquivo:\n        for linha in arquivo:\n            if linha.strip():\n                yield linha.rstrip(\"\\n\")\n\n# A leitura avança durante a iteração, não na chamada acima.\nfor linha in linhas_validas(\"entrada.txt\"):\n    print(linha)", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-006-h2", title: "Gerador costuma ser um iterador de uma passagem" },
+      { type: "paragraphs", id: "py-006-p2", paragraphs: ["Depois de consumir um gerador, ele está esgotado. Se precisar percorrer os dados várias vezes, talvez seja preciso criar um gerador novo ou materializar os valores numa lista, pagando memória para isso.", "Um generator expression também é preguiçoso, mas não torna todo o pipeline automaticamente eficiente: a função consumidora pode guardar todos os resultados. Observe onde a materialização acontece e se o consumidor encerra a iteração cedo."] },
+      { type: "heading", id: "py-006-h3", title: "Recursos e cancelamento" },
+      { type: "paragraphs", id: "py-006-p3", paragraphs: ["Se um gerador controla um recurso, como um arquivo, o bloco `with` mantém a duração ligada à execução do gerador. Encerrar a iteração cedo requer entender quando a limpeza ocorre; não esconda recursos de longa duração em iteradores sem documentar seu ciclo de vida.", "Use geradores quando produzir valores sob demanda simplifica o fluxo e reduz memória. Use uma coleção quando acesso repetido, comprimento imediato ou inspeção completa fizer parte do contrato. Preguiça é uma estratégia de avaliação, não uma vantagem automática."] },
+    ],
+    references: [
+      { label: "Python Tutorial — Generators", href: "https://docs.python.org/3/tutorial/classes.html#generators" },
+      { label: "Python documentation — Iterator types", href: "https://docs.python.org/3/library/stdtypes.html#iterator-types" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-006 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-closure-variavel-loop",
+    title: "Por que três botões podem mostrar o mesmo número?",
+    category: "Linguagens · Python",
+    summary: "Uma closure mantém acesso a um binding; se callbacks criados num loop rodarem depois, podem todos observar o valor final da variável. Capturar o valor desejado muda esse comportamento.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-007-opening", paragraphs: ["Uma closure mantém acesso a um binding; se callbacks criados num loop rodarem depois, podem todos observar o valor final da variável. Capturar o valor desejado muda esse comportamento."] },
+      { type: "heading", id: "py-007-h1", title: "A closure captura o binding, não uma foto do valor" },
+      { type: "paragraphs", id: "py-007-p1", paragraphs: ["Imagine criar callbacks para os números de uma sequência e executá-los apenas depois que o loop termina. Cada função referencia a mesma variável de loop, que então contém o último valor. Por isso a saída pode repetir esse valor em todos os callbacks.", "A função foi criada em cada iteração, mas isso não significa que o objeto referenciado foi copiado. A diferença aparece em interfaces que registram eventos, tarefas agendadas e funções guardadas para uso posterior."] },
+      { type: "code", id: "py-007-code1", language: "Python", code: "callbacks = []\nfor numero in range(3):\n    callbacks.append(lambda: numero)\n\nprint([callback() for callback in callbacks])  # [2, 2, 2]", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-007-h2", title: "Capture de valor explícita" },
+      { type: "paragraphs", id: "py-007-p2", paragraphs: ["Uma solução comum em funções curtas é usar um argumento padrão para guardar o valor atual: `lambda numero=numero: numero`. O valor padrão é avaliado quando a função é criada, então cada callback recebe o valor daquela iteração.", "Para lógica mais rica, uma função auxiliar pode receber o número como argumento e devolver outro callback. Isso deixa o escopo explícito e evita esconder comportamento em uma lambda."] },
+      { type: "code", id: "py-007-code2", language: "Python", code: "callbacks = []\nfor numero in range(3):\n    callbacks.append(lambda numero=numero: numero)\n\nprint([callback() for callback in callbacks])  # [0, 1, 2]", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-007-h3", title: "Avaliação no momento certo" },
+      { type: "paragraphs", id: "py-007-p3", paragraphs: ["Em callbacks que executam imediatamente, o valor final pode não ser problema; a surpresa depende do atraso entre criação e chamada. Teste o comportamento assíncrono ou a ação de interface como ela realmente será executada.", "Não confunda late binding com uma regra de que closures são perigosas. Capturar uma variável compartilhada pode ser desejado, por exemplo quando uma função deve sempre observar o estado mais recente. O importante é decidir entre observar o binding e guardar um valor independente."] },
+    ],
+    references: [
+      { label: "Python FAQ — Lambdas in a loop", href: "https://docs.python.org/3/faq/programming.html#why-do-lambdas-defined-in-a-loop-with-different-values-all-return-the-same-result" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-007 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-with-limpeza-excecao",
+    title: "O arquivo fecha mesmo se o código der erro",
+    category: "Linguagens · Python",
+    summary: "O bloco `with` organiza entrada e saída de um recurso. Depois que a entrada tem sucesso, o mecanismo de saída é chamado ao deixar o bloco, inclusive quando o corpo levanta uma exceção.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-008-opening", paragraphs: ["O bloco `with` organiza entrada e saída de um recurso. Depois que a entrada tem sucesso, o mecanismo de saída é chamado ao deixar o bloco, inclusive quando o corpo levanta uma exceção."] },
+      { type: "heading", id: "py-008-h1", title: "O protocolo por trás do `with`" },
+      { type: "paragraphs", id: "py-008-p1", paragraphs: ["Uma expressão de contexto fornece `__enter__` e `__exit__`. O primeiro valor pode ser ligado a uma variável com `as`; ao sair, `__exit__` recebe informações sobre uma exceção, se ela ocorreu. Arquivos usam esse protocolo para fechar mesmo quando a leitura ou o processamento falha.", "A limpeza não é a mesma coisa que suprimir erros. Um `__exit__` que retorna um valor verdadeiro pode indicar que a exceção foi tratada; context managers comuns de arquivo não escondem automaticamente o erro do corpo."] },
+      { type: "code", id: "py-008-code1", language: "Python", code: "with open(\"dados.txt\", encoding=\"utf-8\") as arquivo:\n    conteudo = arquivo.read()\n    processar(conteudo)\n# O arquivo é fechado ao sair, inclusive se processar lançar uma exceção.", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-008-h2", title: "Recursos múltiplos e `ExitStack`" },
+      { type: "paragraphs", id: "py-008-p2", paragraphs: ["Vários context managers podem ser combinados na mesma instrução `with`. Quando a quantidade é dinâmica, `contextlib.ExitStack` permite registrar recursos à medida que são adquiridos e os libera em ordem inversa.", "Essa ordem importa: se recursos dependem uns dos outros, fechar primeiro o recurso adquirido por último costuma preservar as dependências durante a limpeza. Se a aquisição parcial falhar, os recursos já registrados ainda podem ser liberados."] },
+      { type: "heading", id: "py-008-h3", title: "Quando `finally` continua fazendo sentido" },
+      { type: "paragraphs", id: "py-008-p3", paragraphs: ["`try/finally` é útil para limpeza local que não implementa um protocolo de contexto ou quando o fluxo não se encaixa bem no `with`. Um context manager deixa o ciclo de vida reutilizável e visível na estrutura do código.", "Ao escrever seu próprio gerenciador, decida se ele pode suprimir exceções e documente essa decisão. A limpeza deve ocorrer sem apagar a falha original; erros durante o encerramento também merecem um tratamento consciente."] },
+    ],
+    references: [
+      { label: "Python Language Reference — The with statement", href: "https://docs.python.org/3/reference/compound_stmts.html#the-with-statement" },
+      { label: "PEP 343 — The with statement", href: "https://peps.python.org/pep-0343/" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-008 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-is-vs-equals",
+    title: "Duas perguntas diferentes: o valor é igual ou é o mesmo objeto?",
+    category: "Linguagens · Python",
+    summary: "Em Python, `==` pergunta sobre igualdade definida pelos objetos; `is` verifica identidade. Para o singleton `None`, use `is None`; não dependa de identidade de strings ou inteiros.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-009-opening", paragraphs: ["Em Python, `==` pergunta sobre igualdade definida pelos objetos; `is` verifica identidade. Para o singleton `None`, use `is None`; não dependa de identidade de strings ou inteiros."] },
+      { type: "heading", id: "py-009-h1", title: "Igualdade é comportamento do tipo" },
+      { type: "paragraphs", id: "py-009-p1", paragraphs: ["Dois objetos podem ser distintos e ainda assim comparar iguais. Uma string construída separadamente pode ter o mesmo conteúdo, e listas diferentes podem conter os mesmos elementos. `==` chama a semântica de igualdade definida pelos tipos envolvidos.", "Essa semântica pode ser customizada; igualdade não é necessariamente comparação campo a campo simples. Classes também precisam respeitar regras consistentes, como igualdade reflexiva, simétrica e transitiva quando seu domínio espera essas propriedades."] },
+      { type: "code", id: "py-009-code1", language: "Python", code: "a = [\"café\"]\nb = [\"café\"]\nprint(a == b)  # True: conteúdo igual\nprint(a is b)  # False: objetos diferentes", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-009-h2", title: "Identidade serve para sentinelas" },
+      { type: "paragraphs", id: "py-009-p2", paragraphs: ["`None` é um singleton, então `valor is None` pergunta se a referência aponta para aquele objeto específico. O idioma é claro e não depende de uma implementação de igualdade.", "Para verificar identidade de dois objetos comuns, `is` pode ser útil quando a identidade faz parte do contrato, por exemplo uma sentinela privada. Para comparar conteúdo, use `==`. Strings e inteiros pequenos podem ser internados ou reutilizados como otimização; isso não é contrato para usar `is`."] },
+      { type: "heading", id: "py-009-h3", title: "Cuidado com igualdade personalizada" },
+      { type: "paragraphs", id: "py-009-p3", paragraphs: ["Um objeto pode definir `__eq__` e devolver resultados com semântica própria, inclusive valores que não sejam bool em alguns cenários. Isso torna a escolha do operador parte da intenção da comparação, não apenas estilo.", "Use `is None` em condições e defaults opcionais. Para estruturas de domínio, implemente igualdade apenas se houver uma noção coerente de equivalência e teste como ela interage com hashing e coleções."] },
+    ],
+    references: [
+      { label: "Python Language Reference — Identity comparisons", href: "https://docs.python.org/3/reference/expressions.html#identity-comparisons" },
+      { label: "Python FAQ — When can I rely on identity tests?", href: "https://docs.python.org/3/faq/programming.html#when-can-i-rely-on-identity-tests-with-the-is-operator" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-009 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-dataclass-default-factory",
+    title: "Cada instância precisa da própria lista",
+    category: "Linguagens · Python",
+    summary: "`dataclasses.field(default_factory=list)` cria um valor padrão novo para cada instância. Isso evita compartilhar uma lista mutável entre objetos, sem exigir que a lista seja criada manualmente em toda chamada.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-010-opening", paragraphs: ["`dataclasses.field(default_factory=list)` cria um valor padrão novo para cada instância. Isso evita compartilhar uma lista mutável entre objetos, sem exigir que a lista seja criada manualmente em toda chamada."] },
+      { type: "heading", id: "py-010-h1", title: "Por que dataclass rejeita alguns defaults" },
+      { type: "paragraphs", id: "py-010-p1", paragraphs: ["Uma lista escrita diretamente como valor padrão seria um único objeto reutilizado pelas instâncias. Dataclasses detectam defaults mutáveis comuns e pedem uma factory, tornando explícito que cada objeto deve receber seu próprio contêiner.", "A factory é chamada quando a instância precisa daquele campo, e não no momento em que a classe é definida. Use a própria classe ou função sem argumentos quando possível; uma lambda é útil quando é preciso construir um valor com parâmetros."] },
+      { type: "code", id: "py-010-code1", language: "Python", code: "from dataclasses import dataclass, field\n\n@dataclass\nclass Carrinho:\n    itens: list[str] = field(default_factory=list)\n\na = Carrinho()\nb = Carrinho()\na.itens.append(\"café\")\nprint(a.itens, b.itens)  # ['café'] []", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-010-h2", title: "Factory não é cópia de um template" },
+      { type: "paragraphs", id: "py-010-p2", paragraphs: ["`default_factory` produz um valor novo; não recebe automaticamente o objeto padrão para copiar. Se um campo precisa de configuração derivada, defina uma factory com a lógica explícita e teste o isolamento entre instâncias.", "Uma factory pode ter efeitos colaterais, então evite trabalho caro ou dependente de ambiente durante a construção sem motivo. Para campos que compartilham deliberadamente um valor imutável, um default direto é mais claro."] },
+      { type: "heading", id: "py-010-h3", title: "Mutabilidade e igualdade do dataclass" },
+      { type: "paragraphs", id: "py-010-p3", paragraphs: ["`default_factory` resolve o ciclo de vida do campo, não torna o objeto imutável. A lista continua podendo ser alterada; uma dataclass `frozen=True` impede reatribuição de atributos, mas não congela automaticamente objetos mutáveis dentro dela.", "Decida separadamente se a instância pode mudar e se seus campos internos podem mudar. Uma tupla ou outro tipo imutável pode representar melhor um valor que não deve ser editado depois de construído."] },
+    ],
+    references: [
+      { label: "Python documentation — dataclasses default_factory", href: "https://docs.python.org/3/library/dataclasses.html#default-factory-functions" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-010 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-dict-setdefault-avaliacao-ansiosa",
+    title: "`setdefault` pode calcular o default mesmo quando a chave existe",
+    category: "Linguagens · Python",
+    summary: "Python avalia os argumentos antes de chamar uma função. Por isso `dict.setdefault(key, construir_valor())` executa `construir_valor` antes que `setdefault` descubra se já há valor para aquela chave.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-011-opening", paragraphs: ["Python avalia os argumentos antes de chamar uma função. Por isso `dict.setdefault(key, construir_valor())` executa `construir_valor` antes que `setdefault` descubra se já há valor para aquela chave."] },
+      { type: "heading", id: "py-011-h1", title: "A ordem de avaliação é anterior à chamada" },
+      { type: "paragraphs", id: "py-011-p1", paragraphs: ["`setdefault` insere um valor somente quando a chave não está presente e devolve o valor associado. Mas a expressão passada como segundo argumento já foi avaliada para construir a chamada; o método não recebe uma função preguiçosa para executar sob demanda.", "Isso costuma passar despercebido quando o default é barato, como uma lista vazia. Se ele consulta banco, calcula um objeto pesado ou registra efeitos colaterais, o trabalho pode ocorrer a cada acesso, inclusive quando não será usado."] },
+      { type: "code", id: "py-011-code1", language: "Python", code: "def carregar_padrao():\n    print(\"calculando\")\n    return []\n\ncache = {\"usuarios\": [\"Ana\"]}\ncache.setdefault(\"usuarios\", carregar_padrao())\n# \"calculando\" aparece mesmo com a chave presente.", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "py-011-h2", title: "Escolha a ferramenta conforme a intenção" },
+      { type: "paragraphs", id: "py-011-p2", paragraphs: ["Se a criação precisa ser preguiçosa, um `if chave not in dicionario` comunica diretamente quando a função deve rodar. Se a regra for sempre inicializar um valor simples para novas chaves, `defaultdict(list)` pode ser mais apropriado.", "`defaultdict` também tem uma nuance: a factory roda em acesso por `dicionario[chave]`, mas métodos como `get` não criam automaticamente a chave. Essa diferença de API deve ser conhecida por quem consome o mapa."] },
+            { type: "code", id: "py-011-example-extra", language: "Python", code: "cache = {\"user\": existing_user}\ncache.setdefault(\"user\", create_user())  # create_user() já foi chamado\n\nif \"user\" not in cache:\n    cache[\"user\"] = create_user()  # chamada só quando falta", caption: "PY-011 · argumentos são avaliados antes da chamada; o if adia a criação." },
+{ type: "heading", id: "py-011-h3", title: "Avalie efeitos colaterais além do custo" },
+      { type: "paragraphs", id: "py-011-p3", paragraphs: ["Uma função de default pode alocar recursos, fazer chamadas de rede ou alterar métricas. Executá-la sem necessidade pode gerar custo e comportamento observável, não apenas uma pequena perda de desempenho.", "Evite otimizar por reflexo. Se o default é barato e sem efeitos, `setdefault` pode ser perfeitamente legível. Prefira o padrão condicional quando avaliação preguiçosa ou fluxo de erro fazem parte do contrato."] },
+    ],
+    references: [
+      { label: "Python documentation — Dictionary setdefault", href: "https://docs.python.org/3/library/stdtypes.html#dict.setdefault" },
+      { label: "Python Language Reference — Calls and argument evaluation", href: "https://docs.python.org/3/reference/expressions.html#calls" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-011 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "python-hash-equality-mutabilidade",
+    title: "Mudar um campo usado no hash pode tornar uma chave difícil de encontrar",
+    category: "Linguagens · Python",
+    summary: "Chaves de dicionário e elementos de set dependem de hash estável enquanto estão na coleção. Se igualdade e hash usam um campo mutável que muda depois da inserção, a busca pode deixar de se comportar como esperado.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "py-012-opening", paragraphs: ["Chaves de dicionário e elementos de set dependem de hash estável enquanto estão na coleção. Se igualdade e hash usam um campo mutável que muda depois da inserção, a busca pode deixar de se comportar como esperado."] },
+      { type: "heading", id: "py-012-h1", title: "Igualdade e hash precisam concordar" },
+      { type: "paragraphs", id: "py-012-p1", paragraphs: ["Se dois objetos são iguais, eles precisam produzir o mesmo hash. O contrário não é garantido: colisões são possíveis e a igualdade ainda distingue chaves diferentes. Dicionários usam hash para localizar uma região e igualdade para confirmar a chave.", "Quando um objeto está num `dict` ou `set`, alterar o estado que participa de `__hash__` pode fazer o objeto continuar armazenado numa posição calculada com o hash antigo. A coleção não reindexa a chave automaticamente."] },
+      { type: "heading", id: "py-012-h2", title: "Imutabilidade de chave é uma garantia prática" },
+      { type: "paragraphs", id: "py-012-p2", paragraphs: ["Uma opção segura é usar chaves imutáveis, como tuplas de valores estáveis ou dataclasses congeladas quando seus campos também são hashable. `frozen=True` impede reatribuição direta, mas não torna uma lista interna imutável.", "Se a entidade precisa mudar de identidade ou atributos, use um identificador imutável como chave e guarde o objeto mutável como valor. Isso separa identidade de estado que evolui."] },
+            { type: "code", id: "py-012-example-extra", language: "Python", code: "from dataclasses import dataclass\n\n@dataclass(frozen=True)\nclass UserKey:\n    user_id: int\n\nusers: dict[UserKey, str] = {UserKey(7): \"Ana\"}", caption: "PY-012 · uma chave imutável com campos hashable mantém identidade de lookup estável." },
+{ type: "heading", id: "py-012-h3", title: "O que `dataclass` gera" },
+      { type: "paragraphs", id: "py-012-p3", paragraphs: ["Com `eq=True` e `frozen=False`, dataclasses normalmente deixam a classe sem hash por padrão, evitando sugerir que uma instância mutável é uma chave segura. Uma dataclass congelada pode receber hash gerado a partir dos campos, se eles forem hashable.", "`unsafe_hash=True` permite gerar hash em classes mutáveis, mas transfere a responsabilidade para quem usa o tipo. Não é um conserto automático; só faça isso se os campos que participam do hash permanecerem estáveis durante a vida em qualquer set ou dicionário."] },
+    ],
+    references: [
+      { label: "Python Data Model — __hash__", href: "https://docs.python.org/3/reference/datamodel.html#object.__hash__" },
+      { label: "Python Glossary — Hashable", href: "https://docs.python.org/3/glossary.html#term-hashable" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial PY-012 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "go-interface-nil-nao-e-nil",
+    title: "Um erro `nil` em Go pode não ser `nil`",
+    category: "Linguagens · Go",
+    summary: "Uma interface Go contém um tipo dinâmico e um valor dinâmico. Se ela contém um ponteiro tipado nil, a interface tem tipo presente e não é igual a nil; isso explica erros que parecem existir mesmo sem valor.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "go-001-opening", paragraphs: ["Uma interface Go contém um tipo dinâmico e um valor dinâmico. Se ela contém um ponteiro tipado nil, a interface tem tipo presente e não é igual a nil; isso explica erros que parecem existir mesmo sem valor."] },
+      { type: "heading", id: "go-001-h1", title: "Interface vazia e interface com valor nil" },
+      { type: "paragraphs", id: "go-001-p1", paragraphs: ["Pense numa interface como um par conceitual de tipo dinâmico e valor dinâmico. Uma interface nil não tem nenhum dos dois; depois de atribuir um ponteiro nil tipado, o tipo dinâmico está presente mesmo que o ponteiro armazenado seja nil.", "Esse é um modelo para entender igualdade e comportamento, não uma promessa sobre a representação de memória de toda implementação Go. O importante é a semântica: comparar a interface com nil retorna falso quando existe tipo dinâmico."] },
+      { type: "code", id: "go-001-code1", language: "Go", code: "type Problem struct{}\nfunc (*Problem) Error() string { return \"problem\" }\n\nfunc maybeError(failed bool) error {\n    var p *Problem\n    if failed { p = &Problem{} }\n    return p // quando false, a interface error ainda contém *Problem\n}", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "go-001-h2", title: "Retorne `nil` na interface quando não há erro" },
+      { type: "paragraphs", id: "go-001-p2", paragraphs: ["Uma função que retorna `error` deve devolver `nil` explícito no caminho de sucesso. Retornar uma variável ponteiro concreta que por acaso está nil converte esse ponteiro para a interface e produz uma interface não nil.", "Uma solução simples é retornar o erro concreto apenas quando existe falha e `nil` nos outros caminhos. Outra opção é evitar variáveis de ponteiro locais quando elas não ajudam a expressar o contrato."] },
+      { type: "code", id: "go-001-code2", language: "Go", code: "func maybeError(failed bool) error {\n    if !failed { return nil }\n    return &Problem{}\n}", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "go-001-h3", title: "Métodos em receiver ponteiro e nil" },
+      { type: "paragraphs", id: "go-001-p3", paragraphs: ["Um ponteiro nil dentro de uma interface ainda pode satisfazer uma interface se seu tipo implementa os métodos exigidos. Chamar esse método pode funcionar ou causar panic, conforme a implementação lida com receiver nil; não confunda interface não nil com objeto utilizável.", "Em APIs, documente se métodos aceitam receiver nil e valide invariantes onde o valor entra. Tests devem cobrir o retorno de sucesso e o comportamento de valores tipados nil para evitar que a interface esconda um estado inválido."] },
+    ],
+    references: [
+      { label: "Go FAQ — Why is my nil error value not equal to nil?", href: "https://go.dev/doc/faq#nil_error" },
+      { label: "A Tour of Go — Interface values with nil underlying values", href: "https://go.dev/tour/methods/12" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial GO-001 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "rust-future-nao-executa-sozinha",
+    title: "Criar uma `Future` em Rust não significa executá-la",
+    category: "Linguagens · Rust",
+    summary: "Uma função `async` produz um valor `Future`. A computação progride quando um executor a polla; criar várias futures não as inicia automaticamente nem garante que rodarão em paralelo.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "rs-001-opening", paragraphs: ["Uma função `async` produz um valor `Future`. A computação progride quando um executor a polla; criar várias futures não as inicia automaticamente nem garante que rodarão em paralelo."] },
+      { type: "heading", id: "rs-001-h1", title: "O corpo async vira um valor suspenso" },
+      { type: "paragraphs", id: "rs-001-p1", paragraphs: ["Chamar uma função `async` constrói uma future que descreve o trabalho. Ela não executa o corpo como uma chamada comum até terminar; um executor precisa fazer polling e a future retorna `Pending` quando precisa aguardar algo.", "Quando o recurso esperado fica pronto, o mecanismo de wake informa ao executor que a tarefa pode avançar. Isso evita um loop ocupado chamando poll repetidamente sem necessidade. A future armazena o estado necessário para retomar a execução."] },
+      { type: "code", id: "rs-001-code1", language: "Rust", code: "async fn buscar() -> String {\n    // o corpo progride quando um executor polla esta Future\n    \"resultado\".to_owned()\n}\n\nlet futuro = buscar(); // criada, ainda não executada por si só", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "rs-001-h2", title: "Await compõe; runtime dirige" },
+      { type: "paragraphs", id: "rs-001-p2", paragraphs: ["Dentro de outra função async, `.await` permite que a future interna avance e suspende a externa quando necessário. O runtime fornece executor e, comumente, I/O assíncrono. Tipos da biblioteca padrão podem representar futures, mas Rust não impõe um runtime único.", "A forma de iniciar uma future depende do runtime ou executor usado. Macros como `block_on` aparecem em exemplos, mas bloqueiam a thread atual e não devem ser tratados como solução geral para aplicações assíncronas."] },
+      { type: "heading", id: "rs-001-h3", title: "Concorrência não é automaticamente paralelismo" },
+      { type: "paragraphs", id: "rs-001-p3", paragraphs: ["Compor futures pode permitir que operações avancem concorrentemente quando uma delas aguarda. Isso não significa que cada operação ocupa uma thread própria ou que o trabalho de CPU será distribuído em vários núcleos.", "Para paralelismo, é preciso um executor e uma forma de agendamento que use múltiplas threads, além de atender requisitos de compartilhamento e `Send` quando aplicável. Diferencie iniciar uma future, pollar uma future, aguardar concorrentemente e executar código em paralelo."] },
+    ],
+    references: [
+      { label: "The Rust Programming Language — Futures and the Async Syntax", href: "https://doc.rust-lang.org/book/ch17-01-futures-and-syntax.html" },
+      { label: "Rust Reference — Async functions", href: "https://doc.rust-lang.org/reference/items/functions.html#async-functions" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial RS-001 baseado no post de LinkedIn; revisar antes de publicar",
+  },
+  {
+    slug: "typescript-javascript-types-runtime-validation",
+    title: "TypeScript não valida a resposta da API em runtime",
+    category: "Linguagens · TypeScript e JavaScript",
+    summary: "TypeScript verifica compatibilidade no código durante o desenvolvimento, mas seus tipos são apagados ao gerar JavaScript. JSON vindo da rede continua sendo dado não confiável e precisa ser validado em runtime.",
+    readingTime: "4 min",
+    content: [],
+    story: [
+      { type: "paragraphs", id: "tsjs-001-opening", paragraphs: ["TypeScript verifica compatibilidade no código durante o desenvolvimento, mas seus tipos são apagados ao gerar JavaScript. JSON vindo da rede continua sendo dado não confiável e precisa ser validado em runtime."] },
+      { type: "heading", id: "tsjs-001-h1", title: "O tipo estático não acompanha o JSON" },
+      { type: "paragraphs", id: "tsjs-001-p1", paragraphs: ["Declarar `const user = await response.json() as User` informa ao compilador como o autor quer tratar o valor. A asserção não inspeciona os campos recebidos, não converte os dados e não impede uma resposta malformada.", "Uma mudança de backend, proxy com erro ou resposta parcial pode ultrapassar a fronteira com um formato diferente. Se a aplicação confia cegamente no tipo escrito, a exceção aparece mais tarde, longe da origem do dado."] },
+      { type: "code", id: "tsjs-001-code1", language: "TypeScript", code: "type User = { id: string; name: string };\n\nconst payload: unknown = await response.json();\n// Ainda não há garantia de que payload seja User.", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "tsjs-001-h2", title: "Comece com `unknown` e estreite o tipo" },
+      { type: "paragraphs", id: "tsjs-001-p2", paragraphs: ["`unknown` exige que o código valide antes de acessar propriedades. Uma função de type guard pode checar objeto, campos e tipos esperados, e então permitir que o restante da aplicação use uma forma confiável.", "Para objetos aninhados, valide recursivamente os campos que o domínio realmente utiliza. Uma checagem superficial de que o valor é objeto não prova que `user.profile.address` existe ou tem a estrutura certa."] },
+      { type: "code", id: "tsjs-001-code2", language: "TypeScript", code: "function isUser(value: unknown): value is User {\n  if (typeof value !== \"object\" || value === null) return false;\n  const user = value as Record<string, unknown>;\n  return typeof user.id === \"string\" && typeof user.name === \"string\";\n}", caption: "Exemplo didático reduzido; revisar e executar antes de publicar." },
+      { type: "heading", id: "tsjs-001-h3", title: "Validação também decide conversão e compatibilidade" },
+      { type: "paragraphs", id: "tsjs-001-p3", paragraphs: ["Uma biblioteca de schema pode validar, transformar valores e produzir erros por campo. Decida como lidar com propriedades extras, valores ausentes, campos nulos e mudanças compatíveis; essas decisões fazem parte do contrato da API.", "Valide na borda: respostas HTTP, configuração, local storage e mensagens externas. Depois converta para um tipo de domínio mais estrito. TypeScript ajuda a manter consistência dentro do programa, enquanto a validação de runtime verifica aquilo que o compilador não pode observar."] },
+    ],
+    references: [
+      { label: "TypeScript Handbook — The Basics: Erased Types", href: "https://www.typescriptlang.org/docs/handbook/2/basic-types.html#erased-types" },
+      { label: "TypeScript Handbook — Type Assertions", href: "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions" }
+    ],
+    selected: true,
+    published: false,
+    sourceLabel: "Rascunho editorial TSJS-001 baseado no post de LinkedIn; revisar antes de publicar",
   },
 ];
 

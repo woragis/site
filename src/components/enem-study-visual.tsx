@@ -39,6 +39,7 @@ export function EnemStudyVisual({ compact = false }: { compact?: boolean }) {
     let timer: ReturnType<typeof setTimeout>;
 
     const runStage = (index: number) => {
+      if (index === 0) setCompleted([]);
       setActiveStage(index);
       setPhase("working");
       timer = setTimeout(() => {
@@ -58,7 +59,6 @@ export function EnemStudyVisual({ compact = false }: { compact?: boolean }) {
       }, stageDurations[index]);
     };
 
-    setCompleted([]);
     runStage(0);
     return () => clearTimeout(timer);
   }, [compact, motionEnabled]);
