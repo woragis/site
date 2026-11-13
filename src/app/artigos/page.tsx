@@ -3,71 +3,145 @@ import Link from "next/link";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleCarousel } from "@/components/article-carousel";
 import { EmptyState } from "@/components/empty-state";
-import { projects, publishedArticles, selectedArticles, type Article, type Project } from "@/content/site";
 import { ProjectMediaImage } from "@/components/project-media";
+import { projects, publishedArticles, selectedArticles, type Article, type Project } from "@/content/site";
 import { pageMetadata } from "@/lib/seo";
 
-type Props = { searchParams: Promise<{ projeto?: string | string[] }> };
+const topicDefinitions = [
+  { slug: "arquitetura", label: "Arquitetura", matches: (category: string) => category.toLowerCase().includes("arquitetura") },
+  { slug: "projetos", label: "Projetos e produto", matches: (category: string) => /projeto|produto|backend/i.test(category) },
+  { slug: "linguagens", label: "Linguagens", matches: (category: string) => category.toLowerCase().includes("linguagens") },
+  { slug: "tutoriais", label: "Tutoriais", matches: (category: string) => /tutorial|guia/i.test(category) },
+];
+
+type SearchValue = string | string[] | undefined;
+type Props = { searchParams: Promise<{ projeto?: SearchValue; assunto?: SearchValue }> };
+
+function firstValue(value: SearchValue) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function articleQueryHref(values: { projeto?: string; assunto?: string }) {
+  const query = new URLSearchParams();
+  if (values.assunto) query.set("assunto", values.assunto);
+  if (values.projeto) query.set("projeto", values.projeto);
+  const suffix = query.toString();
+  return suffix ? `/artigos?${suffix}` : "/artigos";
+}
+
+function articleDate(article: Article) {
+  if (!article.publishedAt) return null;
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${article.publishedAt}T12:00:00Z`));
+}
+
+function LeadStory({ article, rank, compact = false }: { article: Article; rank: number; compact?: boolean }) {
+  return <article className={`article-news-card${compact ? " article-news-card--compact" : " article-news-card--lead"}`}>
+    <Link className="article-news-card__media" href={`/artigos/${article.slug}`} aria-label={`Ler: ${article.title}`}>
+      {article.cover
+        ? <ProjectMediaImage image={article.cover} className="article-news-card__image" sizes={compact ? "(max-width: 720px) 35vw, 18vw" : "(max-width: 720px) 92vw, 58vw"} />
+        : <span className="article-news-card__fallback" aria-hidden="true">{article.category}</span>}
+      <span className="article-news-card__rank">0{rank}</span>
+    </Link>
+    <div className="article-news-card__copy">
+      <p className="article-news-card__eyebrow">{article.category}{article.publishedAt && <> <span aria-hidden="true">·</span> <time dateTime={article.publishedAt}>{articleDate(article)}</time></>}{!article.published && <span className="article-news-card__draft">Rascunho</span>}</p>
+      <h2><Link href={`/artigos/${article.slug}`}>{article.title}</Link></h2>
+      {!compact && <p className="article-news-card__summary">{article.summary}</p>}
+      <p className="article-news-card__reading">{article.readingTime} de leitura</p>
+    </div>
+  </article>;
+}
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
-  const projectSlug = Array.isArray(params.projeto) ? params.projeto[0] : params.projeto;
+  const projectSlug = firstValue(params.projeto);
+  const topicSlug = firstValue(params.assunto);
   const project = projects.find((item) => item.slug === projectSlug && item.selected);
-  const metadata = pageMetadata(
-    project ? `Artigos sobre ${project.title}` : "Artigos",
-    project ? `Artigos relacionados ao projeto ${project.title}.` : "Artigos técnicos, estudos de caso e ideias de um desenvolvedor de software.",
-    "/artigos",
-  );
-  if (projectSlug) metadata.robots = { index: false, follow: true };
+  const topic = topicDefinitions.find((item) => item.slug === topicSlug);
+  const title = project ? `Artigos sobre ${project.title}` : topic ? `${topic.label} — artigos` : "Artigos";
+  const description = project
+    ? `Artigos relacionados ao projeto ${project.title}.`
+    : topic ? `Artigos sobre ${topic.label.toLowerCase()}, projetos e desenvolvimento de software.` : "Artigos técnicos, estudos de caso e ideias de um desenvolvedor de software.";
+  const metadata = pageMetadata(title, description, "/artigos");
+  if (projectSlug || topicSlug) metadata.robots = { index: false, follow: true };
   return metadata;
 }
 
 export default async function ArticlesPage({ searchParams }: Props) {
   const params = await searchParams;
-  const requestedSlug = Array.isArray(params.projeto) ? params.projeto[0] : params.projeto;
-  const articlesForPage = process.env.NODE_ENV === "development" ? selectedArticles : publishedArticles;
-  const relatedProjectSlugs = [...new Set(articlesForPage.flatMap((article) => article.projectSlugs ?? []))];
-  const filterProjects = relatedProjectSlugs.map((slug) => projects.find((item) => item.slug === slug)).filter((project): project is Project => Boolean(project?.selected));
-  const activeProject = filterProjects.find((project) => project.slug === requestedSlug);
-  const visibleArticles = activeProject
-    ? articlesForPage.filter((article) => article.projectSlugs?.includes(activeProject.slug))
-    : articlesForPage;
-  const [featuredArticle, ...followingArticles] = visibleArticles;
-  const carouselArticles = followingArticles.slice(0, 6);
-  const archiveArticles = followingArticles.slice(6);
-
-  const articleLink = (article: Article) => `/artigos/${article.slug}`;
+  const requestedProjectSlug = firstValue(params.projeto);
+  const requestedTopicSlug = firstValue(params.assunto);
+  const articleCatalog = process.env.NODE_ENV === "development" ? selectedArticles : publishedArticles;
+  const newestFirst = [...articleCatalog].sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
+  const availableTopics = topicDefinitions.filter((topic) => newestFirst.some((article) => topic.matches(article.category)));
+  const activeTopic = availableTopics.find((topic) => topic.slug === requestedTopicSlug);
+  const projectSlugs = [...new Set(newestFirst.flatMap((article) => article.projectSlugs ?? []))];
+  const filterProjects = projectSlugs
+    .map((slug) => projects.find((item) => item.slug === slug))
+    .filter((project): project is Project => Boolean(project?.selected));
+  const activeProject = filterProjects.find((project) => project.slug === requestedProjectSlug);
+  const visibleArticles = newestFirst.filter((article) =>
+    (!activeProject || article.projectSlugs?.includes(activeProject.slug)) &&
+    (!activeTopic || activeTopic.matches(article.category)),
+  );
+  const [leadArticle, ...remainingArticles] = visibleArticles;
+  const [secondLead, thirdLead, ...afterTopStories] = remainingArticles;
+  const carouselArticles = afterTopStories.slice(0, 6);
+  const archiveArticles = afterTopStories.slice(6);
+  const filtersActive = Boolean(requestedProjectSlug || requestedTopicSlug);
 
   return <div className="page-shell collection-page articles-collection">
-    <header className="articles-masthead"><div><p className="eyebrow"><span>02</span> Caderno de engenharia</p><h1>Ideias em<br /><em>movimento.</em></h1></div><p>Reportagens de projeto, decisões de arquitetura e aprendizados de desenvolvimento — com contexto, código e os limites de cada solução.</p></header>
-    {filterProjects.length > 0 && <nav className="article-filters" aria-label="Filtrar artigos por projeto">
-      <span>PROJETOS</span>
-      <div><Link href="/artigos" className={!activeProject ? "is-active" : ""} aria-current={!activeProject ? "page" : undefined}>Todos</Link>{filterProjects.map((project) => <Link key={project.slug} href={`/artigos?projeto=${project.slug}`} className={activeProject?.slug === project.slug ? "is-active" : ""} aria-current={activeProject?.slug === project.slug ? "page" : undefined}>{project.title}</Link>)}</div>
-    </nav>}
-    {activeProject && <p className="article-filter-status">Artigos relacionados a <strong>{activeProject.title}</strong> · {visibleArticles.length} {visibleArticles.length === 1 ? "artigo" : "artigos"}</p>}
-    {featuredArticle ? <>
-      <section className="article-lead" aria-labelledby="article-lead-title">
-        <div className="article-lead__copy">
-          <p className="eyebrow"><span>LEITURA EM DESTAQUE</span> · {featuredArticle.category}</p>
-          <h2 id="article-lead-title"><Link href={articleLink(featuredArticle)}>{featuredArticle.title}</Link></h2>
-          <p className="article-lead__summary">{featuredArticle.summary}</p>
-          <div className="article-lead__meta"><span>{featuredArticle.readingTime} de leitura</span>{featuredArticle.publishedAt && <time dateTime={featuredArticle.publishedAt}>{new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${featuredArticle.publishedAt}T12:00:00Z`))}</time>}</div>
-          <Link className="article-lead__cta" href={articleLink(featuredArticle)}>Ler matéria <span aria-hidden="true">↗</span></Link>
+    <header className="articles-masthead">
+      <div><p className="eyebrow"><span>02</span> CADERNO DE ENGENHARIA</p><h1>Artigos</h1></div>
+      <p>Projetos, arquitetura e desenvolvimento explicados com contexto, exemplos e os limites de cada decisão.</p>
+    </header>
+
+    <nav className="article-topic-nav" aria-label="Navegar por assunto">
+      <span className="article-topic-nav__label">ASSUNTOS</span>
+      <div className="article-topic-nav__links">
+        <Link href={articleQueryHref({ projeto: requestedProjectSlug })} className={!activeTopic ? "is-active" : ""} aria-current={!activeTopic ? "page" : undefined}>Todos</Link>
+        {availableTopics.map((topic) => <Link key={topic.slug} href={articleQueryHref({ assunto: topic.slug, projeto: requestedProjectSlug })} className={activeTopic?.slug === topic.slug ? "is-active" : ""} aria-current={activeTopic?.slug === topic.slug ? "page" : undefined}>{topic.label}</Link>)}
+      </div>
+      {filterProjects.length > 0 && <details className="article-project-filter" open={Boolean(activeProject)}>
+        <summary>{activeProject ? `Projeto: ${activeProject.title}` : "Filtrar por projeto"}</summary>
+        <div className="article-project-filter__menu">
+          <Link href={articleQueryHref({ assunto: activeTopic?.slug })} aria-current={!activeProject ? "page" : undefined}>Todos os projetos</Link>
+          {filterProjects.map((project) => <Link key={project.slug} href={articleQueryHref({ assunto: activeTopic?.slug, projeto: project.slug })} aria-current={activeProject?.slug === project.slug ? "page" : undefined}>{project.title}</Link>)}
         </div>
-        <Link className="article-lead__media" href={articleLink(featuredArticle)} aria-label={`Ler matéria: ${featuredArticle.title}`}>
-          {featuredArticle.cover ? <ProjectMediaImage image={featuredArticle.cover} className="article-lead__image" sizes="(max-width: 760px) 92vw, 48vw" /> : <span className="article-lead__fallback" aria-hidden="true">{featuredArticle.category}</span>}
-          <span className="article-lead__image-label">{featuredArticle.cover?.caption ?? "CADERNO · ARTIGO"}</span>
-        </Link>
+      </details>}
+    </nav>
+
+    {filtersActive && <div className="article-filter-status" aria-live="polite">
+      Exibindo {visibleArticles.length} {visibleArticles.length === 1 ? "artigo" : "artigos"}
+      {activeTopic && <> em <strong>{activeTopic.label}</strong></>}
+      {activeProject && <> sobre <strong>{activeProject.title}</strong></>}
+      {requestedTopicSlug && !activeTopic && <> · assunto não encontrado</>}
+      {requestedProjectSlug && !activeProject && <> · projeto não encontrado</>}
+      <Link href="/artigos">Limpar filtros</Link>
+    </div>}
+
+    {leadArticle ? <>
+      <section className="article-top-stories" aria-label="Artigos em destaque">
+        <LeadStory article={leadArticle} rank={1} />
+        <div className="article-top-stories__side">
+          {secondLead && <LeadStory article={secondLead} rank={2} compact />}
+          {thirdLead && <LeadStory article={thirdLead} rank={3} compact />}
+        </div>
       </section>
+
       {carouselArticles.length > 0 && <section className="article-carousel-section" aria-labelledby="article-carousel-title">
-        <header className="article-section-heading"><div><p className="eyebrow">OUTRAS LEITURAS</p><h2 id="article-carousel-title">Em circulação</h2></div><p>Deslize para explorar matérias recentes.</p></header>
-        <ArticleCarousel articles={carouselArticles} />
+        <header className="article-section-heading"><div><p className="eyebrow">CONTINUE EXPLORANDO</p><h2 id="article-carousel-title">Outras leituras</h2></div><p>Capas, ideias e decisões em sequência.</p></header>
+        <ArticleCarousel articles={carouselArticles} startAt={4} />
       </section>}
+
       {archiveArticles.length > 0 && <section className="article-archive" aria-labelledby="article-archive-title">
-        <header className="article-section-heading"><div><p className="eyebrow">DO CADERNO</p><h2 id="article-archive-title">Mais artigos</h2></div><span>{archiveArticles.length} matérias</span></header>
-        <div className="article-list">{archiveArticles.map((article, index) => <ArticleCard key={article.slug} article={article} index={index + carouselArticles.length + 1} />)}</div>
+        <header className="article-section-heading"><div><p className="eyebrow">ARQUIVO DO CADERNO</p><h2 id="article-archive-title">Mais artigos</h2></div><span>{archiveArticles.length} {archiveArticles.length === 1 ? "artigo" : "artigos"}</span></header>
+        <div className="article-list">{archiveArticles.map((article, index) => <ArticleCard key={article.slug} article={article} index={index + carouselArticles.length + 3} />)}</div>
       </section>}
-    </> : <EmptyState title={activeProject ? "Ainda não há artigos para este projeto." : "Os primeiros textos estão em rascunho."}>{activeProject ? <>Assim que houver um artigo publicado sobre {activeProject.title}, ele aparecerá aqui. <Link href="/artigos">Ver todos os artigos.</Link></> : "Artigos aparecem aqui quando estiverem revisados e prontos para compartilhar."}</EmptyState>}
-    {requestedSlug && !activeProject && <p className="article-filter-status">Esse filtro não corresponde a um projeto com artigos relacionados. <Link href="/artigos">Limpar filtro</Link></p>}
+    </> : <EmptyState title={activeProject ? "Ainda não há artigos para este projeto." : "Nenhum artigo encontrado."}>{activeProject ? <>Assim que houver um artigo publicado sobre {activeProject.title}, ele aparecerá aqui. <Link href="/artigos">Ver todos os artigos.</Link></> : <Link href="/artigos">Remover os filtros e ver todos os artigos.</Link>}</EmptyState>}
   </div>;
 }
