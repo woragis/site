@@ -1515,9 +1515,20 @@ html[data-theme="atelier"] .articles-collection .article-card__cover { width: 10
 @media (prefers-reduced-motion: reduce) {
   .article-lead__image, .article-lead__cta span, .article-teaser__link, .article-carousel__controls button { transition: none; }
   .article-carousel__track { scroll-behavior: auto; }
+  .article-news-card--lead, .article-news-card--compact { animation: none; }
+  .article-highlights__pagination button { transition: none; }
 }
 
 /* Article portal: compact section header, ranked stories and a two-column archive */
+.article-highlights__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.25rem; }
+.article-highlights__header > .eyebrow { margin: 0; color: var(--color-accent); font: var(--text-xs)/1.4 var(--font-mono); letter-spacing: .08em; }
+.article-highlights__pagination { display: flex; align-items: center; gap: .45rem; }
+.article-highlights__pagination > span { margin-right: .35rem; color: var(--color-muted); font: .62rem/1 var(--font-mono); }
+.article-highlights__pagination button { width: .48rem; height: .48rem; border: 0; border-radius: var(--radius-pill); background: var(--color-line); padding: 0; cursor: pointer; transition: width var(--transition), background-color var(--transition); }
+.article-highlights__pagination button[aria-pressed="true"] { width: 1.35rem; background: var(--color-accent); }
+.article-highlights__pagination button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+.article-news-card--lead, .article-news-card--compact { animation: article-highlight-in 420ms ease both; }
+@keyframes article-highlight-in { from { opacity: .68; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 .articles-collection { padding-top: clamp(1rem, 2.5vw, 2.25rem); }
 .articles-collection .articles-masthead { margin-top: 0; }
 .articles-masthead { align-items: end; gap: 1.5rem; margin: clamp(2rem, 4vw, 3.5rem) 0 0; border-top: 0; border-bottom: var(--border-width) solid var(--color-line); padding: 0 0 1rem; }
@@ -1582,6 +1593,7 @@ html[data-theme="atelier"] .articles-collection .article-card__cover { width: 10
   .article-list { grid-template-columns: 1fr; }
 }
 @media (max-width: 650px) {
+  .article-highlights__header { margin-top: .8rem; }
   .articles-masthead { align-items: end; flex-direction: row; }
   .articles-masthead h1 { font-size: clamp(2.7rem, 12vw, 4rem); }
   .articles-masthead > p { max-width: 48%; font-size: .76rem; }

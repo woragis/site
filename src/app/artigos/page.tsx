@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleCarousel } from "@/components/article-carousel";
+import { ArticleHighlights } from "@/components/article-highlights";
 import { EmptyState } from "@/components/empty-state";
-import { ProjectMediaImage } from "@/components/project-media";
 import { projects, publishedArticles, selectedArticles, type Article, type Project } from "@/content/site";
 import { pageMetadata } from "@/lib/seo";
 
@@ -27,33 +27,6 @@ function articleQueryHref(values: { projeto?: string; assunto?: string }) {
   if (values.projeto) query.set("projeto", values.projeto);
   const suffix = query.toString();
   return suffix ? `/artigos?${suffix}` : "/artigos";
-}
-
-function articleDate(article: Article) {
-  if (!article.publishedAt) return null;
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(`${article.publishedAt}T12:00:00Z`));
-}
-
-function LeadStory({ article, rank, compact = false }: { article: Article; rank: number; compact?: boolean }) {
-  return <article className={`article-news-card${compact ? " article-news-card--compact" : " article-news-card--lead"}`}>
-    <Link className="article-news-card__media" href={`/artigos/${article.slug}`} aria-label={`Ler: ${article.title}`}>
-      {article.cover
-        ? <ProjectMediaImage image={article.cover} className="article-news-card__image" sizes={compact ? "(max-width: 720px) 35vw, 18vw" : "(max-width: 720px) 92vw, 58vw"} />
-        : <span className="article-news-card__fallback" aria-hidden="true">{article.category}</span>}
-      <span className="article-news-card__rank">0{rank}</span>
-    </Link>
-    <div className="article-news-card__copy">
-      <p className="article-news-card__eyebrow">{article.category}{article.publishedAt && <> <span aria-hidden="true">·</span> <time dateTime={article.publishedAt}>{articleDate(article)}</time></>}{!article.published && <span className="article-news-card__draft">Rascunho</span>}</p>
-      <h2><Link href={`/artigos/${article.slug}`}>{article.title}</Link></h2>
-      {!compact && <p className="article-news-card__summary">{article.summary}</p>}
-      <p className="article-news-card__reading">{article.readingTime} de leitura</p>
-    </div>
-  </article>;
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
@@ -125,13 +98,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
     </div>}
 
     {leadArticle ? <>
-      <section className="article-top-stories" aria-label="Artigos em destaque">
-        <LeadStory article={leadArticle} rank={1} />
-        <div className="article-top-stories__side">
-          {secondLead && <LeadStory article={secondLead} rank={2} compact />}
-          {thirdLead && <LeadStory article={thirdLead} rank={3} compact />}
-        </div>
-      </section>
+      <ArticleHighlights articles={[leadArticle, secondLead, thirdLead].filter((article): article is Article => Boolean(article))} />
 
       {carouselArticles.length > 0 && <section className="article-carousel-section" aria-labelledby="article-carousel-title">
         <header className="article-section-heading"><div><p className="eyebrow">CONTINUE EXPLORANDO</p><h2 id="article-carousel-title">Outras leituras</h2></div><p>Capas, ideias e decisões em sequência.</p></header>
