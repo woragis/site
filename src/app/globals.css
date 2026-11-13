@@ -1518,6 +1518,8 @@ html[data-theme="atelier"] .articles-collection .article-card__cover { width: 10
 }
 
 /* Article portal: compact section header, ranked stories and a two-column archive */
+.articles-collection { padding-top: clamp(1rem, 2.5vw, 2.25rem); }
+.articles-collection .articles-masthead { margin-top: 0; }
 .articles-masthead { align-items: end; gap: 1.5rem; margin: clamp(2rem, 4vw, 3.5rem) 0 0; border-top: 0; border-bottom: var(--border-width) solid var(--color-line); padding: 0 0 1rem; }
 .articles-masthead .eyebrow { margin-bottom: .4rem; }
 .articles-masthead h1 { font-size: clamp(2.4rem, 4.2vw, 4.2rem); line-height: .98; letter-spacing: -.06em; }
