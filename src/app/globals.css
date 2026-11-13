@@ -1398,6 +1398,20 @@ html[data-theme="index"] .project-card__visual--enem-study::before, html[data-th
 .article-filter-status a { color: var(--color-accent); }
 .article-card__cover { position: relative; grid-column: 1; grid-row: 1 / span 3; display: block; align-self: start; overflow: hidden; aspect-ratio: 16 / 9; border-radius: var(--media-frame-radius); background: var(--color-paper); }
 .article-card__cover-image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; object-position: var(--media-focal-x, 50%) var(--media-focal-y, 50%); }
+.article-detail__back { position: relative; z-index: 2; margin-bottom: 1rem; }
+.article-detail-hero { position: relative; isolation: isolate; display: flex; align-items: end; width: 100%; min-height: clamp(30rem, 56vw, 45rem); aspect-ratio: 16 / 9; overflow: hidden; margin: 0 0 clamp(2.5rem, 5vw, 4.5rem); border-radius: var(--media-banner-radius); background: var(--color-ink); color: #fff; }
+.article-detail-hero__media { position: absolute; z-index: 0; inset: 0; overflow: hidden; background: var(--color-paper-strong); }
+.article-detail-hero__backdrop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--media-focal-x, 50%) var(--media-focal-y, 50%); }
+.article-detail-hero--portrait .article-detail-hero__backdrop { opacity: .8; filter: blur(24px) brightness(.42); transform: scale(1.08); }
+.article-detail-hero__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8, 9, 8, .08) 0%, rgba(8, 9, 8, .18) 32%, rgba(8, 9, 8, .68) 66%, rgba(8, 9, 8, .97) 100%), linear-gradient(90deg, rgba(8, 9, 8, .3), transparent 78%); }
+.article-detail-hero__art { position: absolute; z-index: 1; top: 4%; right: clamp(1rem, 5vw, 5rem); width: min(44%, 30rem); height: 86%; object-fit: contain; filter: drop-shadow(0 1.2rem 2.5rem rgba(0, 0, 0, .32)); }
+.article-detail-hero__content { position: relative; z-index: 2; width: min(100%, 78rem); margin: 0 auto; padding: clamp(1.2rem, 5vw, 4rem); color: #fff; }
+.article-detail-hero__eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0 0 1rem; color: rgba(255, 255, 255, .84); font: var(--text-xs)/1.6 var(--font-mono); text-transform: uppercase; }
+.article-detail-hero h1 { max-width: 19ch; margin: 0; color: #fff; font: 500 clamp(2.5rem, 6.5vw, 6rem)/.98 var(--font-display); letter-spacing: -.065em; text-shadow: 0 2px 24px rgba(0, 0, 0, .28); }
+.article-detail-hero__summary { max-width: 58rem; margin: 1rem 0 0; color: rgba(255, 255, 255, .9); font-size: clamp(.95rem, 1.35vw, 1.15rem); line-height: 1.65; }
+.article-detail-hero__caption { max-width: 65rem; margin: .75rem 0 0; color: rgba(255, 255, 255, .72); font-size: .68rem; line-height: 1.5; }
+.article-detail-hero__draft { border: 1px solid rgba(255, 255, 255, .4); border-radius: var(--radius-pill); padding: .15rem .5rem; }
+.article-detail-hero--text { background: radial-gradient(ellipse at 78% 15%, color-mix(in srgb, var(--color-accent) 34%, transparent), transparent 48%), var(--color-ink); }
 .article-card:has(.article-card__cover) { grid-template-columns: minmax(8rem, 14rem) 2rem minmax(0, 1fr) auto; align-items: center; }
 .article-card__projects { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .85rem; }
 .article-card__projects a { padding: .3rem .6rem; font-size: .65rem; }
@@ -1446,6 +1460,12 @@ html[data-theme="atelier"] .articles-collection .article-card__cover { width: 10
   .article-filters a { flex: 0 0 auto; }
   .article-card:has(.article-card__cover) { grid-template-columns: 5rem 2rem minmax(0, 1fr); align-items: start; }
   .article-card__cover { grid-column: 1; grid-row: 1 / span 3; aspect-ratio: 16 / 9; }
+  .article-detail__back { margin-bottom: .8rem; }
+  .article-detail-hero { min-height: 31rem; aspect-ratio: auto; border-radius: var(--radius-md); }
+  .article-detail-hero__content { padding: 1.2rem; }
+  .article-detail-hero h1 { font-size: clamp(2.35rem, 10vw, 3.6rem); }
+  .article-detail-hero__summary { font-size: .9rem; }
+  .article-detail-hero--portrait .article-detail-hero__art { top: 2%; right: 50%; width: min(72%, 18rem); height: 66%; transform: translateX(50%); }
   .article-card:has(.article-card__cover) .article-card__index { grid-column: 2; }
   .article-card:has(.article-card__cover) .article-card__body { grid-column: 3; }
   .article-card:has(.article-card__cover) .article-card__meta { grid-column: 3; justify-items: start; }

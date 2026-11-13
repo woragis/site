@@ -34,14 +34,26 @@ export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params;
   const article = articles.find((item) => item.slug === slug && item.selected);
   if (!article) notFound();
+  const portraitCover = article.cover ? article.cover.width / article.cover.height < 1.25 : false;
   const relatedProjects = (article.projectSlugs ?? []).map((projectSlug) => projects.find((project) => project.slug === projectSlug && project.selected)).filter((project): project is (typeof projects)[number] => Boolean(project));
   const structuredData = { "@context": "https://schema.org", "@type": "BlogPosting", headline: article.title, description: article.summary, ...(article.cover ? { image: absoluteUrl(article.cover.src) } : {}), ...(article.publishedAt ? { datePublished: article.publishedAt } : {}), ...(relatedProjects.length ? { about: relatedProjects.map((project) => ({ "@type": "CreativeWork", name: project.title, url: absoluteUrl(`/projetos/${project.slug}`) })) } : {}), author: { "@type": "Person", name: "Jezreel de Andrade" }, publisher: { "@type": "Person", name: "Jezreel de Andrade" }, mainEntityOfPage: absoluteUrl(`/artigos/${article.slug}`) };
 
   return <article className="page-shell detail-page article-detail">
     {article.published && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData)} />}
-    <Link className="back-link" href="/artigos">← Todos os artigos</Link>
-    {article.cover && <figure className="article-cover"><ProjectMediaImage image={article.cover} className="article-cover__image" sizes="(max-width: 720px) 92vw, 88vw" />{article.cover.caption && <figcaption>{article.cover.caption}</figcaption>}</figure>}
-    <header className="detail-header"><p className="eyebrow">{article.category} · {article.readingTime} · {article.publishedAt ? <time dateTime={article.publishedAt}>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${article.publishedAt}T12:00:00Z`))}</time> : "Rascunho"}</p><h1>{article.title}</h1><p className="detail-lede">{article.summary}</p></header>
+    <Link className="back-link article-detail__back" href="/artigos">← Todos os artigos</Link>
+    <header className={`article-detail-hero${portraitCover ? " article-detail-hero--portrait" : ""}${article.cover ? "" : " article-detail-hero--text"}`}>
+      {article.cover && <div className="article-detail-hero__media" aria-hidden="true">
+        <ProjectMediaImage image={article.cover} className="article-detail-hero__backdrop" decorative sizes="100vw" />
+        {portraitCover && <ProjectMediaImage image={article.cover} className="article-detail-hero__art" decorative sizes="(max-width: 720px) 70vw, 35vw" />}
+        <span className="article-detail-hero__shade" />
+      </div>}
+      <div className="article-detail-hero__content">
+        <p className="article-detail-hero__eyebrow">{article.category}<span aria-hidden="true"> · </span>{article.readingTime}{article.publishedAt && <> <span aria-hidden="true">·</span> <time dateTime={article.publishedAt}>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${article.publishedAt}T12:00:00Z`))}</time></>}{!article.published && <span className="article-detail-hero__draft">Rascunho</span>}</p>
+        <h1>{article.title}</h1>
+        <p className="article-detail-hero__summary">{article.summary}</p>
+        {article.cover?.caption && <p className="article-detail-hero__caption">{article.cover.caption}</p>}
+      </div>
+    </header>
     <ArticleContent article={article} />
     {article.references?.length ? <section className="article-references" aria-labelledby="article-references-title"><p className="eyebrow">LEITURA E REFERÊNCIAS</p><h2 id="article-references-title">Para continuar</h2><ul>{article.references.map((reference) => <li key={reference.href}><a href={reference.href} target="_blank" rel="noreferrer">{reference.label} ↗</a></li>)}</ul></section> : null}
     {!article.published && <p className="article-source">{article.sourceLabel}. Texto de trabalho, aguardando revisão antes da publicação.</p>}
